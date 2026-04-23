@@ -1,0 +1,436 @@
+        <!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ✅ SEO Title (~55–60 chars, UK-focused) -->
+  <title>Apply for ECS Card Online | New, Renewal & Replacement UK</title>
+
+  <!-- ✅ Meta Description (UK-focused, ECS keywords) -->
+  <meta name="description" content="Apply online for an ECS card in the UK. Send a secure ECS card application for new, renewal or replacement cards, upload your ID and qualifications and get help with ECS Health, Safety & Environment test requirements." />
+
+  <!-- (Optional) Keyword Tag -->
+  <meta name="keywords" content="apply ecs card, ecs card application, ecs card renewal, ecs card replacement, ecs card uk, electrician ecs card, apply ecs online" />
+
+  <!-- ✅ Robots & Canonical -->
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <link rel="canonical" href="https://applyecscard.co.uk/ecscardbooking" />
+
+  <!-- ✅ Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Apply for ECS Card Online | New, Renewal & Replacement UK" />
+  <meta property="og:description" content="Start your ECS card application online for new, renewal or replacement cards, including ECS Health, Safety & Environment test support." />
+  <meta property="og:url" content="https://applyecscard.co.uk/ecscardbooking" />
+  <meta property="og:site_name" content="Apply ECS" />
+
+  <!-- ✅ Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Apply for ECS Card Online | New, Renewal & Replacement UK" />
+  <meta name="twitter:description" content="Apply online for your ECS card with UK-focused guidance on new, renewal and replacement routes." />
+
+  <!-- CSS & Icons -->
+  <link rel="stylesheet" href="book.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- ✅ JSON-LD: WebPage / Service -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "ECS Card Application Online",
+    "url": "https://applyecscard.co.uk/ecscardbooking.html",
+    "description": "Online ECS card application form for new, renewal and replacement ECS cards in the UK.",
+    "provider": {
+      "@type": "Organization",
+      "name": "Apply ECS",
+      "url": "https://applyecscard.co.uk"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Common header (loaded from header.html via header.js) -->
+  <div id="header-container"></div>
+  <script src="header.js"></script>
+
+  <!-- HERO / INTRO SECTION -->
+  <section class="ecs-card-section" style="text-align: center;">
+    <h1>Apply for Your ECS Card in the UK</h1>
+
+    <p>
+      An <strong>ECS card</strong> is the recognised ID card for electricians, FESS, data, telecoms and
+      related trades working on electrotechnical sites across the UK. It links your
+      <strong>identity, qualifications and health &amp; safety status</strong> in one place.
+    </p>
+
+    <p>
+      You can start your <strong>ECS card application online</strong> using the secure form below. You will need
+      basic personal details, proof of ID, a suitable photograph and, in most cases, evidence of
+      <strong>ECS Health, Safety &amp; Environment (HS&amp;E) test</strong> or another accepted health &amp; safety qualification.
+    </p>
+
+    <p class="note">
+      Different ECS card types exist for labourers, trainees, apprentices, qualified electricians,
+      FESS operatives, network installers, AV technicians, supervisors and managers. Choosing the
+      correct route helps avoid delays or rejections.
+    </p>
+  </section>
+
+  <!-- Button with icon -->
+  <div class="button-container">
+    <a href="ecs-cards.html">
+      <button class="info-button" type="button">
+        <span class="icon">🛠</span>
+        Learn More About ECS Card Types
+      </button>
+    </a>
+  </div>
+
+  <!-- PROGRESS BAR + FORM -->
+  <section>
+    <div class="progress-container">
+      <ul class="progressbar">
+        <li class="active">Personal Details, Card &amp; Uploads</li>
+        <li>Confirmation &amp; Payment</li>
+      </ul>
+    </div>
+
+<form id="ecsCardForm"
+      action="cardbooking.php"
+      method="post"
+      enctype="multipart/form-data">
+      <!-- STEP 1: PERSONAL + CARD + UPLOADS -->
+      <div class="form-step active">
+        <h1 style="color:#3f498cf8;">ECS CARD APPLICATION</h1>
+        <h3>Step 1: Personal Details</h3>
+
+        <div class="form-group">
+          <label>Full Name*</label>
+          <input type="text" name="full_name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Date of Birth*</label>
+          <input type="date" name="dob" required>
+        </div>
+
+        <div class="form-group">
+          <label>National Insurance (NI) Number*</label>
+          <input type="text" name="ni_number" placeholder="AB123456C" required>
+        </div>
+
+        <div class="form-group">
+          <label>Gender*</label>
+          <select name="gender" required>
+            <option value="">Select...</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other / Prefer not to say</option>
+          </select>
+        </div>
+
+        <h3>Contact Info</h3>
+        <div class="form-group">
+          <label>Street Address*</label>
+          <input type="text" name="street_address" required>
+        </div>
+        <div class="form-group">
+          <label>Town / City*</label>
+          <input type="text" name="city" required>
+        </div>
+        <div class="form-group">
+          <label>Postcode*</label>
+          <input type="text" name="postcode" placeholder="SW1A 1AA" required>
+        </div>
+        <div class="form-group">
+          <label>Mobile*</label>
+          <input type="tel" name="mobile" required>
+        </div>
+        <div class="form-group">
+          <label>Email*</label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>Confirm Email*</label>
+          <input type="email" name="confirm_email" required>
+        </div>
+
+        <h3>Card &amp; Employment Details</h3>
+
+        <div class="form-group">
+          <p>Application Type*</p>
+          <label><input type="radio" name="ecs_card_type" value="new" required> New ECS Card</label><br>
+          <label><input type="radio" name="ecs_card_type" value="renewal"> Renewal</label><br>
+          <label><input type="radio" name="ecs_card_type" value="replacement"> Replacement / Upgrade</label>
+        </div>
+
+        <div class="form-group">
+          <label>Current / Previous ECS Card Number (if renewal)</label>
+          <input type="text" name="ecs_card_number" placeholder="ECS123456">
+        </div>
+
+        <div class="form-group">
+          <label>Expiry Date (if renewal)</label>
+          <input type="date" name="expiry_date">
+        </div>
+
+        <div class="form-group">
+          <label>Occupation / Job Title*</label>
+          <input
+            type="text"
+            name="occupation"
+            placeholder="Electrician, Installation Electrician, Maintenance Electrician, Technician, Site Supervisor, Site Manager, FESS Systems Technician, Network Installer, AV Technician"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label>Employer Name</label>
+          <input type="text" name="employer">
+        </div>
+
+        <div class="form-group">
+          <label>Main Qualification / NVQ Level (if known)</label>
+          <input type="text" name="qualification" placeholder="e.g. NVQ Level 3 in Electrical Installation">
+        </div>
+
+        <div class="form-group">
+          <label>Have you passed an ECS H&amp;S / CITB HS&amp;E test in the last 2 years?*</label>
+          <select name="hs_test" required>
+            <option value="">Select...</option>
+            <option value="yes">Yes (upload proof below)</option>
+            <option value="no">No / not sure</option>
+          </select>
+        </div>
+
+        <h3>Uploads</h3>
+
+        <div class="form-group">
+          <label>Upload H&amp;S Test Proof (if Yes)</label>
+          <input type="file" name="hs_test_proof" accept=".jpg,.png,.pdf">
+        </div>
+
+        <div class="form-group">
+          <label>Upload Passport Size Photo*</label>
+          <input type="file" name="photo" accept=".jpg,.png" required>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Identity Proof (Passport / Driving Licence)*</label>
+          <input type="file" name="id_proof" accept=".jpg,.png,.pdf" required>
+        </div>
+
+        <button type="button" class="next-btn">Next</button>
+      </div>
+
+      <!-- STEP 2: CONFIRMATION & PAYMENT -->
+      <div class="form-step">
+        <h3>Step 2: Confirm &amp; Payment</h3>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" name="agree_terms" required>
+          <label>
+            I confirm this application is for an ECS card (new, renewal or replacement) and that the
+            information I have provided is accurate to the best of my knowledge.
+          </label>
+        </div>
+
+        <h3>Review Your Application</h3>
+        <p>
+          Please check your details carefully. Your ECS card route and fee are based on the information you submit.
+          Once payment is complete, your application will be processed and updates will be sent by email and, where
+          possible, SMS.
+        </p>
+
+        <div class="summary-box" id="summaryBox"></div>
+
+        <h3>Payment</h3>
+        <p><strong>Total Fee: <span id="totalFee">£0.00</span></strong></p>
+        <p class="small-print">
+          Indicative fees: New ECS card from £79, renewal or replacement from £79.
+          Final cost may depend on your route and any additional services.
+        </p>
+
+        <button type="button" class="prev-btn">Previous</button>
+        <!-- Final submit button (no .next-btn class so JS doesn't treat it as wizard button) -->
+        <button type="submit" class="submit-btn">Submit &amp; Proceed to Payment</button>
+      </div>
+    </form>
+  </section>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // ===== HAMBURGER MENU (if present in header) =====
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+
+    if (hamburger && navMenu) {
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 992) {
+          navMenu.classList.remove('active');
+          hamburger.classList.remove('active');
+        }
+      });
+    }
+
+    // ===== ACCORDION (if present in header/footer) =====
+    document.querySelectorAll(".accordion-header").forEach(button => {
+      button.addEventListener("click", () => {
+        button.classList.toggle("active");
+        const content = button.nextElementSibling;
+        const isMobile = window.innerWidth <= 992;
+
+        if (content.style.display === "flex" || content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = isMobile ? "block" : "flex";
+        }
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      document.querySelectorAll(".accordion-content").forEach(content => {
+        content.style.display = "none";
+      });
+      document.querySelectorAll(".accordion-header").forEach(button => {
+        button.classList.remove("active");
+      });
+    });
+
+    // ===== MULTI-STEP FORM (2 STEPS) =====
+    let currentStep = 0;
+    const steps = document.querySelectorAll(".form-step");
+    const nextBtns = document.querySelectorAll(".next-btn");   // only step 1
+    const prevBtns = document.querySelectorAll(".prev-btn");
+    const summaryBox = document.getElementById("summaryBox");
+    const form = document.getElementById("ecsCardForm");
+    const progressSteps = document.querySelectorAll(".progressbar li");
+    const totalFeeSpan = document.getElementById("totalFee");
+
+    const priceMap = {
+      new: "£79.00",
+      renewal: "£79.00",
+      replacement: "£79.00"
+    };
+
+    function showStep(step) {
+      steps.forEach((s, i) => {
+        s.style.display = i === step ? "block" : "none";
+      });
+
+      if (progressSteps.length) {
+        progressSteps.forEach((p, i) => {
+          p.classList.remove("active", "completed");
+          if (i < step) p.classList.add("completed");
+          if (i === step) p.classList.add("active");
+        });
+      }
+    }
+
+    function validateStep(step) {
+      const inputs = steps[step].querySelectorAll("input[required], select[required], textarea[required]");
+      for (let input of inputs) {
+        if (!input.value.trim()) {
+          alert("Please fill in all required fields before continuing.");
+          input.focus();
+          return false;
+        }
+
+        // Email confirmation check (only where confirm_email exists — step 0)
+        if (
+          input.name === "confirm_email" &&
+          input.value.trim() !== form.querySelector('input[name="email"]').value.trim()
+        ) {
+          alert("Email addresses do not match. Please check and try again.");
+          input.focus();
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function updateSummary() {
+      if (!form || !summaryBox) return;
+      const formData = new FormData(form);
+      const cardType = formData.get("ecs_card_type");
+      const price = priceMap[cardType] || "£0.00";
+
+      summaryBox.innerHTML = `
+        <p><strong>Name:</strong> ${formData.get("full_name") || ""}</p>
+        <p><strong>Date of Birth:</strong> ${formData.get("dob") || ""}</p>
+        <p><strong>NI Number:</strong> ${formData.get("ni_number") || ""}</p>
+        <p><strong>Gender:</strong> ${formData.get("gender") || ""}</p>
+        <p><strong>Occupation:</strong> ${formData.get("occupation") || ""}</p>
+        <p><strong>Employer:</strong> ${formData.get("employer") || ""}</p>
+        <p><strong>Main Qualification:</strong> ${formData.get("qualification") || ""}</p>
+        <p><strong>H&amp;S / HS&amp;E Test Passed (last 2 years):</strong> ${formData.get("hs_test") || ""}</p>
+        <p><strong>Address:</strong> ${formData.get("street_address") || ""}, ${formData.get("city") || ""}, ${formData.get("postcode") || ""}</p>
+        <p><strong>Mobile:</strong> ${formData.get("mobile") || ""}</p>
+        <p><strong>Email:</strong> ${formData.get("email") || ""}</p>
+        <p><strong>Application Type:</strong> ${cardType || ""}</p>
+        <p><strong>Estimated Total Fee:</strong> ${price}</p>
+      `;
+
+      if (totalFeeSpan) {
+        totalFeeSpan.textContent = price;
+      }
+    }
+
+    // Only one "Next" button (step 1 → step 2)
+    nextBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (!validateStep(currentStep)) return;
+        updateSummary();              // create summary before moving
+        currentStep = 1;              // go to confirmation step
+        showStep(currentStep);
+      });
+    });
+
+    prevBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentStep = Math.max(currentStep - 1, 0);
+        showStep(currentStep);
+      });
+    });
+
+    // ===== ECS CARD TYPE TOGGLE (renewal fields + price) =====
+    const ecsTypeRadios = document.querySelectorAll('input[name="ecs_card_type"]');
+    const ecsNumberField = document.querySelector('input[name="ecs_card_number"]')?.parentElement;
+    const expiryDateField = document.querySelector('input[name="expiry_date"]')?.parentElement;
+
+    function toggleEcsFields() {
+      const selectedType = document.querySelector('input[name="ecs_card_type"]:checked')?.value;
+      if (ecsNumberField && expiryDateField) {
+        if (selectedType === "new") {
+          ecsNumberField.style.display = "none";
+          expiryDateField.style.display = "none";
+        } else {
+          ecsNumberField.style.display = "block";
+          expiryDateField.style.display = "block";
+        }
+      }
+      if (totalFeeSpan && selectedType) {
+        totalFeeSpan.textContent = priceMap[selectedType] || "£0.00";
+      }
+    }
+
+    ecsTypeRadios.forEach(radio => {
+      radio.addEventListener("change", () => {
+        toggleEcsFields();
+        updateSummary();
+      });
+    });
+
+    // ===== INIT =====
+    toggleEcsFields();
+    showStep(currentStep);
+  });
+  </script>
+</body>
+</html>
+    

@@ -1,0 +1,15 @@
+# Turn on Rewrite Engine
+RewriteEngine On
+
+# 1. Don't touch /blog (WordPress ka folder)
+RewriteRule ^blog/ - [L]
+
+# 2. Redirect /page.html -> /page  (SEO friendly)
+RewriteCond %{THE_REQUEST} "\s/+(.+?)\.html[\s?]"
+RewriteRule ^ %1 [R=301,L]
+
+# 3. /page ko internally /page.html se serve karo
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]
