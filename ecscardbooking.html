@@ -96,7 +96,10 @@
       </ul>
     </div>
 
-       <form id="ecsForm" onsubmit="redirectToPayment(event)">
+<form id="ecsCardForm"
+      action="cardbooking.php"
+      method="post"
+      enctype="multipart/form-data">
       <!-- STEP 1: PERSONAL + CARD + UPLOADS -->
       <div class="form-step active">
         <h1 style="color:#3f498cf8;">ECS CARD APPLICATION</h1>
@@ -254,15 +257,6 @@
       </div>
     </form>
   </section>
-<script>
-function redirectToPayment(e) {
-  e.preventDefault(); // form reload stop karega
-
-  // yaha tum form data save bhi kar sakte ho (optional)
-
-  window.location.href = "https://www.paypal.com/ncp/payment/9DKS9AYZETN4E";
-}
-</script>
 
   <script>
   document.addEventListener("DOMContentLoaded", () => {
