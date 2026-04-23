@@ -520,7 +520,7 @@
         </div>
 
         <!-- Booking Form -->
-        <form id="ecsForm" action="book.php" method="POST">
+       <form id="ecsForm" onsubmit="redirectToPayment(event)">
           <!-- Step 1 -->
           <div class="form-step active" id="booking-form">
             <h1>CITB Test Booking for ECS</h1>
@@ -812,7 +812,15 @@
       </div>
     </section>
   </main>
+<script>
+function redirectToPayment(e) {
+  e.preventDefault(); // form reload stop karega
 
+  // yaha tum form data save bhi kar sakte ho (optional)
+
+  window.location.href = "https://www.paypal.com/ncp/payment/QH8ZD4XKETKXQ";
+}
+</script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       /* ====== FORM WIZARD + SUMMARY ====== */
