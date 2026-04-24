@@ -813,13 +813,24 @@
     </section>
   </main>
 <script>
-document.getElementById("ecsForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+document.getElementById("ecsForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
 
-    // OPTIONAL: yaha tum data send kar sakte ho (email / PHP)
+  const formData = new FormData(this);
+  const data = Object.fromEntries(formData.entries());
 
-    // PayPal redirect
-    window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
+  await fetch("/api/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+  alert("Booking Submitted ✅");
+
+  // 👉 PayPal redirect
+  window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
 });
 </script>
   <script>
