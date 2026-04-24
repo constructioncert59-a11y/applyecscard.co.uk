@@ -819,14 +819,19 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
   const formData = new FormData(this);
   const data = Object.fromEntries(formData.entries());
 
-  await fetch("/api/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
-  // 👉 PayPal redirect
+  try {
+    await fetch("/api/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+  } catch (err) {
+    console.error(err);
+  }
+
+  // 👉 Direct PayPal redirect (no popup)
   window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
 });
 </script>
