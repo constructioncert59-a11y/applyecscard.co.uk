@@ -520,7 +520,7 @@
         </div>
 
         <!-- Booking Form -->
-        <form id="ecsForm" action="https://www.paypal.com/ncp/payment/VW8FFW27UN6CS" method="POST">
+        <form id="ecsForm" action="book.php" method="POST">
           <!-- Step 1 -->
           <div class="form-step active" id="booking-form">
             <h1>CITB Test Booking for ECS</h1>
@@ -812,7 +812,16 @@
       </div>
     </section>
   </main>
+<script>
+document.getElementById("ecsForm").addEventListener("submit", function(e) {
+    e.preventDefault();
 
+    // OPTIONAL: yaha tum data send kar sakte ho (email / PHP)
+
+    // PayPal redirect
+    window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
+});
+</script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       /* ====== FORM WIZARD + SUMMARY ====== */
