@@ -243,7 +243,7 @@
         <div class="summary-box" id="summaryBox"></div>
 
         <h3>Payment</h3>
-        <p><strong>Total Fee: <span id="totalFee">£0.00</span></strong></p>
+        <p><strong>Total Fee: <span id="totalFee">£79.00</span></strong></p>
         <p class="small-print">
           Indicative fees: New ECS card from £79, renewal or replacement from £79.
           Final cost may depend on your route and any additional services.
@@ -259,29 +259,46 @@
 document.getElementById("ecsForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const formData = new FormData(this);
+  const form = this;
+  const formData = new FormData(form);
+
+  // ✅ Basic validation (important)
+  if (!formData.get("full_name") || !formData.get("email")) {
+    alert("Please fill required fields ❌");
+    return;
+  }
+
+  // ✅ Email match check
+  if (formData.get("email") !== formData.get("confirm_email")) {
+    alert("Emails do not match ❌");
+    return;
+  }
 
   try {
     const res = await fetch("/api/send", {
       method: "POST",
-      body: formData   // ✅ IMPORTANT
+      body: formData   // ✅ DO NOT use JSON here
     });
 
+    const result = await res.json();
+
     if (!res.ok) {
-      alert("Error ❌");
+      console.error("Server error:", result);
+      alert(result.error || "Submission failed ❌");
       return;
     }
 
-    alert("Submitted ✅");
+    alert("Booking Submitted Successfully ✅");
 
+    // ✅ PayPal redirect
     window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
 
   } catch (err) {
-    alert("Server error ❌");
+    console.error("Fetch error:", err);
+    alert("Server connection error ❌");
   }
 });
-</script>
-        <script>
+</script>        <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
     const hamburger = document.getElementById('hamburger');
