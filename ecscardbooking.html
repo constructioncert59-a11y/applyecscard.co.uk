@@ -260,23 +260,21 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
   const formData = new FormData(this);
   const data = Object.fromEntries(formData.entries());
 
-  try {
-    await fetch("/api/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-  } catch (err) {
-    console.error(err);
-  }
+  await fetch("/api/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
 
-  // 👉 Direct PayPal redirect (no popup)
+  alert("Booking Submitted ✅");
+
+  // 👉 PayPal redirect
   window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
 });
 </script>
-
+        
   <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
@@ -327,7 +325,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     const nextBtns = document.querySelectorAll(".next-btn");   // only step 1
     const prevBtns = document.querySelectorAll(".prev-btn");
     const summaryBox = document.getElementById("summaryBox");
-    const form = document.getElementById("ecsCardForm");
+    const form = document.getElementById("ecsForm");
     const progressSteps = document.querySelectorAll(".progressbar li");
     const totalFeeSpan = document.getElementById("totalFee");
 
