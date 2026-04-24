@@ -763,13 +763,23 @@
 
             <div class="form-group">
               <label for="test_time">Preferred time*</label>
-              <select id="test_time" name="test_time" class="form-control" required>
-                <option value="">Any available slot</option>
-                <option value="Morning (09:00–12:00)">Morning (09:00–12:00)</option>
-                <option value="Afternoon (13:00–16:00)">Afternoon (13:00–16:00)</option>
-              </select>
-            </div>
+<select id="test_time" name="test_time" class="form-control" required>
+  <option value="">Select preferred time slot</option>
+  
+  <option value="08:00–09:00">08:00 – 09:00</option>
+  <option value="09:00–10:00">09:00 – 10:00</option>
+  <option value="10:00–11:00">10:00 – 11:00</option>
+  <option value="11:00–12:00">11:00 – 12:00</option>
+  
+  <option value="12:00–13:00">12:00 – 13:00</option>
+  
+  <option value="13:00–14:00">13:00 – 14:00</option>
+  <option value="14:00–15:00">14:00 – 15:00</option>
+  <option value="15:00–16:00">15:00 – 16:00</option>
+  <option value="16:00–17:00">16:00 – 17:00</option>
 
+  <option value="Any available slot">Any available slot</option>
+</select>
             <div class="form-buttons">
               <button type="button" class="prev-btn" disabled>Previous</button>
               <button type="button" class="next-btn">Next</button>
