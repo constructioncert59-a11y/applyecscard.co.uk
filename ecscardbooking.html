@@ -261,15 +261,18 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
 
   const formData = new FormData(this);
 
+  const data = Object.fromEntries(formData.entries()); // ✅ convert to JSON
+
   try {
     const res = await fetch("/api/send", {
       method: "POST",
-      body: formData
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
     });
 
     const result = await res.json();
-
-    console.log("SERVER RESPONSE:", result); // 👈 IMPORTANT
 
     if (!res.ok) {
       alert(result.error || "Error ❌");
@@ -280,8 +283,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
 
   } catch (err) {
-    console.error("FETCH ERROR:", err);
-    alert("Server connection error ❌");
+    alert("Server error ❌");
   }
 });
 </script>
