@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import formidable from "formidable";
+import fs from "fs";
 
 export const config = {
   api: {
@@ -14,38 +15,42 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const form = formidable();
+  const form = formidable({
+    multiples: true,
+    keepExtensions: true,
+  });
 
   form.parse(req, async (err, fields, files) => {
     if (err) {
+      console.error("FORMIDABLE ERROR:", err); // 👈 LOG
       return res.status(500).json({ error: "Parsing error" });
     }
 
     try {
-      const data = fields;
+      // 👉 FIX array issue
+      const email = Array.isArray(fields.email) ? fields.email[0] : fields.email;
+      const name = Array.isArray(fields.full_name) ? fields.full_name[0] : fields.full_name;
 
-      if (!data.email || !data.full_name) {
+      if (!email || !name) {
         return res.status(400).json({ error: "Missing required fields" });
       }
 
-      const allDataHtml = Object.entries(data)
-        .map(([key, value]) => `<p><strong>${key}:</strong> ${value || "-"}</p>`)
+      const allDataHtml = Object.entries(fields)
+        .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
         .join("");
 
-      // ✅ ADMIN EMAIL
       await resend.emails.send({
         from: "onboarding@resend.dev",
         to: "applyecs4@gmail.com",
         subject: "🔥 New ECS Booking",
-        html: `<h2>New Booking</h2>${allDataHtml}`
+        html: `<h2>New Booking</h2>${allDataHtml}`,
       });
 
-      // ✅ USER EMAIL
       await resend.emails.send({
         from: "onboarding@resend.dev",
-        to: data.email,
+        to: email,
         subject: "Booking Confirmation",
-        html: `<h2>Thank you ${data.full_name}</h2>`
+        html: `<h2>Thank you ${name}</h2>`,
       });
 
       return res.status(200).json({ success: true });
