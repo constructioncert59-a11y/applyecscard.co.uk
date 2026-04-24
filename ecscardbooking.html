@@ -259,46 +259,33 @@
 document.getElementById("ecsForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const form = this;
-  const formData = new FormData(form);
-
-  // ✅ Basic validation (important)
-  if (!formData.get("full_name") || !formData.get("email")) {
-    alert("Please fill required fields ❌");
-    return;
-  }
-
-  // ✅ Email match check
-  if (formData.get("email") !== formData.get("confirm_email")) {
-    alert("Emails do not match ❌");
-    return;
-  }
+  const formData = new FormData(this);
 
   try {
     const res = await fetch("/api/send", {
       method: "POST",
-      body: formData   // ✅ DO NOT use JSON here
+      body: formData
     });
 
     const result = await res.json();
 
+    console.log("SERVER RESPONSE:", result); // 👈 IMPORTANT
+
     if (!res.ok) {
-      console.error("Server error:", result);
-      alert(result.error || "Submission failed ❌");
+      alert(result.error || "Error ❌");
       return;
     }
 
-    alert("Booking Submitted Successfully ✅");
-
-    // ✅ PayPal redirect
+    alert("Submitted ✅");
     window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
 
   } catch (err) {
-    console.error("Fetch error:", err);
+    console.error("FETCH ERROR:", err);
     alert("Server connection error ❌");
   }
 });
-</script>        <script>
+</script>
+        <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
     const hamburger = document.getElementById('hamburger');
