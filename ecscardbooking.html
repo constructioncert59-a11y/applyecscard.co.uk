@@ -260,25 +260,28 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
   e.preventDefault();
 
   const formData = new FormData(this);
-  const data = Object.fromEntries(formData.entries());
 
   try {
-    await fetch("/api/send", {
+    const res = await fetch("/api/send", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+      body: formData   // ✅ IMPORTANT
     });
-  } catch (err) {
-    console.error(err);
-  }
 
-  // 👉 Direct PayPal redirect (no popup)
-  window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
+    if (!res.ok) {
+      alert("Error ❌");
+      return;
+    }
+
+    alert("Submitted ✅");
+
+    window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
+
+  } catch (err) {
+    alert("Server error ❌");
+  }
 });
 </script>
-  <script>
+        <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
     const hamburger = document.getElementById('hamburger');
