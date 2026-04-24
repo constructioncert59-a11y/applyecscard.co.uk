@@ -520,7 +520,7 @@
         </div>
 
         <!-- Booking Form -->
-       <form id="ecsForm" onsubmit="redirectToPayment(event)">
+        <form id="ecsForm" action="book.php" method="POST">
           <!-- Step 1 -->
           <div class="form-step active" id="booking-form">
             <h1>CITB Test Booking for ECS</h1>
@@ -725,7 +725,6 @@
               <label for="test_centre">Preferred test centre (UK)*</label>
               <select id="test_centre" name="test_centre" class="form-control" required>
                 <option value="">-- Select CITB test centre area --</option>
-<option value="London">London</option>
                 <option value="London - Stratford">London – Stratford</option>
                 <option value="London - Croydon">London – Croydon</option>
                 <option value="Birmingham">Birmingham</option>
@@ -737,9 +736,8 @@
                 <option value="Sheffield">Sheffield</option>
                 <option value="Newcastle upon Tyne">Newcastle upon Tyne</option>
                 <option value="Bristol">Bristol</option>
-<option value="Nottingham">Nottingham</option>
-<option value="Remote">Remote / Online</option>
-<option value="Other">Other Location</option> 
+                <option value="Nottingham">Nottingham</option>
+                <option value="Other / Remote options">Other / remote options</option>
               </select>
             </div>
 
@@ -765,23 +763,13 @@
 
             <div class="form-group">
               <label for="test_time">Preferred time*</label>
-<select id="test_time" name="test_time" class="form-control" required>
-  <option value="">Select preferred time slot</option>
-  
-  <option value="08:00–09:00">08:00 – 09:00</option>
-  <option value="09:00–10:00">09:00 – 10:00</option>
-  <option value="10:00–11:00">10:00 – 11:00</option>
-  <option value="11:00–12:00">11:00 – 12:00</option>
-  
-  <option value="12:00–13:00">12:00 – 13:00</option>
-  
-  <option value="13:00–14:00">13:00 – 14:00</option>
-  <option value="14:00–15:00">14:00 – 15:00</option>
-  <option value="15:00–16:00">15:00 – 16:00</option>
-  <option value="16:00–17:00">16:00 – 17:00</option>
+              <select id="test_time" name="test_time" class="form-control" required>
+                <option value="">Any available slot</option>
+                <option value="Morning (09:00–12:00)">Morning (09:00–12:00)</option>
+                <option value="Afternoon (13:00–16:00)">Afternoon (13:00–16:00)</option>
+              </select>
+            </div>
 
-  <option value="Any available slot">Any available slot</option>
-</select>
             <div class="form-buttons">
               <button type="button" class="prev-btn" disabled>Previous</button>
               <button type="button" class="next-btn">Next</button>
@@ -824,15 +812,7 @@
       </div>
     </section>
   </main>
-<script>
-function redirectToPayment(e) {
-  e.preventDefault(); // form reload stop karega
 
-  // yaha tum form data save bhi kar sakte ho (optional)
-
-  window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
-}
-</script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       /* ====== FORM WIZARD + SUMMARY ====== */
@@ -927,7 +907,7 @@ function redirectToPayment(e) {
       const mapLabel = document.getElementById("mapLabel");
 
       const centreMapQueries = {
-  "London - Stratford": "Stratford%20London%20CITB%20test%20centre",
+        "London - Stratford": "Stratford%20London%20CITB%20test%20centre",
         "London - Croydon": "Croydon%20London%20CITB%20test%20centre",
         "Birmingham": "Birmingham%20UK%20CITB%20test%20centre",
         "Manchester": "Manchester%20UK%20CITB%20test%20centre",
