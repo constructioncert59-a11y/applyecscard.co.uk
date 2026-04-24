@@ -281,7 +281,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     }
 
     alert("Submitted ✅");
-    window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
+    window.location.href = "https://www.paypal.com/ncp/payment/9DKS9AYZETN4E";
 
   } catch (err) {
     alert("Server error ❌");
@@ -388,7 +388,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
       if (!form || !summaryBox) return;
       const formData = new FormData(form);
       const cardType = formData.get("ecs_card_type");
-      const price = priceMap[cardType] || "£0.00";
+      const price = priceMap[cardType] || "£79.00";
 
       summaryBox.innerHTML = `
         <p><strong>Name:</strong> ${formData.get("full_name") || ""}</p>
@@ -445,7 +445,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
         }
       }
       if (totalFeeSpan && selectedType) {
-        totalFeeSpan.textContent = priceMap[selectedType] || "£0.00";
+        totalFeeSpan.textContent = priceMap[selectedType] || "£79.00";
       }
     }
 
