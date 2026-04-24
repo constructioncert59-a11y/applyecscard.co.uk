@@ -255,57 +255,14 @@
       </div>
     </form>
   </section>
-<script>
+
+        <script>
 document.getElementById("ecsForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const form = this;
-  const submitBtn = form.querySelector(".submit-btn");
+  const formData = new FormData(this);
 
-  // 🔒 Prevent double submit
-  submitBtn.disabled = true;
-  submitBtn.innerText = "Submitting...";
-
-  const formData = new FormData(form);
-
-  // ✅ BASIC VALIDATION
-  const email = formData.get("email");
-  const confirmEmail = formData.get("confirm_email");
-  const fullName = formData.get("full_name");
-
-  if (!fullName || !email) {
-    alert("Please fill all required fields ❌");
-    submitBtn.disabled = false;
-    submitBtn.innerText = "Submit & Proceed to Payment";
-    return;
-  }
-
-  if (email !== confirmEmail) {
-    alert("Emails do not match ❌");
-    submitBtn.disabled = false;
-    submitBtn.innerText = "Submit & Proceed to Payment";
-    return;
-  }
-
-  // ✅ FILE SIZE CHECK (optional safety)
-  const photo = formData.get("photo");
-  if (photo && photo.size > 2 * 1024 * 1024) {
-    alert("Photo must be under 2MB ❌");
-    submitBtn.disabled = false;
-    submitBtn.innerText = "Submit & Proceed to Payment";
-    return;
-  }
-
-  const idProof = formData.get("id_proof");
-  if (idProof && idProof.size > 3 * 1024 * 1024) {
-    alert("ID Proof must be under 3MB ❌");
-    submitBtn.disabled = false;
-    submitBtn.innerText = "Submit & Proceed to Payment";
-    return;
-  }
-
-  // ✅ Convert to JSON (files skip होंगे)
-  const data = Object.fromEntries(formData.entries());
+  const data = Object.fromEntries(formData.entries()); // ✅ convert to JSON
 
   try {
     const res = await fetch("/api/send", {
@@ -319,29 +276,18 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     const result = await res.json();
 
     if (!res.ok) {
-      console.error("SERVER ERROR:", result);
-      alert(result.error || "Submission failed ❌");
-
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Submit & Proceed to Payment";
+      alert(result.error || "Error ❌");
       return;
     }
 
-    // ✅ SUCCESS
-    alert("Booking submitted successfully ✅");
-
-    // 👉 Redirect to PayPal
     window.location.href = "https://www.paypal.com/ncp/payment/9DKS9AYZETN4E";
 
   } catch (err) {
-    console.error("FETCH ERROR:", err);
-    alert("Server connection error ❌");
-
-    submitBtn.disabled = false;
-    submitBtn.innerText = "Submit & Proceed to Payment";
+    alert("Server error ❌");
   }
 });
-</script><script>
+</script>
+        <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
     const hamburger = document.getElementById('hamburger');
