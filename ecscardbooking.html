@@ -257,6 +257,29 @@
       </div>
     </form>
   </section>
+<script>
+document.getElementById("ecsForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  const data = Object.fromEntries(formData.entries());
+
+  try {
+    await fetch("/api/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+  } catch (err) {
+    console.error(err);
+  }
+
+  // 👉 Direct PayPal redirect (no popup)
+  window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
+});
+</script>
 
   <script>
   document.addEventListener("DOMContentLoaded", () => {
