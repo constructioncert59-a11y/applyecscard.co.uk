@@ -259,24 +259,30 @@
 document.getElementById("ecsForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const formData = new FormData(this);
-  const data = Object.fromEntries(formData.entries());
+  const form = this;
+  const formData = new FormData(form);
 
-  await fetch("/api/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
+  try {
+    const res = await fetch("/api/send", {
+      method: "POST",
+      body: formData   // ✅ JSON हटाया → अब files सही जाएंगी
+    });
 
-  alert("Booking Submitted ✅");
+    if (!res.ok) {
+      alert("Error submitting form ❌");
+      return;
+    }
 
-  // 👉 PayPal redirect
-  window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
+    alert("Booking Submitted ✅");
+
+    // 👉 PayPal redirect
+    window.location.href = "https://www.paypal.com/ncp/payment/VW8FFW27UN6CS";
+
+  } catch (err) {
+    alert("Server error ❌");
+  }
 });
-</script>
-        
+</script>        
   <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
