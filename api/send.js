@@ -20,15 +20,15 @@ export default async function handler(req, res) {
 
     // ADMIN EMAIL
     await resend.emails.send({
-      from: "noreply@applyecscard.co.uk",
-      to: "booking@applyecscard.co.uk",
+      from: "onboarding@resend.dev",
+      to: "applyecs4@gmail.com",
       subject: "🔥 New ECS Booking",
       html: `<h2>New Booking</h2>${allDataHtml}`
     });
 
     // USER EMAIL
     await resend.emails.send({
-      from: "noreply@applyecscard.co.uk",
+      from: "onboarding@resend.dev",
       to: data.email,
       subject: "Booking Confirmation",
       html: `<h2>Thank you ${data.full_name}</h2>`
