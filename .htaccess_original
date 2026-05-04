@@ -1,6 +1,10 @@
 # Turn on Rewrite Engine
 RewriteEngine On
 
+# 0. WWW to non-WWW redirect
+RewriteCond %{HTTP_HOST} ^www\.applyecscard\.co\.uk [NC]
+RewriteRule ^(.*)$ https://applyecscard.co.uk/$1 [R=301,L]
+
 # 1. Don't touch /blog (WordPress ka folder)
 RewriteRule ^blog/ - [L]
 
@@ -13,7 +17,3 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+)$ $1.html [L]
-
-RewriteEngine On
-RewriteCond %{HTTP_HOST} ^www\.applyecscard\.co\.uk [NC]
-RewriteRule ^(.*)$ https://applyecscard.co.uk/$1 [R=301,L]
