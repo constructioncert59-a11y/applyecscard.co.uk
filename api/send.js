@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     // ADMIN EMAIL
     await resend.emails.send({
       from: "onboarding@resend.dev",
-      to: "applyecs4@gmail.com",
+      to: "ecscards@outlook.com",
       subject: "🔥 New ECS Booking",
       html: `<h2>New Booking</h2>${allDataHtml}`
     });
