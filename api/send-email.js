@@ -15,18 +15,11 @@ export default async function handler(req, res) {
 
     const data = req.body;
 
-    if (!data.email || !data.full_name) {
-      return res.status(400).json({
-        success: false,
-        error: "Missing required fields"
-      });
-    }
-
-    // CREATE TABLE HTML
+    // CREATE HTML TABLE
     const allDataHtml = Object.entries(data)
       .map(([key, value]) => {
 
-        // IMAGE PREVIEW
+        // IMAGE FILES
         if (
           typeof value === "string" &&
           value.startsWith("data:image")
@@ -34,16 +27,25 @@ export default async function handler(req, res) {
 
           return `
             <tr>
-              <td style="padding:10px;border:1px solid #ddd;">
+              <td style="
+                padding:10px;
+                border:1px solid #ddd;
+                background:#f5f5f5;
+              ">
                 <strong>${key}</strong>
               </td>
 
-              <td style="padding:10px;border:1px solid #ddd;">
+              <td style="
+                padding:10px;
+                border:1px solid #ddd;
+              ">
                 <img 
-                  src="${value}" 
+                  src="${value}"
+                  alt="${key}"
                   style="
                     max-width:250px;
                     border-radius:10px;
+                    border:1px solid #ccc;
                   "
                 />
               </td>
@@ -51,14 +53,47 @@ export default async function handler(req, res) {
           `;
         }
 
-        // NORMAL FIELD
+        // PDF FILES
+        if (
+          typeof value === "string" &&
+          value.startsWith("data:application/pdf")
+        ) {
+
+          return `
+            <tr>
+              <td style="
+                padding:10px;
+                border:1px solid #ddd;
+                background:#f5f5f5;
+              ">
+                <strong>${key}</strong>
+              </td>
+
+              <td style="
+                padding:10px;
+                border:1px solid #ddd;
+              ">
+                PDF Uploaded Successfully
+              </td>
+            </tr>
+          `;
+        }
+
+        // NORMAL TEXT
         return `
           <tr>
-            <td style="padding:10px;border:1px solid #ddd;">
+            <td style="
+              padding:10px;
+              border:1px solid #ddd;
+              background:#f5f5f5;
+            ">
               <strong>${key}</strong>
             </td>
 
-            <td style="padding:10px;border:1px solid #ddd;">
+            <td style="
+              padding:10px;
+              border:1px solid #ddd;
+            ">
               ${value || "-"}
             </td>
           </tr>
@@ -66,7 +101,7 @@ export default async function handler(req, res) {
       })
       .join("");
 
-    // ADMIN EMAIL
+    // SEND ADMIN EMAIL
     await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
@@ -75,42 +110,72 @@ export default async function handler(req, res) {
 
       reply_to: data.email,
 
-      subject: `New ECS Booking - ${data.full_name}`,
+      subject: `🔥 New ECS Booking - ${data.full_name}`,
 
       html: `
-        <div style="font-family:Arial;padding:20px;">
+        <div style="
+          font-family:Arial;
+          padding:20px;
+          background:#f9f9f9;
+        ">
 
-          <h2>New ECS Booking</h2>
+          <div style="
+            max-width:700px;
+            margin:auto;
+            background:white;
+            padding:25px;
+            border-radius:12px;
+          ">
 
-          <table 
-            style="
-              width:100%;
-              border-collapse:collapse;
-            "
-          >
-            ${allDataHtml}
-          </table>
+            <h2>
+              New ECS Booking Received
+            </h2>
+
+            <p>
+              A new ECS booking request has been submitted.
+            </p>
+
+            <table 
+              style="
+                width:100%;
+                border-collapse:collapse;
+                margin-top:20px;
+              "
+            >
+              ${allDataHtml}
+            </table>
+
+          </div>
 
         </div>
       `
     });
 
-    // USER EMAIL
+    // SEND USER EMAIL
     await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
 
       to: data.email,
 
-      subject: "Booking Confirmation",
+      subject: "✅ ECS Booking Confirmation",
 
       html: `
-        <div style="font-family:Arial;padding:20px;">
+        <div style="
+          font-family:Arial;
+          padding:20px;
+        ">
 
-          <h2>Thank You ${data.full_name}</h2>
+          <h2>
+            Thank you ${data.full_name}
+          </h2>
 
           <p>
-            Your booking has been received successfully.
+            Your ECS booking request has been received successfully.
+          </p>
+
+          <p>
+            Our team will contact you shortly.
           </p>
 
         </div>
@@ -123,7 +188,7 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
-    console.error(error);
+    console.error("EMAIL ERROR:", error);
 
     return res.status(500).json({
       success: false,
