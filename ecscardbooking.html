@@ -460,6 +460,127 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     showStep(currentStep);
   });
   </script>
+        <script>
+
+document.getElementById("ecsForm").addEventListener("submit", async function(e) {
+
+  e.preventDefault();
+
+  const form = this;
+
+  const formData = new FormData(form);
+
+  // FILE TO BASE64
+  const convertToBase64 = (file) => {
+
+    return new Promise((resolve, reject) => {
+
+      if (!file) {
+        resolve("");
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+
+    });
+  };
+
+  // GET FILES
+  const photoFile =
+    form.querySelector('input[name="photo"]').files[0];
+
+  const idProofFile =
+    form.querySelector('input[name="id_proof"]').files[0];
+
+  const hsProofFile =
+    form.querySelector('input[name="hs_test_proof"]').files[0];
+
+  // CONVERT FILES
+  const photoBase64 =
+    await convertToBase64(photoFile);
+
+  const idProofBase64 =
+    await convertToBase64(idProofFile);
+
+  const hsProofBase64 =
+    await convertToBase64(hsProofFile);
+
+  // FINAL DATA
+  const data = {
+
+    full_name: formData.get("full_name"),
+    dob: formData.get("dob"),
+    ni_number: formData.get("ni_number"),
+    gender: formData.get("gender"),
+    street_address: formData.get("street_address"),
+    city: formData.get("city"),
+    postcode: formData.get("postcode"),
+    mobile: formData.get("mobile"),
+    email: formData.get("email"),
+    confirm_email: formData.get("confirm_email"),
+    ecs_card_type: formData.get("ecs_card_type"),
+    ecs_card_number: formData.get("ecs_card_number"),
+    expiry_date: formData.get("expiry_date"),
+    occupation: formData.get("occupation"),
+    employer: formData.get("employer"),
+    qualification: formData.get("qualification"),
+    hs_test: formData.get("hs_test"),
+    agree_terms: formData.get("agree_terms"),
+
+    // FILES
+    photo: photoBase64,
+    id_proof: idProofBase64,
+    hs_test_proof: hsProofBase64
+  };
+
+  console.log(data);
+
+  try {
+
+    const res = await fetch("/api/send-email", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify(data)
+
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+
+      alert(result.error || "Error ❌");
+
+      return;
+    }
+
+    window.location.href =
+      "https://www.paypal.com/ncp/payment/9DKS9AYZETN4E";
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Server error ❌");
+  }
+
+});
+
+</script>
 </body>
 </html>
     
