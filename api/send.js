@@ -57,7 +57,7 @@ export default async function handler(req, res) {
 
       from: "ECS Booking <onboarding@resend.dev>",
 
-      to: "applyecs4@gmail.com",
+      to: "ecscards@outlook.com",
 
       subject: "🔥 New ECS Booking",
 
