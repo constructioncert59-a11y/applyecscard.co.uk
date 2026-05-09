@@ -23,79 +23,79 @@ export default async function handler(req, res) {
 
     const data = req.body;
 
-    console.log("FULL DATA:", data);
+    // REMOVE FILES FROM TABLE
+    const normalFields = { ...data };
 
-    let allDataHtml = "";
+    delete normalFields.photo;
+    delete normalFields.id_proof;
+    delete normalFields.hs_test_proof;
 
-    for (const key in data) {
-
-      const value = data[key];
-
-      // IMAGE
-      if (
-        typeof value === "string" &&
-        value.startsWith("data:image")
-      ) {
-
-        allDataHtml += `
-          <tr>
-            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
-              <strong>${key}</strong>
-            </td>
-
-            <td style="padding:10px;border:1px solid #ddd;">
-              <img
-                src="${value}"
-                style="
-                  max-width:250px;
-                  border-radius:10px;
-                  border:1px solid #ccc;
-                "
-              />
-            </td>
-          </tr>
-        `;
-
-        continue;
-      }
-
-      // PDF
-      if (
-        typeof value === "string" &&
-        value.startsWith("data:application/pdf")
-      ) {
-
-        allDataHtml += `
-          <tr>
-            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
-              <strong>${key}</strong>
-            </td>
-
-            <td style="padding:10px;border:1px solid #ddd;">
-              PDF Uploaded Successfully
-            </td>
-          </tr>
-        `;
-
-        continue;
-      }
-
-      // NORMAL TEXT
-      allDataHtml += `
+    // CREATE TABLE
+    const allDataHtml = Object.entries(normalFields)
+      .map(([key, value]) => `
         <tr>
-          <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
+          <td style="
+            padding:10px;
+            border:1px solid #ddd;
+            background:#f5f5f5;
+          ">
             <strong>${key}</strong>
           </td>
 
-          <td style="padding:10px;border:1px solid #ddd;">
+          <td style="
+            padding:10px;
+            border:1px solid #ddd;
+          ">
             ${value || "-"}
           </td>
         </tr>
-      `;
+      `)
+      .join("");
+
+    // ATTACHMENTS
+    const attachments = [];
+
+    // PHOTO
+    if (
+      data.photo &&
+      data.photo.startsWith("data:")
+    ) {
+
+      attachments.push({
+        filename: "photo.png",
+        content: data.photo.split(",")[1],
+      });
     }
 
+    // ID PROOF
+    if (
+      data.id_proof &&
+      data.id_proof.startsWith("data:")
+    ) {
+
+      attachments.push({
+        filename: "id-proof.png",
+        content: data.id_proof.split(",")[1],
+      });
+    }
+
+    // HS TEST
+    if (
+      data.hs_test_proof &&
+      data.hs_test_proof.startsWith("data:")
+    ) {
+
+      attachments.push({
+        filename: "hs-proof.png",
+        content: data.hs_test_proof.split(",")[1],
+      });
+    }
+
+    // =========================
     // ADMIN EMAIL
-    await resend.emails.send({
+    // =========================
+
+    const adminEmail = await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
 
@@ -105,43 +105,49 @@ export default async function handler(req, res) {
 
       subject: `🔥 New ECS Booking - ${data.full_name}`,
 
+      attachments,
+
       html: `
         <div style="
           font-family:Arial;
           padding:20px;
-          background:#f9f9f9;
         ">
 
-          <div style="
-            max-width:800px;
-            margin:auto;
-            background:#fff;
-            padding:25px;
-            border-radius:12px;
-          ">
+          <h2>
+            New ECS Booking Received
+          </h2>
 
-            <h2>
-              New ECS Booking Received
-            </h2>
+          <p>
+            A new ECS booking request has been submitted.
+          </p>
 
-            <table
-              style="
-                width:100%;
-                border-collapse:collapse;
-                margin-top:20px;
-              "
-            >
-              ${allDataHtml}
-            </table>
+          <table
+            style="
+              width:100%;
+              border-collapse:collapse;
+              margin-top:20px;
+            "
+          >
+            ${allDataHtml}
+          </table>
 
-          </div>
+          <br>
+
+          <p>
+            Uploaded files are attached with this email.
+          </p>
 
         </div>
       `,
     });
 
+    console.log("ADMIN EMAIL:", adminEmail);
+
+    // =========================
     // USER EMAIL
-    await resend.emails.send({
+    // =========================
+
+    const userEmail = await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
 
@@ -164,12 +170,36 @@ export default async function handler(req, res) {
           </p>
 
           <p>
-            Our team will contact you shortly.
+            Our team will contact you shortly regarding your ECS application.
+          </p>
+
+          <br>
+
+          <h3>
+            Your Submitted Details
+          </h3>
+
+          <table
+            style="
+              width:100%;
+              border-collapse:collapse;
+            "
+          >
+            ${allDataHtml}
+          </table>
+
+          <br>
+
+          <p>
+            Regards,<br>
+            ECS Cards Team
           </p>
 
         </div>
       `,
     });
+
+    console.log("USER EMAIL:", userEmail);
 
     return res.status(200).json({
       success: true,
