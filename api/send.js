@@ -1,5 +1,13 @@
 import { Resend } from "resend";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "25mb",
+    },
+  },
+};
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
@@ -16,10 +24,7 @@ export default async function handler(req, res) {
 
     const data = req.body;
 
-    // =========================
     // REQUIRED FIELDS
-    // =========================
-
     if (!data.email || !data.full_name) {
       return res.status(400).json({
         success: false,
@@ -27,10 +32,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // =========================
     // EMAIL VALIDATION
-    // =========================
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(data.email)) {
@@ -41,128 +43,67 @@ export default async function handler(req, res) {
     }
 
     // =========================
+    // REMOVE FILES FROM TABLE
+    // =========================
+
+    const normalFields = { ...data };
+
+    delete normalFields.photo;
+    delete normalFields.id_proof;
+    delete normalFields.hs_test_proof;
+
+    // =========================
+    // ATTACHMENTS
+    // =========================
+
+    const attachments = [];
+
+    // PHOTO
+    if (
+      data.photo &&
+      data.photo.startsWith("data:")
+    ) {
+
+      attachments.push({
+        filename: "photo.png",
+        content: data.photo.split(",")[1],
+      });
+    }
+
+    // ID PROOF
+    if (
+      data.id_proof &&
+      data.id_proof.startsWith("data:")
+    ) {
+
+      attachments.push({
+        filename: "id-proof.png",
+        content: data.id_proof.split(",")[1],
+      });
+    }
+
+    // HS TEST PROOF
+    if (
+      data.hs_test_proof &&
+      data.hs_test_proof.startsWith("data:")
+    ) {
+
+      attachments.push({
+        filename: "hs-proof.png",
+        content: data.hs_test_proof.split(",")[1],
+      });
+    }
+
+    // =========================
     // CREATE TABLE HTML
     // =========================
 
-    const allDataHtml = Object.entries(data)
+    const allDataHtml = Object.entries(normalFields)
       .map(([key, value]) => {
 
-        // SAFE STRING
         const safeKey = String(key)
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;");
-
-        // =========================
-        // FILE OBJECT SUPPORT
-        // =========================
-
-        if (typeof value === "object" && value !== null) {
-
-          // IMAGE URL
-          if (value.url) {
-
-            const fileUrl = value.url;
-
-            // IMAGE FILE
-            if (
-              fileUrl.includes(".jpg") ||
-              fileUrl.includes(".jpeg") ||
-              fileUrl.includes(".png") ||
-              fileUrl.includes(".webp")
-            ) {
-
-              return `
-                <tr>
-                  <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
-                    <strong>${safeKey}</strong>
-                  </td>
-
-                  <td style="padding:10px;border:1px solid #ddd;">
-                    <img 
-                      src="${fileUrl}" 
-                      alt="${safeKey}" 
-                      style="
-                        max-width:220px;
-                        border-radius:10px;
-                        border:1px solid #ddd;
-                      "
-                    />
-                    <br><br>
-
-                    <a href="${fileUrl}" target="_blank">
-                      View Full Image
-                    </a>
-                  </td>
-                </tr>
-              `;
-            }
-
-            // PDF OR OTHER FILE
-            return `
-              <tr>
-                <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
-                  <strong>${safeKey}</strong>
-                </td>
-
-                <td style="padding:10px;border:1px solid #ddd;">
-                  <a href="${fileUrl}" target="_blank">
-                    Open Uploaded File
-                  </a>
-                </td>
-              </tr>
-            `;
-          }
-
-          // FILE OBJECT WITHOUT URL
-          return `
-            <tr>
-              <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
-                <strong>${safeKey}</strong>
-              </td>
-
-              <td style="padding:10px;border:1px solid #ddd;">
-                File Uploaded
-              </td>
-            </tr>
-          `;
-        }
-
-        // =========================
-        // IMAGE STRING SUPPORT
-        // =========================
-
-        if (
-          typeof value === "string" &&
-          (
-            value.startsWith("http") ||
-            value.startsWith("data:image")
-          )
-        ) {
-
-          return `
-            <tr>
-              <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
-                <strong>${safeKey}</strong>
-              </td>
-
-              <td style="padding:10px;border:1px solid #ddd;">
-                <img 
-                  src="${value}" 
-                  alt="${safeKey}" 
-                  style="
-                    max-width:220px;
-                    border-radius:10px;
-                    border:1px solid #ddd;
-                  "
-                />
-              </td>
-            </tr>
-          `;
-        }
-
-        // =========================
-        // NORMAL TEXT
-        // =========================
 
         const safeValue = String(value || "-")
           .replace(/</g, "&lt;")
@@ -170,11 +111,18 @@ export default async function handler(req, res) {
 
         return `
           <tr>
-            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
+            <td style="
+              padding:10px;
+              border:1px solid #ddd;
+              background:#f5f5f5;
+            ">
               <strong>${safeKey}</strong>
             </td>
 
-            <td style="padding:10px;border:1px solid #ddd;">
+            <td style="
+              padding:10px;
+              border:1px solid #ddd;
+            ">
               ${safeValue}
             </td>
           </tr>
@@ -196,6 +144,8 @@ export default async function handler(req, res) {
 
       subject: `🔥 New ECS Booking - ${data.full_name}`,
 
+      attachments,
+
       html: `
         <div style="
           font-family:Arial;
@@ -211,7 +161,7 @@ export default async function handler(req, res) {
             border-radius:12px;
           ">
 
-            <h2 style="margin-bottom:10px;">
+            <h2>
               New ECS Booking Received
             </h2>
 
@@ -228,6 +178,12 @@ export default async function handler(req, res) {
             >
               ${allDataHtml}
             </table>
+
+            <br>
+
+            <p>
+              Uploaded files are attached with this email.
+            </p>
 
           </div>
 
@@ -317,10 +273,7 @@ export default async function handler(req, res) {
 
     console.log("USER EMAIL SUCCESS:", userResponse);
 
-    // =========================
     // SUCCESS RESPONSE
-    // =========================
-
     return res.status(200).json({
       success: true,
       message: "Emails sent successfully",
