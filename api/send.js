@@ -4,7 +4,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
 
-  // ONLY POST METHOD
+  // ONLY POST REQUEST
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
@@ -16,34 +16,46 @@ export default async function handler(req, res) {
 
     const data = req.body;
 
-    // REQUIRED FIELDS CHECK
+    // REQUIRED FIELDS
     if (!data.email || !data.full_name) {
       return res.status(400).json({
         success: false,
-        error: "Missing required fields"
+        error: "Email and full_name are required"
       });
     }
 
-    // CREATE HTML DATA
+    // EMAIL VALIDATION
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(data.email)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid email address"
+      });
+    }
+
+    // CREATE ADMIN HTML
     const allDataHtml = Object.entries(data)
-      .map(([key, value]) => {
-        return `
-          <p style="margin:6px 0;">
-            <strong>${key}:</strong> ${value || "-"}
-          </p>
-        `;
-      })
+      .map(([key, value]) => `
+        <tr>
+          <td style="padding:10px;border:1px solid #ddd;">
+            <strong>${key}</strong>
+          </td>
+
+          <td style="padding:10px;border:1px solid #ddd;">
+            ${value || "-"}
+          </td>
+        </tr>
+      `)
       .join("");
 
     // =========================
-    // ADMIN EMAIL
+    // SEND ADMIN EMAIL
     // =========================
 
-    const adminEmail = await resend.emails.send({
+    const adminResponse = await resend.emails.send({
 
-      // TESTING EMAIL
-      // CHANGE LATER AFTER DOMAIN VERIFY
-      from: "onboarding@resend.dev",
+      from: "ECS Booking <onboarding@resend.dev>",
 
       to: "applyecs4@gmail.com",
 
@@ -51,22 +63,31 @@ export default async function handler(req, res) {
 
       html: `
         <div style="font-family:Arial;padding:20px;">
-          
+
           <h2>New ECS Booking Received</h2>
 
-          ${allDataHtml}
+          <table 
+            style="
+              width:100%;
+              border-collapse:collapse;
+            "
+          >
+            ${allDataHtml}
+          </table>
 
         </div>
       `
     });
 
+    console.log("ADMIN EMAIL:", adminResponse);
+
     // =========================
-    // USER CONFIRMATION EMAIL
+    // SEND USER EMAIL
     // =========================
 
-    const userEmail = await resend.emails.send({
+    const userResponse = await resend.emails.send({
 
-      from: "onboarding@resend.dev",
+      from: "ECS Booking <onboarding@resend.dev>",
 
       to: data.email,
 
@@ -78,14 +99,14 @@ export default async function handler(req, res) {
           <h2>Thank you ${data.full_name}</h2>
 
           <p>
-            Your booking request has been received successfully.
+            Your ECS booking request has been received successfully.
           </p>
 
           <p>
             Our team will contact you shortly regarding your booking.
           </p>
 
-          <br/>
+          <br>
 
           <h3>CITB Test Rules:</h3>
 
@@ -96,15 +117,24 @@ export default async function handler(req, res) {
             <li>Cheating may result in cancellation</li>
           </ul>
 
+          <br>
+
+          <p>
+            Regards,<br>
+            ECS Cards Team
+          </p>
+
         </div>
       `
     });
 
-    // SUCCESS RESPONSE
+    console.log("USER EMAIL:", userResponse);
+
+    // SUCCESS
     return res.status(200).json({
       success: true,
-      adminEmail,
-      userEmail
+      adminResponse,
+      userResponse
     });
 
   } catch (error) {
