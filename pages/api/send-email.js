@@ -1,5 +1,13 @@
 import { Resend } from "resend";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "20mb",
+    },
+  },
+};
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
@@ -7,7 +15,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
-      error: "Method Not Allowed"
+      error: "Method Not Allowed",
     });
   }
 
@@ -15,72 +23,25 @@ export default async function handler(req, res) {
 
     const data = req.body;
 
-    // CREATE HTML TABLE
-    const allDataHtml = Object.entries(data)
-      .map(([key, value]) => {
+    console.log("FULL DATA:", data);
 
-        // IMAGE FILES
-        if (
-          typeof value === "string" &&
-          value.startsWith("data:image")
-        ) {
+    let allDataHtml = "";
 
-          return `
-            <tr>
-              <td style="
-                padding:10px;
-                border:1px solid #ddd;
-                background:#f5f5f5;
-              ">
-                <strong>${key}</strong>
-              </td>
+    // LOOP ALL DATA
+    for (const key in data) {
 
-              <td style="
-                padding:10px;
-                border:1px solid #ddd;
-              ">
-                <img 
-                  src="${value}"
-                  alt="${key}"
-                  style="
-                    max-width:250px;
-                    border-radius:10px;
-                    border:1px solid #ccc;
-                  "
-                />
-              </td>
-            </tr>
-          `;
-        }
+      const value = data[key];
 
-        // PDF FILES
-        if (
-          typeof value === "string" &&
-          value.startsWith("data:application/pdf")
-        ) {
+      // =========================
+      // IMAGE FILES
+      // =========================
 
-          return `
-            <tr>
-              <td style="
-                padding:10px;
-                border:1px solid #ddd;
-                background:#f5f5f5;
-              ">
-                <strong>${key}</strong>
-              </td>
+      if (
+        typeof value === "string" &&
+        value.startsWith("data:image")
+      ) {
 
-              <td style="
-                padding:10px;
-                border:1px solid #ddd;
-              ">
-                PDF Uploaded Successfully
-              </td>
-            </tr>
-          `;
-        }
-
-        // NORMAL TEXT
-        return `
+        allDataHtml += `
           <tr>
             <td style="
               padding:10px;
@@ -94,14 +55,83 @@ export default async function handler(req, res) {
               padding:10px;
               border:1px solid #ddd;
             ">
-              ${value || "-"}
+
+              <img
+                src="${value}"
+                alt="${key}"
+                style="
+                  max-width:250px;
+                  border-radius:10px;
+                  border:1px solid #ccc;
+                "
+              />
+
             </td>
           </tr>
         `;
-      })
-      .join("");
 
-    // SEND ADMIN EMAIL
+        continue;
+      }
+
+      // =========================
+      // PDF FILES
+      // =========================
+
+      if (
+        typeof value === "string" &&
+        value.startsWith("data:application/pdf")
+      ) {
+
+        allDataHtml += `
+          <tr>
+            <td style="
+              padding:10px;
+              border:1px solid #ddd;
+              background:#f5f5f5;
+            ">
+              <strong>${key}</strong>
+            </td>
+
+            <td style="
+              padding:10px;
+              border:1px solid #ddd;
+            ">
+              PDF Uploaded Successfully
+            </td>
+          </tr>
+        `;
+
+        continue;
+      }
+
+      // =========================
+      // NORMAL TEXT
+      // =========================
+
+      allDataHtml += `
+        <tr>
+          <td style="
+            padding:10px;
+            border:1px solid #ddd;
+            background:#f5f5f5;
+          ">
+            <strong>${key}</strong>
+          </td>
+
+          <td style="
+            padding:10px;
+            border:1px solid #ddd;
+          ">
+            ${value || "-"}
+          </td>
+        </tr>
+      `;
+    }
+
+    // =========================
+    // ADMIN EMAIL
+    // =========================
+
     await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
@@ -120,7 +150,7 @@ export default async function handler(req, res) {
         ">
 
           <div style="
-            max-width:700px;
+            max-width:800px;
             margin:auto;
             background:white;
             padding:25px;
@@ -135,7 +165,7 @@ export default async function handler(req, res) {
               A new ECS booking request has been submitted.
             </p>
 
-            <table 
+            <table
               style="
                 width:100%;
                 border-collapse:collapse;
@@ -148,10 +178,13 @@ export default async function handler(req, res) {
           </div>
 
         </div>
-      `
+      `,
     });
 
-    // SEND USER EMAIL
+    // =========================
+    // USER EMAIL
+    // =========================
+
     await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
@@ -175,15 +208,15 @@ export default async function handler(req, res) {
           </p>
 
           <p>
-            Our team will contact you shortly.
+            We will contact you shortly.
           </p>
 
         </div>
-      `
+      `,
     });
 
     return res.status(200).json({
-      success: true
+      success: true,
     });
 
   } catch (error) {
@@ -192,7 +225,7 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 }
