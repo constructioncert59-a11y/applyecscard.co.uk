@@ -45,7 +45,7 @@ export default async function handler(req, res) {
       // CHANGE LATER AFTER DOMAIN VERIFY
       from: "onboarding@resend.dev",
 
-      to: "applyecs4@gmail.com, ecscards@outlook.com",
+      to: "applyecs4@gmail.com",
 
       subject: "🔥 New ECS Booking",
 
