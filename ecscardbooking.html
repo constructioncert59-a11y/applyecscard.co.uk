@@ -255,127 +255,210 @@
       </div>
     </form>
   </section>
-        <script>
-
+<script>
 document.getElementById("ecsForm").addEventListener("submit", async function(e) {
-
   e.preventDefault();
 
-  const form = this;
+  const formData = new FormData(this);
 
-  const formData = new FormData(form);
-
-  // FILE TO BASE64
-  const convertToBase64 = (file) => {
-
-    return new Promise((resolve, reject) => {
-
-      if (!file) {
-        resolve("");
-        return;
-      }
-
-      const reader = new FileReader();
-
-      reader.readAsDataURL(file);
-
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-
-      reader.onerror = (error) => {
-        reject(error);
-      };
-
-    });
-  };
-
-  // GET FILES
-  const photoFile =
-    form.querySelector('input[name="photo"]').files[0];
-
-  const idProofFile =
-    form.querySelector('input[name="id_proof"]').files[0];
-
-  const hsProofFile =
-    form.querySelector('input[name="hs_test_proof"]').files[0];
-
-  // CONVERT FILES
-  const photoBase64 =
-    await convertToBase64(photoFile);
-
-  const idProofBase64 =
-    await convertToBase64(idProofFile);
-
-  const hsProofBase64 =
-    await convertToBase64(hsProofFile);
-
-  // FINAL DATA
-  const data = {
-
-    full_name: formData.get("full_name"),
-    dob: formData.get("dob"),
-    ni_number: formData.get("ni_number"),
-    gender: formData.get("gender"),
-    street_address: formData.get("street_address"),
-    city: formData.get("city"),
-    postcode: formData.get("postcode"),
-    mobile: formData.get("mobile"),
-    email: formData.get("email"),
-    confirm_email: formData.get("confirm_email"),
-    ecs_card_type: formData.get("ecs_card_type"),
-    ecs_card_number: formData.get("ecs_card_number"),
-    expiry_date: formData.get("expiry_date"),
-    occupation: formData.get("occupation"),
-    employer: formData.get("employer"),
-    qualification: formData.get("qualification"),
-    hs_test: formData.get("hs_test"),
-    agree_terms: formData.get("agree_terms"),
-
-    // FILES
-    photo: photoBase64,
-    id_proof: idProofBase64,
-    hs_test_proof: hsProofBase64
-  };
-
-  console.log(data);
+  const data = Object.fromEntries(formData.entries()); // ✅ convert to JSON
 
   try {
-
-    const res = await fetch("/api/send-email", {
-
+    const res = await fetch("/api/send", {
       method: "POST",
-
       headers: {
         "Content-Type": "application/json"
       },
-
       body: JSON.stringify(data)
-
     });
 
     const result = await res.json();
 
     if (!res.ok) {
-
       alert(result.error || "Error ❌");
-
       return;
     }
 
-    window.location.href =
-      "https://www.paypal.com/ncp/payment/9DKS9AYZETN4E";
+          window.location.href = "https://www.paypal.com/ncp/payment/9DKS9AYZETN4E";
 
   } catch (err) {
-
-    console.error(err);
-
     alert("Server error ❌");
   }
-
 });
-
 </script>
+        <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // ===== HAMBURGER MENU (if present in header) =====
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+
+    if (hamburger && navMenu) {
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 992) {
+          navMenu.classList.remove('active');
+          hamburger.classList.remove('active');
+        }
+      });
+    }
+
+    // ===== ACCORDION (if present in header/footer) =====
+    document.querySelectorAll(".accordion-header").forEach(button => {
+      button.addEventListener("click", () => {
+        button.classList.toggle("active");
+        const content = button.nextElementSibling;
+        const isMobile = window.innerWidth <= 992;
+
+        if (content.style.display === "flex" || content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = isMobile ? "block" : "flex";
+        }
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      document.querySelectorAll(".accordion-content").forEach(content => {
+        content.style.display = "none";
+      });
+      document.querySelectorAll(".accordion-header").forEach(button => {
+        button.classList.remove("active");
+      });
+    });
+
+    // ===== MULTI-STEP FORM (2 STEPS) =====
+    let currentStep = 0;
+    const steps = document.querySelectorAll(".form-step");
+    const nextBtns = document.querySelectorAll(".next-btn");   // only step 1
+    const prevBtns = document.querySelectorAll(".prev-btn");
+    const summaryBox = document.getElementById("summaryBox");
+    const form = document.getElementById("ecsForm");
+    const progressSteps = document.querySelectorAll(".progressbar li");
+    const totalFeeSpan = document.getElementById("totalFee");
+
+    const priceMap = {
+      new: "£79.00",
+      renewal: "£79.00",
+      replacement: "£79.00"
+    };
+
+    function showStep(step) {
+      steps.forEach((s, i) => {
+        s.style.display = i === step ? "block" : "none";
+      });
+
+      if (progressSteps.length) {
+        progressSteps.forEach((p, i) => {
+          p.classList.remove("active", "completed");
+          if (i < step) p.classList.add("completed");
+          if (i === step) p.classList.add("active");
+        });
+      }
+    }
+
+    function validateStep(step) {
+      const inputs = steps[step].querySelectorAll("input[required], select[required], textarea[required]");
+      for (let input of inputs) {
+        if (!input.value.trim()) {
+          alert("Please fill in all required fields before continuing.");
+          input.focus();
+          return false;
+        }
+
+        // Email confirmation check (only where confirm_email exists — step 0)
+        if (
+          input.name === "confirm_email" &&
+          input.value.trim() !== form.querySelector('input[name="email"]').value.trim()
+        ) {
+          alert("Email addresses do not match. Please check and try again.");
+          input.focus();
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function updateSummary() {
+      if (!form || !summaryBox) return;
+      const formData = new FormData(form);
+      const cardType = formData.get("ecs_card_type");
+      const price = priceMap[cardType] || "£79.00";
+
+      summaryBox.innerHTML = `
+        <p><strong>Name:</strong> ${formData.get("full_name") || ""}</p>
+        <p><strong>Date of Birth:</strong> ${formData.get("dob") || ""}</p>
+        <p><strong>NI Number:</strong> ${formData.get("ni_number") || ""}</p>
+        <p><strong>Gender:</strong> ${formData.get("gender") || ""}</p>
+        <p><strong>Occupation:</strong> ${formData.get("occupation") || ""}</p>
+        <p><strong>Employer:</strong> ${formData.get("employer") || ""}</p>
+        <p><strong>Main Qualification:</strong> ${formData.get("qualification") || ""}</p>
+        <p><strong>H&amp;S / HS&amp;E Test Passed (last 2 years):</strong> ${formData.get("hs_test") || ""}</p>
+        <p><strong>Address:</strong> ${formData.get("street_address") || ""}, ${formData.get("city") || ""}, ${formData.get("postcode") || ""}</p>
+        <p><strong>Mobile:</strong> ${formData.get("mobile") || ""}</p>
+        <p><strong>Email:</strong> ${formData.get("email") || ""}</p>
+        <p><strong>Application Type:</strong> ${cardType || ""}</p>
+        <p><strong>Estimated Total Fee:</strong> ${price}</p>
+      `;
+
+      if (totalFeeSpan) {
+        totalFeeSpan.textContent = price;
+      }
+    }
+
+    // Only one "Next" button (step 1 → step 2)
+    nextBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (!validateStep(currentStep)) return;
+        updateSummary();              // create summary before moving
+        currentStep = 1;              // go to confirmation step
+        showStep(currentStep);
+      });
+    });
+
+    prevBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentStep = Math.max(currentStep - 1, 0);
+        showStep(currentStep);
+      });
+    });
+
+    // ===== ECS CARD TYPE TOGGLE (renewal fields + price) =====
+    const ecsTypeRadios = document.querySelectorAll('input[name="ecs_card_type"]');
+    const ecsNumberField = document.querySelector('input[name="ecs_card_number"]')?.parentElement;
+    const expiryDateField = document.querySelector('input[name="expiry_date"]')?.parentElement;
+
+    function toggleEcsFields() {
+      const selectedType = document.querySelector('input[name="ecs_card_type"]:checked')?.value;
+      if (ecsNumberField && expiryDateField) {
+        if (selectedType === "new") {
+          ecsNumberField.style.display = "none";
+          expiryDateField.style.display = "none";
+        } else {
+          ecsNumberField.style.display = "block";
+          expiryDateField.style.display = "block";
+        }
+      }
+      if (totalFeeSpan && selectedType) {
+        totalFeeSpan.textContent = priceMap[selectedType] || "£79.00";
+      }
+    }
+
+    ecsTypeRadios.forEach(radio => {
+      radio.addEventListener("change", () => {
+        toggleEcsFields();
+        updateSummary();
+      });
+    });
+
+    // ===== INIT =====
+    toggleEcsFields();
+    showStep(currentStep);
+  });
+  </script>
 </body>
 </html>
     
