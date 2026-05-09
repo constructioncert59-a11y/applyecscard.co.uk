@@ -4,7 +4,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
 
-  // ONLY POST REQUEST
+  // ONLY ALLOW POST
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
@@ -34,16 +34,19 @@ export default async function handler(req, res) {
       });
     }
 
-    // CREATE ADMIN HTML
+    // =========================
+    // CREATE ADMIN TABLE HTML
+    // =========================
+
     const allDataHtml = Object.entries(data)
       .map(([key, value]) => `
         <tr>
-          <td style="padding:10px;border:1px solid #ddd;">
+          <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
             <strong>${key}</strong>
           </td>
 
           <td style="padding:10px;border:1px solid #ddd;">
-            ${value || "-"}
+            ${value ? value : "-"}
           </td>
         </tr>
       `)
@@ -57,19 +60,26 @@ export default async function handler(req, res) {
 
       from: "ECS Booking <onboarding@resend.dev>",
 
-to: ["applyecs4@gmail.com"],
+      to: "applyecs4@gmail.com",
 
-      subject: "🔥 New ECS Booking",
+      reply_to: data.email,
+
+      subject: `🔥 New ECS Booking - ${data.full_name}`,
 
       html: `
         <div style="font-family:Arial;padding:20px;">
 
           <h2>New ECS Booking Received</h2>
 
+          <p>
+            A new booking has been submitted from the website.
+          </p>
+
           <table 
             style="
               width:100%;
               border-collapse:collapse;
+              margin-top:20px;
             "
           >
             ${allDataHtml}
@@ -79,10 +89,10 @@ to: ["applyecs4@gmail.com"],
       `
     });
 
-    console.log("ADMIN EMAIL:", adminResponse);
+    console.log("ADMIN EMAIL SUCCESS:", adminResponse);
 
     // =========================
-    // SEND USER EMAIL
+    // SEND USER CONFIRMATION
     // =========================
 
     const userResponse = await resend.emails.send({
@@ -91,12 +101,14 @@ to: ["applyecs4@gmail.com"],
 
       to: data.email,
 
-      subject: "Booking Confirmation",
+      subject: "✅ ECS Booking Confirmation",
 
       html: `
-        <div style="font-family:Arial;padding:20px;">
+        <div style="font-family:Arial;padding:20px;line-height:1.6;">
 
-          <h2>Thank you ${data.full_name}</h2>
+          <h2>
+            Thank you, ${data.full_name}
+          </h2>
 
           <p>
             Your ECS booking request has been received successfully.
@@ -105,6 +117,20 @@ to: ["applyecs4@gmail.com"],
           <p>
             Our team will contact you shortly regarding your booking.
           </p>
+
+          <hr style="margin:25px 0;" />
+
+          <h3>Your Submitted Details:</h3>
+
+          <table 
+            style="
+              width:100%;
+              border-collapse:collapse;
+              margin-top:15px;
+            "
+          >
+            ${allDataHtml}
+          </table>
 
           <br>
 
@@ -128,11 +154,15 @@ to: ["applyecs4@gmail.com"],
       `
     });
 
-    console.log("USER EMAIL:", userResponse);
+    console.log("USER EMAIL SUCCESS:", userResponse);
 
-    // SUCCESS
+    // =========================
+    // SUCCESS RESPONSE
+    // =========================
+
     return res.status(200).json({
       success: true,
+      message: "Emails sent successfully",
       adminResponse,
       userResponse
     });
