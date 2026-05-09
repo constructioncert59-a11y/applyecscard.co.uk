@@ -263,6 +263,18 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
 
   const form = this;
 
+  // BUTTON DISABLE
+  const submitBtn =
+    form.querySelector(".submit-btn");
+
+  if (submitBtn) {
+
+    submitBtn.disabled = true;
+
+    submitBtn.innerText = "Submitting...";
+  }
+
+  // FORM DATA
   const formData = new FormData(form);
 
   // FILE TO BASE64
@@ -290,59 +302,60 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     });
   };
 
-  // GET FILES
-  const photoFile =
-    form.querySelector('input[name="photo"]').files[0];
-
-  const idProofFile =
-    form.querySelector('input[name="id_proof"]').files[0];
-
-  const hsProofFile =
-    form.querySelector('input[name="hs_test_proof"]').files[0];
-
-  // CONVERT FILES
-  const photoBase64 =
-    await convertToBase64(photoFile);
-
-  const idProofBase64 =
-    await convertToBase64(idProofFile);
-
-  const hsProofBase64 =
-    await convertToBase64(hsProofFile);
-
-  // FINAL DATA
-  const data = {
-
-    full_name: formData.get("full_name"),
-    dob: formData.get("dob"),
-    ni_number: formData.get("ni_number"),
-    gender: formData.get("gender"),
-    street_address: formData.get("street_address"),
-    city: formData.get("city"),
-    postcode: formData.get("postcode"),
-    mobile: formData.get("mobile"),
-    email: formData.get("email"),
-    confirm_email: formData.get("confirm_email"),
-    ecs_card_type: formData.get("ecs_card_type"),
-    ecs_card_number: formData.get("ecs_card_number"),
-    expiry_date: formData.get("expiry_date"),
-    occupation: formData.get("occupation"),
-    employer: formData.get("employer"),
-    qualification: formData.get("qualification"),
-    hs_test: formData.get("hs_test"),
-    agree_terms: formData.get("agree_terms"),
-
-    // FILES
-    photo: photoBase64,
-    id_proof: idProofBase64,
-    hs_test_proof: hsProofBase64
-  };
-
-  console.log(data);
-
   try {
 
-    const res = await fetch("/api/send-email", {
+    // FILES
+    const photoFile =
+      form.querySelector('input[name="photo"]').files[0];
+
+    const idProofFile =
+      form.querySelector('input[name="id_proof"]').files[0];
+
+    const hsProofFile =
+      form.querySelector('input[name="hs_test_proof"]').files[0];
+
+    // CONVERT FILES
+    const photoBase64 =
+      await convertToBase64(photoFile);
+
+    const idProofBase64 =
+      await convertToBase64(idProofFile);
+
+    const hsProofBase64 =
+      await convertToBase64(hsProofFile);
+
+    // FINAL DATA
+    const data = {
+
+      full_name: formData.get("full_name") || "",
+      dob: formData.get("dob") || "",
+      ni_number: formData.get("ni_number") || "",
+      gender: formData.get("gender") || "",
+      street_address: formData.get("street_address") || "",
+      city: formData.get("city") || "",
+      postcode: formData.get("postcode") || "",
+      mobile: formData.get("mobile") || "",
+      email: formData.get("email") || "",
+      confirm_email: formData.get("confirm_email") || "",
+      ecs_card_type: formData.get("ecs_card_type") || "",
+      ecs_card_number: formData.get("ecs_card_number") || "",
+      expiry_date: formData.get("expiry_date") || "",
+      occupation: formData.get("occupation") || "",
+      employer: formData.get("employer") || "",
+      qualification: formData.get("qualification") || "",
+      hs_test: formData.get("hs_test") || "",
+      agree_terms: formData.get("agree_terms") || "",
+
+      // FILES
+      photo: photoBase64,
+      id_proof: idProofBase64,
+      hs_test_proof: hsProofBase64
+    };
+
+    console.log("SENDING:", data);
+
+    // SEND API
+    const response = await fetch("/api/send-email", {
 
       method: "POST",
 
@@ -354,30 +367,72 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
 
     });
 
-    const result = await res.json();
+    // SAFE JSON
+    let result = {};
 
-    if (!res.ok) {
+    try {
 
-      alert(result.error || "Error ❌");
+      result = await response.json();
+
+    } catch (e) {
+
+      result = {
+        success: false,
+        error: "Invalid server response"
+      };
+    }
+
+    console.log("API RESULT:", result);
+
+    // ERROR
+    if (!response.ok || !result.success) {
+
+      alert(
+        result.error ||
+        "Failed to submit form"
+      );
+
+      if (submitBtn) {
+
+        submitBtn.disabled = false;
+
+        submitBtn.innerText =
+          "Submit & Proceed to Payment";
+      }
 
       return;
     }
+
+    // SUCCESS
+    alert(
+      "Application submitted successfully ✅"
+    );
 
     // PAYPAL REDIRECT
     window.location.href =
       "https://www.paypal.com/ncp/payment/9DKS9AYZETN4E";
 
-  } catch (err) {
+  } catch (error) {
 
-    console.error(err);
+    console.error("FORM ERROR:", error);
 
-    alert("Server error ❌");
+    alert(
+      error.message ||
+      "Something went wrong"
+    );
+
+    if (submitBtn) {
+
+      submitBtn.disabled = false;
+
+      submitBtn.innerText =
+        "Submit & Proceed to Payment";
+    }
   }
 
 });
 
-</script>
-        <script>
+</script>        <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
     const hamburger = document.getElementById('hamburger');
