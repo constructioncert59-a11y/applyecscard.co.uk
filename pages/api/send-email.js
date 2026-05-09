@@ -3,7 +3,7 @@ import { Resend } from "resend";
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "20mb",
+      sizeLimit: "25mb",
     },
   },
 };
@@ -27,15 +27,11 @@ export default async function handler(req, res) {
 
     let allDataHtml = "";
 
-    // LOOP ALL DATA
     for (const key in data) {
 
       const value = data[key];
 
-      // =========================
-      // IMAGE FILES
-      // =========================
-
+      // IMAGE
       if (
         typeof value === "string" &&
         value.startsWith("data:image")
@@ -43,29 +39,19 @@ export default async function handler(req, res) {
 
         allDataHtml += `
           <tr>
-            <td style="
-              padding:10px;
-              border:1px solid #ddd;
-              background:#f5f5f5;
-            ">
+            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
               <strong>${key}</strong>
             </td>
 
-            <td style="
-              padding:10px;
-              border:1px solid #ddd;
-            ">
-
+            <td style="padding:10px;border:1px solid #ddd;">
               <img
                 src="${value}"
-                alt="${key}"
                 style="
                   max-width:250px;
                   border-radius:10px;
                   border:1px solid #ccc;
                 "
               />
-
             </td>
           </tr>
         `;
@@ -73,10 +59,7 @@ export default async function handler(req, res) {
         continue;
       }
 
-      // =========================
-      // PDF FILES
-      // =========================
-
+      // PDF
       if (
         typeof value === "string" &&
         value.startsWith("data:application/pdf")
@@ -84,18 +67,11 @@ export default async function handler(req, res) {
 
         allDataHtml += `
           <tr>
-            <td style="
-              padding:10px;
-              border:1px solid #ddd;
-              background:#f5f5f5;
-            ">
+            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
               <strong>${key}</strong>
             </td>
 
-            <td style="
-              padding:10px;
-              border:1px solid #ddd;
-            ">
+            <td style="padding:10px;border:1px solid #ddd;">
               PDF Uploaded Successfully
             </td>
           </tr>
@@ -104,34 +80,21 @@ export default async function handler(req, res) {
         continue;
       }
 
-      // =========================
       // NORMAL TEXT
-      // =========================
-
       allDataHtml += `
         <tr>
-          <td style="
-            padding:10px;
-            border:1px solid #ddd;
-            background:#f5f5f5;
-          ">
+          <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
             <strong>${key}</strong>
           </td>
 
-          <td style="
-            padding:10px;
-            border:1px solid #ddd;
-          ">
+          <td style="padding:10px;border:1px solid #ddd;">
             ${value || "-"}
           </td>
         </tr>
       `;
     }
 
-    // =========================
     // ADMIN EMAIL
-    // =========================
-
     await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
@@ -152,7 +115,7 @@ export default async function handler(req, res) {
           <div style="
             max-width:800px;
             margin:auto;
-            background:white;
+            background:#fff;
             padding:25px;
             border-radius:12px;
           ">
@@ -160,10 +123,6 @@ export default async function handler(req, res) {
             <h2>
               New ECS Booking Received
             </h2>
-
-            <p>
-              A new ECS booking request has been submitted.
-            </p>
 
             <table
               style="
@@ -181,10 +140,7 @@ export default async function handler(req, res) {
       `,
     });
 
-    // =========================
     // USER EMAIL
-    // =========================
-
     await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
@@ -200,7 +156,7 @@ export default async function handler(req, res) {
         ">
 
           <h2>
-            Thank you ${data.full_name}
+            Thank You ${data.full_name}
           </h2>
 
           <p>
@@ -208,7 +164,7 @@ export default async function handler(req, res) {
           </p>
 
           <p>
-            We will contact you shortly.
+            Our team will contact you shortly.
           </p>
 
         </div>
