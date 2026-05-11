@@ -12,11 +12,10 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
 
-  // ONLY POST METHOD
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
-      error: "Method Not Allowed"
+      error: "Method Not Allowed",
     });
   }
 
@@ -28,7 +27,7 @@ export default async function handler(req, res) {
     if (!data.email || !data.full_name) {
       return res.status(400).json({
         success: false,
-        error: "Email and full_name are required"
+        error: "Email and full_name are required",
       });
     }
 
@@ -38,66 +37,38 @@ export default async function handler(req, res) {
     if (!emailRegex.test(data.email)) {
       return res.status(400).json({
         success: false,
-        error: "Invalid email address"
+        error: "Invalid email address",
       });
     }
 
-    // =========================
     // REMOVE FILES FROM TABLE
-    // =========================
-
     const normalFields = { ...data };
 
     delete normalFields.photo;
     delete normalFields.id_proof;
     delete normalFields.hs_test_proof;
 
-    // =========================
     // ATTACHMENTS
-    // =========================
-
     const attachments = [];
 
-    // PHOTO
-    if (
-      data.photo &&
-      data.photo.startsWith("data:")
-    ) {
+    const addAttachment = (fileData, filename) => {
+      if (
+        fileData &&
+        typeof fileData === "string" &&
+        fileData.startsWith("data:")
+      ) {
+        attachments.push({
+          filename,
+          content: fileData.split(",")[1],
+        });
+      }
+    };
 
-      attachments.push({
-        filename: "photo.png",
-        content: data.photo.split(",")[1],
-      });
-    }
+    addAttachment(data.photo, "photo.png");
+    addAttachment(data.id_proof, "id-proof.png");
+    addAttachment(data.hs_test_proof, "hs-proof.png");
 
-    // ID PROOF
-    if (
-      data.id_proof &&
-      data.id_proof.startsWith("data:")
-    ) {
-
-      attachments.push({
-        filename: "id-proof.png",
-        content: data.id_proof.split(",")[1],
-      });
-    }
-
-    // HS TEST PROOF
-    if (
-      data.hs_test_proof &&
-      data.hs_test_proof.startsWith("data:")
-    ) {
-
-      attachments.push({
-        filename: "hs-proof.png",
-        content: data.hs_test_proof.split(",")[1],
-      });
-    }
-
-    // =========================
-    // CREATE TABLE HTML
-    // =========================
-
+    // CREATE TABLE
     const allDataHtml = Object.entries(normalFields)
       .map(([key, value]) => {
 
@@ -111,18 +82,11 @@ export default async function handler(req, res) {
 
         return `
           <tr>
-            <td style="
-              padding:10px;
-              border:1px solid #ddd;
-              background:#f5f5f5;
-            ">
+            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;">
               <strong>${safeKey}</strong>
             </td>
 
-            <td style="
-              padding:10px;
-              border:1px solid #ddd;
-            ">
+            <td style="padding:10px;border:1px solid #ddd;">
               ${safeValue}
             </td>
           </tr>
@@ -131,12 +95,14 @@ export default async function handler(req, res) {
       .join("");
 
     // =========================
-    // SEND ADMIN EMAIL
+    // ADMIN EMAIL
     // =========================
 
     const adminResponse = await resend.emails.send({
 
-      from: "ECS Booking <onboarding@resend.dev>",
+      // IMPORTANT
+      // CHANGE THIS AFTER DOMAIN VERIFY
+      from: "Build Cert <booking@applyecscard.co.uk>",
 
       to: "applyecs4@gmail.com",
 
@@ -147,11 +113,7 @@ export default async function handler(req, res) {
       attachments,
 
       html: `
-        <div style="
-          font-family:Arial;
-          padding:20px;
-          background:#f9f9f9;
-        ">
+        <div style="font-family:Arial;padding:20px;background:#f9f9f9;">
 
           <div style="
             max-width:700px;
@@ -161,47 +123,43 @@ export default async function handler(req, res) {
             border-radius:12px;
           ">
 
-            <h2>
-              New ECS Booking Received
-            </h2>
+            <h2>New ECS Booking Received</h2>
 
-            <p>
-              A new ECS booking request has been submitted.
-            </p>
+            <p>A new ECS booking request has been submitted.</p>
 
-            <table 
-              style="
-                width:100%;
-                border-collapse:collapse;
-                margin-top:20px;
-              "
-            >
+            <table style="
+              width:100%;
+              border-collapse:collapse;
+              margin-top:20px;
+            ">
               ${allDataHtml}
             </table>
 
             <br>
 
-            <p>
-              Uploaded files are attached with this email.
-            </p>
+            <p>Uploaded files are attached with this email.</p>
 
           </div>
 
         </div>
-      `
+      `,
     });
 
     console.log("ADMIN EMAIL SUCCESS:", adminResponse);
 
     // =========================
-    // SEND USER CONFIRMATION
+    // USER CONFIRMATION
     // =========================
 
     const userResponse = await resend.emails.send({
 
-      from: "ECS Booking <onboarding@resend.dev>",
+      // IMPORTANT
+      // CHANGE THIS AFTER DOMAIN VERIFY
+      from: "Build Cert <booking@applyecscard.co.uk>",
 
       to: data.email,
+
+      reply_to: "booking@applyecscard.co.uk",
 
       subject: "✅ ECS Booking Confirmation",
 
@@ -235,8 +193,6 @@ export default async function handler(req, res) {
 
             <hr style="margin:25px 0;" />
 
-            <br>
-
             <h3>ECS Test Rules</h3>
 
             <ul>
@@ -250,23 +206,22 @@ export default async function handler(req, res) {
 
             <p>
               Regards,<br>
-              ECS Team
+              Build Cert Team
             </p>
 
           </div>
 
         </div>
-      `
+      `,
     });
 
     console.log("USER EMAIL SUCCESS:", userResponse);
 
-    // SUCCESS RESPONSE
     return res.status(200).json({
       success: true,
       message: "Emails sent successfully",
       adminResponse,
-      userResponse
+      userResponse,
     });
 
   } catch (error) {
@@ -275,7 +230,7 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Email sending failed"
+      error: error.message || "Email sending failed",
     });
   }
 }
