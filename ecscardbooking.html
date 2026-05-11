@@ -257,7 +257,7 @@
   </section>
 <script>
 
-document.getElementById("ecsForm").addEventListener("submit", async function(e) {
+document.getElementById("ecsForm").addEventListener("submit", async function (e) {
 
   e.preventDefault();
 
@@ -269,42 +269,14 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
   if (submitBtn) {
 
     submitBtn.disabled = true;
-
     submitBtn.innerText = "Processing...";
 
   }
 
-  // FORM DATA
-  const formData = new FormData(form);
-
-  // FILE TO BASE64
-  const convertToBase64 = (file) => {
-
-    return new Promise((resolve) => {
-
-      // NO FILE
-      if (!file) {
-        resolve("");
-        return;
-      }
-
-      const reader = new FileReader();
-
-      reader.readAsDataURL(file);
-
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-
-      reader.onerror = () => {
-        resolve("");
-      };
-
-    });
-
-  };
-
   try {
+
+    // FORM DATA
+    const formData = new FormData(form);
 
     // FILES
     const photoFile =
@@ -315,6 +287,69 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
 
     const hsProofFile =
       form.querySelector('input[name="hs_test_proof"]')?.files[0];
+
+    // FILE SIZE LIMIT (4MB)
+    const maxSize = 4 * 1024 * 1024;
+
+    if (photoFile && photoFile.size > maxSize) {
+
+      alert("Passport photo is too large. Maximum 4MB allowed.");
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Submit & Proceed to Payment";
+
+      return;
+
+    }
+
+    if (idProofFile && idProofFile.size > maxSize) {
+
+      alert("ID proof file is too large. Maximum 4MB allowed.");
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Submit & Proceed to Payment";
+
+      return;
+
+    }
+
+    if (hsProofFile && hsProofFile.size > maxSize) {
+
+      alert("HS&E proof file is too large. Maximum 4MB allowed.");
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Submit & Proceed to Payment";
+
+      return;
+
+    }
+
+    // FILE → BASE64
+    const convertToBase64 = (file) => {
+
+      return new Promise((resolve) => {
+
+        // NO FILE
+        if (!file) {
+          resolve("");
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.readAsDataURL(file);
+
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+
+        reader.onerror = () => {
+          resolve("");
+        };
+
+      });
+
+    };
 
     // CONVERT FILES
     const photoBase64 =
@@ -329,33 +364,73 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     // DATA OBJECT
     const data = {
 
-      full_name: formData.get("full_name") || "",
-      dob: formData.get("dob") || "",
-      ni_number: formData.get("ni_number") || "",
-      gender: formData.get("gender") || "",
-      street_address: formData.get("street_address") || "",
-      city: formData.get("city") || "",
-      postcode: formData.get("postcode") || "",
-      mobile: formData.get("mobile") || "",
-      email: formData.get("email") || "",
-      confirm_email: formData.get("confirm_email") || "",
-      ecs_card_type: formData.get("ecs_card_type") || "",
-      ecs_card_number: formData.get("ecs_card_number") || "",
-      expiry_date: formData.get("expiry_date") || "",
-      occupation: formData.get("occupation") || "",
-      employer: formData.get("employer") || "",
-      qualification: formData.get("qualification") || "",
-      hs_test: formData.get("hs_test") || "",
-      agree_terms: formData.get("agree_terms") || "",
+      full_name:
+        formData.get("full_name") || "",
+
+      dob:
+        formData.get("dob") || "",
+
+      ni_number:
+        formData.get("ni_number") || "",
+
+      gender:
+        formData.get("gender") || "",
+
+      street_address:
+        formData.get("street_address") || "",
+
+      city:
+        formData.get("city") || "",
+
+      postcode:
+        formData.get("postcode") || "",
+
+      mobile:
+        formData.get("mobile") || "",
+
+      email:
+        formData.get("email") || "",
+
+      confirm_email:
+        formData.get("confirm_email") || "",
+
+      ecs_card_type:
+        formData.get("ecs_card_type") || "",
+
+      ecs_card_number:
+        formData.get("ecs_card_number") || "",
+
+      expiry_date:
+        formData.get("expiry_date") || "",
+
+      occupation:
+        formData.get("occupation") || "",
+
+      employer:
+        formData.get("employer") || "",
+
+      qualification:
+        formData.get("qualification") || "",
+
+      hs_test:
+        formData.get("hs_test") || "",
+
+      agree_terms:
+        formData.get("agree_terms") || "",
 
       // FILES
-      photo: photoBase64,
-      id_proof: idProofBase64,
-      hs_test_proof: hsProofBase64
+      photo:
+        photoBase64,
+
+      id_proof:
+        idProofBase64,
+
+      hs_test_proof:
+        hsProofBase64
 
     };
 
-    // SEND DATA TO API
+    // SEND TO API
     const response = await fetch("/api/send", {
 
       method: "POST",
@@ -368,54 +443,59 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
 
     });
 
-    // API RESPONSE
+    // CHECK RESPONSE
+    if (!response.ok) {
+
+      throw new Error(
+        "API request failed"
+      );
+
+    }
+
+    // JSON RESPONSE
     const result = await response.json();
 
-    console.log("API RESULT:", result);
+    console.log(
+      "API RESULT:",
+      result
+    );
 
     // SUCCESS
-    if (response.ok && result.success) {
+    if (result.success) {
 
       // PAYPAL REDIRECT
       window.location.href =
-      "https://www.paypal.com/ncp/payment/9DKS9AYZETN4E";
+        "https://www.paypal.com/ncp/payment/9DKS9AYZETN4E";
 
     } else {
 
       alert(
         result.message ||
-        "Email sending failed. Please try again."
+        "Email sending failed."
       );
 
-      // BUTTON RESET
-      if (submitBtn) {
+      submitBtn.disabled = false;
 
-        submitBtn.disabled = false;
-
-        submitBtn.innerText =
+      submitBtn.innerText =
         "Submit & Proceed to Payment";
-
-      }
 
     }
 
   } catch (error) {
 
-    console.error("FORM ERROR:", error);
-
-    alert(
-      "Server error. Please try again."
+    console.error(
+      "FORM ERROR:",
+      error
     );
 
-    // BUTTON RESET
-    if (submitBtn) {
+    alert(
+      "Something went wrong. Please try again."
+    );
 
-      submitBtn.disabled = false;
+    submitBtn.disabled = false;
 
-      submitBtn.innerText =
+    submitBtn.innerText =
       "Submit & Proceed to Payment";
-
-    }
 
   }
 
