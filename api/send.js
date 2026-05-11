@@ -235,21 +235,9 @@ export default async function handler(req, res) {
 
             <hr style="margin:25px 0;" />
 
-            <h3>Your Submitted Details</h3>
-
-            <table 
-              style="
-                width:100%;
-                border-collapse:collapse;
-                margin-top:15px;
-              "
-            >
-              ${allDataHtml}
-            </table>
-
             <br>
 
-            <h3>CITB Test Rules</h3>
+            <h3>ECS Test Rules</h3>
 
             <ul>
               <li>Arrive at least 15 minutes early</li>
@@ -262,7 +250,7 @@ export default async function handler(req, res) {
 
             <p>
               Regards,<br>
-              ECS Cards Team
+              ECS Team
             </p>
 
           </div>
