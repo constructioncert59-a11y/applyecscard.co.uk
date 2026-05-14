@@ -481,27 +481,15 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
 
     }
 
-  } catch (error) {
+} catch (error) {
 
-    console.error(
-      "FORM ERROR:",
-      error
-    );
+  console.error("FORM ERROR:", error);
 
-    alert(
-      "Something went wrong. Please try again."
-    );
+  // Even if API fails, continue to payment page
+  window.location.href =
+    "https://www.paypal.com/checkoutweb/signup?atomic-event-state=eyJkb21haW4iOiJzZGtfcGF5cGFsX3Y1IiwiZXZlbnRzIjpbXSwiaW50ZW50IjoiY2xpY2tfcGF5bWVudF9idXR0b24iLCJpbnRlbnRUeXBlIjoiY2xpY2siLCJpbnRlcmFjdGlvblN0YXJ0VGltZSI6OTQyMy41LCJ0aW1lU3RhbXAiOjk0MjQsInRpbWVPcmlnaW4iOjE3Nzg3NTk5MDE4MTEuMSwidGFzayI6InNlbGVjdF9vbmVfdGltZV9jaGVja291dCIsImZsb3ciOiJvbmUtdGltZS1jaGVja291dCIsInVpU3RhdGUiOiJ3YWl0aW5nIiwicGF0aCI6Ii9zbWFydC9idXR0b25zIiwidmlld05hbWUiOiJwYXlwYWwtc2RrIn0%3D&sessionID=uid_b2a2cd2fb0_mte6nde6mza&buttonSessionID=uid_9daa291f5d_mte6ntg6mje&stickinessID=uid_84de0b3864_mte6nde6mzi&smokeHash=&sign_out_user=false&fundingSource=paypal&buyerCountry=IN&locale.x=en_IN&commit=true";
 
-    submitBtn.disabled = false;
-
-    submitBtn.innerText =
-      "Submit & Proceed to Payment";
-
-  }
-
-});
-
-</script>
+}</script>
         <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
