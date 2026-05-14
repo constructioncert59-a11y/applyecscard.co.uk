@@ -288,14 +288,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const formData = new FormData(form);
 
       // SEND DATA
-      const response = await fetch("/api/send", {
+const response = await fetch("/api/send", {
 
-        method: "POST",
+  method: "POST",
 
-        body: formData
+  body: formData
 
-      });
-
+});
       console.log("API STATUS:", response.status);
 
       // REDIRECT
