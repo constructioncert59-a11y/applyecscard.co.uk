@@ -288,20 +288,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const formData = new FormData(form);
 
       // SEND DATA
-const response = await fetch(
-  "https://formsubmit.co/ajax/applyecs4@gmail.com",
-  {
+const response = await fetch("/api/send", {
 
-    method: "POST",
+  method: "POST",
 
-    headers: {
-      Accept: "application/json"
-    },
+  body: formData
 
-    body: formData
-
-  }
-);
+});
       console.log("API STATUS:", response.status);
 
       // REDIRECT
