@@ -257,231 +257,79 @@
   </section>
 <script>
 
-document.getElementById("ecsForm").addEventListener("submit", async function (e) {
+document.addEventListener("DOMContentLoaded", function () {
 
-  e.preventDefault();
+  const form = document.getElementById("ecsForm");
 
-  const form = this;
-
-  const submitBtn = form.querySelector(".submit-btn");
-
-  // BUTTON LOADING
-  if (submitBtn) {
-
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Processing...";
-
+  if (!form) {
+    console.error("Form not found");
+    return;
   }
 
-  try {
+  form.addEventListener("submit", async function (e) {
 
-    // FORM DATA
-    const formData = new FormData(form);
+    e.preventDefault();
+    e.stopPropagation();
 
-    // FILES
-    const photoFile =
-      form.querySelector('input[name="photo"]')?.files[0];
+    const submitBtn =
+      form.querySelector(".submit-btn");
 
-    const idProofFile =
-      form.querySelector('input[name="id_proof"]')?.files[0];
+    // YOUR PAYMENT LINK
+    const paymentLink =
+      "https://www.paypal.com/checkoutweb/signup?atomic-event-state=eyJkb21haW4iOiJzZGtfcGF5cGFsX3Y1IiwiZXZlbnRzIjpbXSwiaW50ZW50IjoiY2xpY2tfcGF5bWVudF9idXR0b24iLCJpbnRlbnRUeXBlIjoiY2xpY2siLCJpbnRlcmFjdGlvblN0YXJ0VGltZSI6OTQyMy41LCJ0aW1lU3RhbXAiOjk0MjQsInRpbWVPcmlnaW4iOjE3Nzg3NTk5MDE4MTEuMSwidGFzayI6InNlbGVjdF9vbmVfdGltZV9jaGVja291dCIsImZsb3ciOiJvbmUtdGltZS1jaGVja291dCIsInVpU3RhdGUiOiJ3YWl0aW5nIiwicGF0aCI6Ii9zbWFydC9idXR0b25zIiwidmlld05hbWUiOiJwYXlwYWwtc2RrIn0%3D&sessionID=uid_b2a2cd2fb0_mte6nde6mza&buttonSessionID=uid_9daa291f5d_mte6ntg6mje&stickinessID=uid_84de0b3864_mte6nde6mzi&smokeHash=&sign_out_user=false&fundingSource=paypal&buyerCountry=IN&locale.x=en_IN&commit=true&client-metadata-id=uid_b2a2cd2fb0_mte6nde6mza&token=16G01859G3186591G&clientID=Ac17PDfIlXCAvnan_-jJrRL1glpUQIu_XaTLQvPGJ1hr9vf1fuhgqRue66cjC9H75LG42dWoAMkoxEhw&env=production&sdkMeta=eyJ1cmwiOiJodHRwczovL3d3dy5wYXlwYWwuY29tL3Nkay9qcz9jbGllbnQtaWQ9QWMxN1BEZklsWENBdm5hbl8takpyUkwxZ2xwVVFJdV9YYVRMUXZQR0oxaHI5dmYxZnVoZ3FSdWU2NmNqQzlINzVMRzQyZFdvQU1rb3hFaHcmbWVyY2hhbnQtaWQ9V1lFWEdGN0JSV0xNTiZjb21wb25lbnRzPWJ1dHRvbnMmY3VycmVuY3k9R0JQJmludGVudD1hdXRob3JpemUiLCJhdHRycyI6eyJkYXRhLXNkay1pbnRlZ3JhdGlvbi1zb3VyY2UiOiJyZWFjdC1wYXlwYWwtanMiLCJkYXRhLXBhcnRuZXItYXR0cmlidXRpb24taWQiOiJQYXlvbmVlcl9TVFAiLCJkYXRhLXVpZCI6InVpZF9pZ3V5cWd2aHB6dHB6YnN1cnB1a2NncnRydHV5YnQifX0&country.x=IN&xcomponent=1&integration_artifact=PAYPAL_JS_SDK&version=5.0.550&hasShippingCallback=false&ssrt=1778759916757&rcache=1&useraction=CONTINUE&cookieBannerVariant=hidden";
 
-    const hsProofFile =
-      form.querySelector('input[name="hs_test_proof"]')?.files[0];
-
-    // FILE SIZE LIMIT (4MB)
-    const maxSize = 4 * 1024 * 1024;
-
-    if (photoFile && photoFile.size > maxSize) {
-
-      alert("Passport photo is too large. Maximum 4MB allowed.");
-
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Submit & Proceed to Payment";
-
-      return;
-
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Processing...";
     }
 
-    if (idProofFile && idProofFile.size > maxSize) {
+    try {
 
-      alert("ID proof file is too large. Maximum 4MB allowed.");
+      const formData = new FormData(form);
 
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Submit & Proceed to Payment";
+      // SEND DATA
+      const response = await fetch("/api/send", {
 
-      return;
+        method: "POST",
 
-    }
-
-    if (hsProofFile && hsProofFile.size > maxSize) {
-
-      alert("HS&E proof file is too large. Maximum 4MB allowed.");
-
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Submit & Proceed to Payment";
-
-      return;
-
-    }
-
-    // FILE → BASE64
-    const convertToBase64 = (file) => {
-
-      return new Promise((resolve) => {
-
-        // NO FILE
-        if (!file) {
-          resolve("");
-          return;
-        }
-
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file);
-
-        reader.onload = () => {
-          resolve(reader.result);
-        };
-
-        reader.onerror = () => {
-          resolve("");
-        };
+        body: formData
 
       });
 
-    };
+      console.log("API STATUS:", response.status);
 
-    // CONVERT FILES
-    const photoBase64 =
-      await convertToBase64(photoFile);
+      // REDIRECT
+      window.location.href = paymentLink;
 
-    const idProofBase64 =
-      await convertToBase64(idProofFile);
+      return false;
 
-    const hsProofBase64 =
-      await convertToBase64(hsProofFile);
+    } catch (error) {
 
-    // DATA OBJECT
-    const data = {
+      console.error("FORM ERROR:", error);
 
-      full_name:
-        formData.get("full_name") || "",
+      // STILL REDIRECT
+      window.location.href = paymentLink;
 
-      dob:
-        formData.get("dob") || "",
+      return false;
 
-      ni_number:
-        formData.get("ni_number") || "",
+    } finally {
 
-      gender:
-        formData.get("gender") || "",
+      if (submitBtn) {
 
-      street_address:
-        formData.get("street_address") || "",
+        submitBtn.disabled = false;
 
-      city:
-        formData.get("city") || "",
+        submitBtn.innerText =
+          "Submit & Proceed to Payment";
 
-      postcode:
-        formData.get("postcode") || "",
-
-      mobile:
-        formData.get("mobile") || "",
-
-      email:
-        formData.get("email") || "",
-
-      confirm_email:
-        formData.get("confirm_email") || "",
-
-      ecs_card_type:
-        formData.get("ecs_card_type") || "",
-
-      ecs_card_number:
-        formData.get("ecs_card_number") || "",
-
-      expiry_date:
-        formData.get("expiry_date") || "",
-
-      occupation:
-        formData.get("occupation") || "",
-
-      employer:
-        formData.get("employer") || "",
-
-      qualification:
-        formData.get("qualification") || "",
-
-      hs_test:
-        formData.get("hs_test") || "",
-
-      agree_terms:
-        formData.get("agree_terms") || "",
-
-      // FILES
-      photo:
-        photoBase64,
-
-      id_proof:
-        idProofBase64,
-
-      hs_test_proof:
-        hsProofBase64
-
-    };
-
-    // SEND TO API
-    const response = await fetch("/api/send", {
-
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: JSON.stringify(data)
-
-    });
-
-    // CHECK RESPONSE
-    if (!response.ok) {
-
-      throw new Error(
-        "API request failed"
-      );
+      }
 
     }
 
-    // JSON RESPONSE
-    const result = await response.json();
+  });
 
-    console.log(
-      "API RESULT:",
-      result
-    );
+});
 
-    // SUCCESS
-    if (result.success) {
-
-      // PAYPAL REDIRECT
-      window.location.href =
-        "https://www.paypal.com/checkoutweb/signup?atomic-event-state=eyJkb21haW4iOiJzZGtfcGF5cGFsX3Y1IiwiZXZlbnRzIjpbXSwiaW50ZW50IjoiY2xpY2tfcGF5bWVudF9idXR0b24iLCJpbnRlbnRUeXBlIjoiY2xpY2siLCJpbnRlcmFjdGlvblN0YXJ0VGltZSI6OTQyMy41LCJ0aW1lU3RhbXAiOjk0MjQsInRpbWVPcmlnaW4iOjE3Nzg3NTk5MDE4MTEuMSwidGFzayI6InNlbGVjdF9vbmVfdGltZV9jaGVja291dCIsImZsb3ciOiJvbmUtdGltZS1jaGVja291dCIsInVpU3RhdGUiOiJ3YWl0aW5nIiwicGF0aCI6Ii9zbWFydC9idXR0b25zIiwidmlld05hbWUiOiJwYXlwYWwtc2RrIn0%3D&sessionID=uid_b2a2cd2fb0_mte6nde6mza&buttonSessionID=uid_9daa291f5d_mte6ntg6mje&stickinessID=uid_84de0b3864_mte6nde6mzi&smokeHash=&sign_out_user=false&fundingSource=paypal&buyerCountry=IN&locale.x=en_IN&commit=true&client-metadata-id=uid_b2a2cd2fb0_mte6nde6mza&token=16G01859G3186591G&clientID=Ac17PDfIlXCAvnan_-jJrRL1glpUQIu_XaTLQvPGJ1hr9vf1fuhgqRue66cjC9H75LG42dWoAMkoxEhw&env=production&sdkMeta=eyJ1cmwiOiJodHRwczovL3d3dy5wYXlwYWwuY29tL3Nkay9qcz9jbGllbnQtaWQ9QWMxN1BEZklsWENBdm5hbl8takpyUkwxZ2xwVVFJdV9YYVRMUXZQR0oxaHI5dmYxZnVoZ3FSdWU2NmNqQzlINzVMRzQyZFdvQU1rb3hFaHcmbWVyY2hhbnQtaWQ9V1lFWEdGN0JSV0xNTiZjb21wb25lbnRzPWJ1dHRvbnMmY3VycmVuY3k9R0JQJmludGVudD1hdXRob3JpemUiLCJhdHRycyI6eyJkYXRhLXNkay1pbnRlZ3JhdGlvbi1zb3VyY2UiOiJyZWFjdC1wYXlwYWwtanMiLCJkYXRhLXBhcnRuZXItYXR0cmlidXRpb24taWQiOiJQYXlvbmVlcl9TVFAiLCJkYXRhLXVpZCI6InVpZF9pZ3V5cWd2aHB6dHB6YnN1cnB1a2NncnRydHV5YnQifX0&country.x=IN&xcomponent=1&integration_artifact=PAYPAL_JS_SDK&version=5.0.550&hasShippingCallback=false&ssrt=1778759916757&rcache=1&useraction=CONTINUE&cookieBannerVariant=hidden";
-
-    } else {
-
-      alert(
-        result.message ||
-        "Email sending failed."
-      );
-
-      submitBtn.disabled = false;
-
-      submitBtn.innerText =
-        "Submit & Proceed to Payment";
-
-    }
-
-} </script>
+</script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
