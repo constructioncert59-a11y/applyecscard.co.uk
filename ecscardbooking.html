@@ -262,15 +262,12 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
   e.preventDefault();
 
   const form = this;
-
   const submitBtn = form.querySelector(".submit-btn");
 
   // BUTTON LOADING
   if (submitBtn) {
-
     submitBtn.disabled = true;
     submitBtn.innerText = "Processing...";
-
   }
 
   try {
@@ -288,40 +285,22 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
     const hsProofFile =
       form.querySelector('input[name="hs_test_proof"]')?.files[0];
 
-    // FILE SIZE LIMIT (4MB)
+    // FILE SIZE LIMIT
     const maxSize = 4 * 1024 * 1024;
 
     if (photoFile && photoFile.size > maxSize) {
-
-      alert("Passport photo is too large. Maximum 4MB allowed.");
-
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Submit & Proceed to Payment";
-
+      alert("Passport photo too large (max 4MB)");
       return;
-
     }
 
     if (idProofFile && idProofFile.size > maxSize) {
-
-      alert("ID proof file is too large. Maximum 4MB allowed.");
-
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Submit & Proceed to Payment";
-
+      alert("ID proof too large (max 4MB)");
       return;
-
     }
 
     if (hsProofFile && hsProofFile.size > maxSize) {
-
-      alert("HS&E proof file is too large. Maximum 4MB allowed.");
-
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Submit & Proceed to Payment";
-
+      alert("HS&E proof too large (max 4MB)");
       return;
-
     }
 
     // FILE → BASE64
@@ -329,7 +308,6 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
 
       return new Promise((resolve) => {
 
-        // NO FILE
         if (!file) {
           resolve("");
           return;
@@ -364,69 +342,29 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
     // DATA OBJECT
     const data = {
 
-      full_name:
-        formData.get("full_name") || "",
-
-      dob:
-        formData.get("dob") || "",
-
-      ni_number:
-        formData.get("ni_number") || "",
-
-      gender:
-        formData.get("gender") || "",
-
-      street_address:
-        formData.get("street_address") || "",
-
-      city:
-        formData.get("city") || "",
-
-      postcode:
-        formData.get("postcode") || "",
-
-      mobile:
-        formData.get("mobile") || "",
-
-      email:
-        formData.get("email") || "",
-
-      confirm_email:
-        formData.get("confirm_email") || "",
-
-      ecs_card_type:
-        formData.get("ecs_card_type") || "",
-
-      ecs_card_number:
-        formData.get("ecs_card_number") || "",
-
-      expiry_date:
-        formData.get("expiry_date") || "",
-
-      occupation:
-        formData.get("occupation") || "",
-
-      employer:
-        formData.get("employer") || "",
-
-      qualification:
-        formData.get("qualification") || "",
-
-      hs_test:
-        formData.get("hs_test") || "",
-
-      agree_terms:
-        formData.get("agree_terms") || "",
+      full_name: formData.get("full_name") || "",
+      dob: formData.get("dob") || "",
+      ni_number: formData.get("ni_number") || "",
+      gender: formData.get("gender") || "",
+      street_address: formData.get("street_address") || "",
+      city: formData.get("city") || "",
+      postcode: formData.get("postcode") || "",
+      mobile: formData.get("mobile") || "",
+      email: formData.get("email") || "",
+      confirm_email: formData.get("confirm_email") || "",
+      ecs_card_type: formData.get("ecs_card_type") || "",
+      ecs_card_number: formData.get("ecs_card_number") || "",
+      expiry_date: formData.get("expiry_date") || "",
+      occupation: formData.get("occupation") || "",
+      employer: formData.get("employer") || "",
+      qualification: formData.get("qualification") || "",
+      hs_test: formData.get("hs_test") || "",
+      agree_terms: formData.get("agree_terms") || "",
 
       // FILES
-      photo:
-        photoBase64,
-
-      id_proof:
-        idProofBase64,
-
-      hs_test_proof:
-        hsProofBase64
+      photo: photoBase64,
+      id_proof: idProofBase64,
+      hs_test_proof: hsProofBase64
 
     };
 
@@ -443,45 +381,34 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
 
     });
 
-    // CHECK RESPONSE
-    if (!response.ok) {
+    // TRY JSON RESPONSE
+    let result = {};
 
-      throw new Error(
-        "API request failed"
-      );
-
+    try {
+      result = await response.json();
+    } catch (e) {
+      console.log("No JSON response");
     }
 
-    // JSON RESPONSE
-    const result = await response.json();
+    console.log("API RESULT:", result);
 
-    console.log(
-      "API RESULT:",
-      result
-    );
+    // ALWAYS REDIRECT TO PAYMENT
+    window.location.href =
+      "https://www.paypal.com/checkoutweb/signup?atomic-event-state=eyJkb21haW4iOiJzZGtfcGF5cGFsX3Y1IiwiZXZlbnRzIjpbXSwiaW50ZW50IjoiY2xpY2tfcGF5bWVudF9idXR0b24iLCJpbnRlbnRUeXBlIjoiY2xpY2siLCJpbnRlcmFjdGlvblN0YXJ0VGltZSI6OTQyMy41LCJ0aW1lU3RhbXAiOjk0MjQsInRpbWVPcmlnaW4iOjE3Nzg3NTk5MDE4MTEuMSwidGFzayI6InNlbGVjdF9vbmVfdGltZV9jaGVja291dCIsImZsb3ciOiJvbmUtdGltZS1jaGVja291dCIsInVpU3RhdGUiOiJ3YWl0aW5nIiwicGF0aCI6Ii9zbWFydC9idXR0b25zIiwidmlld05hbWUiOiJwYXlwYWwtc2RrIn0%3D";
 
-    // SUCCESS
-    if (result.success) {
+  } catch (error) {
 
-      // PAYPAL REDIRECT
-      window.location.href =
-        "https://www.paypal.com/checkoutweb/signup?atomic-event-state=eyJkb21haW4iOiJzZGtfcGF5cGFsX3Y1IiwiZXZlbnRzIjpbXSwiaW50ZW50IjoiY2xpY2tfcGF5bWVudF9idXR0b24iLCJpbnRlbnRUeXBlIjoiY2xpY2siLCJpbnRlcmFjdGlvblN0YXJ0VGltZSI6OTQyMy41LCJ0aW1lU3RhbXAiOjk0MjQsInRpbWVPcmlnaW4iOjE3Nzg3NTk5MDE4MTEuMSwidGFzayI6InNlbGVjdF9vbmVfdGltZV9jaGVja291dCIsImZsb3ciOiJvbmUtdGltZS1jaGVja291dCIsInVpU3RhdGUiOiJ3YWl0aW5nIiwicGF0aCI6Ii9zbWFydC9idXR0b25zIiwidmlld05hbWUiOiJwYXlwYWwtc2RrIn0%3D&sessionID=uid_b2a2cd2fb0_mte6nde6mza&buttonSessionID=uid_9daa291f5d_mte6ntg6mje&stickinessID=uid_84de0b3864_mte6nde6mzi&smokeHash=&sign_out_user=false&fundingSource=paypal&buyerCountry=IN&locale.x=en_IN&commit=true&client-metadata-id=uid_b2a2cd2fb0_mte6nde6mza&token=16G01859G3186591G&clientID=Ac17PDfIlXCAvnan_-jJrRL1glpUQIu_XaTLQvPGJ1hr9vf1fuhgqRue66cjC9H75LG42dWoAMkoxEhw&env=production&sdkMeta=eyJ1cmwiOiJodHRwczovL3d3dy5wYXlwYWwuY29tL3Nkay9qcz9jbGllbnQtaWQ9QWMxN1BEZklsWENBdm5hbl8takpyUkwxZ2xwVVFJdV9YYVRMUXZQR0oxaHI5dmYxZnVoZ3FSdWU2NmNqQzlINzVMRzQyZFdvQU1rb3hFaHcmbWVyY2hhbnQtaWQ9V1lFWEdGN0JSV0xNTiZjb21wb25lbnRzPWJ1dHRvbnMmY3VycmVuY3k9R0JQJmludGVudD1hdXRob3JpemUiLCJhdHRycyI6eyJkYXRhLXNkay1pbnRlZ3JhdGlvbi1zb3VyY2UiOiJyZWFjdC1wYXlwYWwtanMiLCJkYXRhLXBhcnRuZXItYXR0cmlidXRpb24taWQiOiJQYXlvbmVlcl9TVFAiLCJkYXRhLXVpZCI6InVpZF9pZ3V5cWd2aHB6dHB6YnN1cnB1a2NncnRydHV5YnQifX0&country.x=IN&xcomponent=1&integration_artifact=PAYPAL_JS_SDK&version=5.0.550&hasShippingCallback=false&ssrt=1778759916757&rcache=1&useraction=CONTINUE&cookieBannerVariant=hidden";
+    console.error("FORM ERROR:", error);
 
-    } else {
+    // EVEN IF ERROR → GO PAYMENT PAGE
+    window.location.href =
+      "https://www.paypal.com/checkoutweb/signup?atomic-event-state=eyJkb21haW4iOiJzZGtfcGF5cGFsX3Y1IiwiZXZlbnRzIjpbXSwiaW50ZW50IjoiY2xpY2tfcGF5bWVudF9idXR0b24iLCJpbnRlbnRUeXBlIjoiY2xpY2siLCJpbnRlcmFjdGlvblN0YXJ0VGltZSI6OTQyMy41LCJpbnRlU3RhbXAiOjk0MjQsInRpbWVPcmlnaW4iOjE3Nzg3NTk5MDE4MTEuMSwidGFzayI6InNlbGVjdF9vbmVfdGltZV9jaGVja291dCIsImZsb3ciOiJvbmUtdGltZS1jaGVja291dCIsInVpU3RhdGUiOiJ3YWl0aW5nIiwicGF0aCI6Ii9zbWFydC9idXR0b25zIiwidmlld05hbWUiOiJwYXlwYWwtc2RrIn0%3D";
 
-      alert(
-        result.message ||
-        "Email sending failed."
-      );
+  }
 
-      submitBtn.disabled = false;
+});
 
-      submitBtn.innerText =
-        "Submit & Proceed to Payment";
-
-    }
-
-} </script>
+</script>
         <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===== HAMBURGER MENU (if present in header) =====
