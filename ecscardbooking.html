@@ -256,27 +256,80 @@
     </form>
   </section>
 <script>
-document.getElementById("ecsForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
 
-  const formData = new FormData(this);
-  const data = Object.fromEntries(formData.entries());
+document.addEventListener("DOMContentLoaded", function () {
 
-  try {
-    await fetch("/api/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-  } catch (err) {
-    console.error(err);
+  const form = document.getElementById("ecsForm");
+
+  if (!form) {
+    console.error("Form not found");
+    return;
   }
 
-  // 👉 Direct PayPal redirect (no popup)
-  window.location.href = "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
+  form.addEventListener("submit", async function (e) {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const submitBtn = form.querySelector(".submit-btn");
+
+    // PAYPAL PAYMENT LINK
+    const paymentLink =
+      "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
+
+    // DISABLE BUTTON
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Processing...";
+    }
+
+    try {
+
+      // GET ALL FORM DATA
+      const formData = new FormData(form);
+
+      // DEBUG CHECK
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ": " + pair[1]);
+      }
+
+      // SEND DATA TO BACKEND
+      const response = await fetch("/api/send", {
+        method: "POST",
+        body: formData
+      });
+
+      console.log("API STATUS:", response.status);
+
+      // OPTIONAL SUCCESS CHECK
+      if (!response.ok) {
+        throw new Error("Failed to send form");
+      }
+
+      // SUCCESS REDIRECT
+      window.location.href = paymentLink;
+
+    } catch (error) {
+
+      console.error("FORM ERROR:", error);
+
+      alert("Something went wrong. Please try again.");
+
+    } finally {
+
+      // ENABLE BUTTON AGAIN
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText =
+          "Submit & Proceed to Payment";
+      }
+
+    }
+
+  });
+
 });
+
 </script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
