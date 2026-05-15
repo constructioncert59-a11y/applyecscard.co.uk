@@ -256,77 +256,27 @@
     </form>
   </section>
 <script>
+document.getElementById("ecsForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
 
-document.addEventListener("DOMContentLoaded", function () {
+  const formData = new FormData(this);
+  const data = Object.fromEntries(formData.entries());
 
-  const form = document.getElementById("ecsForm");
-
-  if (!form) {
-    console.error("Form not found");
-    return;
+  try {
+    await fetch("/api/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+  } catch (err) {
+    console.error(err);
   }
 
-  form.addEventListener("submit", async function (e) {
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const submitBtn =
-      form.querySelector(".submit-btn");
-
-    // YOUR PAYMENT LINK
-    const paymentLink =
-      "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
-
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerText = "Processing...";
-    }
-
-    try {
-
-      const formData = new FormData(form);
-
-      // SEND DATA
-const response = await fetch("/api/send", {
-
-  method: "POST",
-
-  body: formData
-
-      console.log("API STATUS:", response.status);
-
-      // REDIRECT
-      window.location.href = paymentLink;
-
-      return false;
-
-    } catch (error) {
-
-      console.error("FORM ERROR:", error);
-
-      // STILL REDIRECT
-      window.location.href = paymentLink;
-
-      return false;
-
-    } finally {
-
-      if (submitBtn) {
-
-        submitBtn.disabled = false;
-
-        submitBtn.innerText =
-          "Submit & Proceed to Payment";
-
-      }
-
-    }
-
-  });
-
+  // 👉 Direct PayPal redirect (no popup)
+  window.location.href = "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 });
-
 </script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
