@@ -3,43 +3,50 @@ import { Resend } from "resend";
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "25mb",
-    },
-  },
+      sizeLimit: "10mb"
+    }
+  }
 };
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
 
-  // ONLY POST METHOD
+  // ONLY POST
   if (req.method !== "POST") {
+
     return res.status(405).json({
       success: false,
       error: "Method Not Allowed"
     });
+
   }
 
   try {
 
-    const data = req.body;
+    const data = req.body || {};
 
     // REQUIRED FIELDS
     if (!data.email || !data.full_name) {
+
       return res.status(400).json({
         success: false,
         error: "Email and full_name are required"
       });
+
     }
 
     // EMAIL VALIDATION
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(data.email)) {
+
       return res.status(400).json({
         success: false,
         error: "Invalid email address"
       });
+
     }
 
     // =========================
@@ -60,81 +67,78 @@ export default async function handler(req, res) {
 
     // PHOTO
     if (
-      data.photo &&
+      typeof data.photo === "string" &&
       data.photo.startsWith("data:")
     ) {
 
       attachments.push({
         filename: "photo.png",
-        content: data.photo.split(",")[1],
+        content: data.photo.split(",")[1]
       });
+
     }
 
     // ID PROOF
     if (
-      data.id_proof &&
+      typeof data.id_proof === "string" &&
       data.id_proof.startsWith("data:")
     ) {
 
       attachments.push({
         filename: "id-proof.png",
-        content: data.id_proof.split(",")[1],
+        content: data.id_proof.split(",")[1]
       });
+
     }
 
-    // HS TEST PROOF
+    // HS TEST
     if (
-      data.hs_test_proof &&
+      typeof data.hs_test_proof === "string" &&
       data.hs_test_proof.startsWith("data:")
     ) {
 
       attachments.push({
         filename: "hs-proof.png",
-        content: data.hs_test_proof.split(",")[1],
+        content: data.hs_test_proof.split(",")[1]
       });
+
     }
 
     // =========================
-    // CREATE TABLE HTML
+    // TABLE HTML
     // =========================
 
-    const allDataHtml = Object.entries(normalFields)
-      .map(([key, value]) => {
+    const allDataHtml =
+      Object.entries(normalFields)
+        .map(([key, value]) => {
 
-        const safeKey = String(key)
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;");
+          return `
+            <tr>
+              <td style="
+                padding:10px;
+                border:1px solid #ddd;
+                background:#f5f5f5;
+              ">
+                <strong>${String(key)}</strong>
+              </td>
 
-        const safeValue = String(value || "-")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;");
+              <td style="
+                padding:10px;
+                border:1px solid #ddd;
+              ">
+                ${String(value || "-")}
+              </td>
+            </tr>
+          `;
 
-        return `
-          <tr>
-            <td style="
-              padding:10px;
-              border:1px solid #ddd;
-              background:#f5f5f5;
-            ">
-              <strong>${safeKey}</strong>
-            </td>
-
-            <td style="
-              padding:10px;
-              border:1px solid #ddd;
-            ">
-              ${safeValue}
-            </td>
-          </tr>
-        `;
-      })
-      .join("");
+        })
+        .join("");
 
     // =========================
-    // SEND ADMIN EMAIL
+    // ADMIN EMAIL
     // =========================
 
-    const adminResponse = await resend.emails.send({
+    await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
 
@@ -142,7 +146,8 @@ export default async function handler(req, res) {
 
       reply_to: data.email,
 
-      subject: `🔥 New ECS Booking - ${data.full_name}`,
+      subject:
+        `🔥 New ECS Booking - ${data.full_name}`,
 
       attachments,
 
@@ -165,11 +170,7 @@ export default async function handler(req, res) {
               New ECS Booking Received
             </h2>
 
-            <p>
-              A new ECS booking request has been submitted.
-            </p>
-
-            <table 
+            <table
               style="
                 width:100%;
                 border-collapse:collapse;
@@ -179,94 +180,48 @@ export default async function handler(req, res) {
               ${allDataHtml}
             </table>
 
-            <br>
-
-            <p>
-              Uploaded files are attached with this email.
-            </p>
-
           </div>
 
         </div>
       `
     });
 
-    console.log("ADMIN EMAIL SUCCESS:", adminResponse);
-
     // =========================
-    // SEND USER CONFIRMATION
+    // USER EMAIL
     // =========================
 
-    const userResponse = await resend.emails.send({
+    await resend.emails.send({
 
       from: "ECS Booking <onboarding@resend.dev>",
 
       to: data.email,
 
-      subject: "✅ ECS Booking Confirmation",
+      subject:
+        "✅ ECS Booking Confirmation",
 
       html: `
         <div style="
           font-family:Arial;
           padding:20px;
-          background:#f9f9f9;
-          line-height:1.6;
         ">
 
-          <div style="
-            max-width:700px;
-            margin:auto;
-            background:white;
-            padding:25px;
-            border-radius:12px;
-          ">
+          <h2>
+            Thank you ${data.full_name}
+          </h2>
 
-            <h2>
-              Thank you, ${data.full_name}
-            </h2>
-
-            <p>
-              Your ECS booking request has been received successfully.
-            </p>
-
-            <p>
-              Our team will contact you shortly regarding your booking.
-            </p>
-
-            <hr style="margin:25px 0;" />
-
-            <br>
-
-            <h3>ECS Test Rules</h3>
-
-            <ul>
-              <li>Arrive at least 15 minutes early</li>
-              <li>Bring valid original ID</li>
-              <li>Phones & bags must be stored in lockers</li>
-              <li>Cheating may result in cancellation</li>
-            </ul>
-
-            <br>
-
-            <p>
-              Regards,<br>
-              ECS Team
-            </p>
-
-          </div>
+          <p>
+            Your ECS booking request
+            has been received.
+          </p>
 
         </div>
       `
     });
 
-    console.log("USER EMAIL SUCCESS:", userResponse);
-
-    // SUCCESS RESPONSE
+    // SUCCESS JSON
     return res.status(200).json({
       success: true,
-      message: "Emails sent successfully",
-      adminResponse,
-      userResponse
+      message: "Emails sent successfully"
     });
 
   } catch (error) {
@@ -275,7 +230,11 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Email sending failed"
+      error:
+        error.message ||
+        "Internal Server Error"
     });
+
   }
+
 }
