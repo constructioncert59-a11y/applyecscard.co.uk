@@ -374,16 +374,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
       });
 
-      const result =
-        await response.json();
+      const text =
+  await response.text();
 
-      console.log("SERVER RESPONSE:", result);
+console.log("SERVER RESPONSE:", text);
 
-      if (!response.ok) {
-        throw new Error(
-          result.error || "Failed to submit"
-        );
-      }
+if (!response.ok) {
+  throw new Error(
+    text || "Failed to submit"
+  );
+}
 
       // =========================
       // SUCCESS REDIRECT
