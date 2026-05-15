@@ -236,5 +236,153 @@ export default async function handler(req, res) {
     });
 
   }
+// =========================
+// SEND USER CONFIRMATION
+// =========================
 
+const userResponse = await resend.emails.send({
+
+  from: "ECS Booking <onboarding@resend.dev>",
+
+  to: data.email,
+
+  subject: "✅ ECS Booking Confirmation",
+
+  html: `
+    <div style="
+      font-family:Arial;
+      background:#f4f4f4;
+      padding:30px;
+      line-height:1.7;
+    ">
+
+      <div style="
+        max-width:700px;
+        margin:auto;
+        background:#ffffff;
+        border-radius:12px;
+        padding:30px;
+      ">
+
+        <h1 style="
+          color:#2e7d32;
+          margin-bottom:20px;
+        ">
+          ✅ Booking Confirmed
+        </h1>
+
+        <p>
+          Hello <strong>${data.full_name}</strong>,
+        </p>
+
+        <p>
+          Thank you for submitting your ECS booking application.
+          Your form has been received successfully.
+        </p>
+
+        <p>
+          Our team will now review your application
+          and contact you shortly by email or phone.
+        </p>
+
+        <hr style="
+          margin:25px 0;
+          border:none;
+          border-top:1px solid #ddd;
+        " />
+
+        <h3>
+          Your Submitted Details
+        </h3>
+
+        <table style="
+          width:100%;
+          border-collapse:collapse;
+          margin-top:15px;
+        ">
+
+          <tr>
+            <td style="padding:10px;border:1px solid #ddd;">
+              Full Name
+            </td>
+
+            <td style="padding:10px;border:1px solid #ddd;">
+              ${data.full_name || "-"}
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:10px;border:1px solid #ddd;">
+              Email
+            </td>
+
+            <td style="padding:10px;border:1px solid #ddd;">
+              ${data.email || "-"}
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:10px;border:1px solid #ddd;">
+              Mobile
+            </td>
+
+            <td style="padding:10px;border:1px solid #ddd;">
+              ${data.mobile || "-"}
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:10px;border:1px solid #ddd;">
+              Application Type
+            </td>
+
+            <td style="padding:10px;border:1px solid #ddd;">
+              ${data.ecs_card_type || "-"}
+            </td>
+          </tr>
+
+        </table>
+
+        <br>
+
+        <h3>
+          Important Instructions
+        </h3>
+
+        <ul>
+          <li>
+            Arrive at least 15 minutes early
+          </li>
+
+          <li>
+            Bring valid original ID
+          </li>
+
+          <li>
+            Phones & bags must be stored in lockers
+          </li>
+
+          <li>
+            Cheating may result in cancellation
+          </li>
+        </ul>
+
+        <br>
+
+        <p>
+          Regards,<br>
+          <strong>ECS Team</strong>
+        </p>
+
+      </div>
+
+    </div>
+  `
+});
+
+console.log(
+  "USER EMAIL SUCCESS:",
+  userResponse
+);
 }
+
