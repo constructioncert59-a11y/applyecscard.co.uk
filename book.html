@@ -997,45 +997,273 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
       showStep(currentStep);
 
       /* ====== DYNAMIC MAP BASED ON TEST CENTRE ====== */
-      const testCentreSelect = document.getElementById("test_centre");
-      const mapFrame = document.getElementById("testCentreMapFrame");
-      const mapLabel = document.getElementById("mapLabel");
+/* ====== DYNAMIC ECS / CITB TEST CENTRE MAP ====== */
 
-      const centreMapQueries = {
-        "London - Stratford": "Stratford%20London%20CITB%20test%20centre",
-        "London - Croydon": "Croydon%20London%20CITB%20test%20centre",
-        "Birmingham": "Birmingham%20UK%20CITB%20test%20centre",
-        "Manchester": "Manchester%20UK%20CITB%20test%20centre",
-        "Leeds": "Leeds%20UK%20CITB%20test%20centre",
-        "Glasgow": "Glasgow%20UK%20CITB%20test%20centre",
-        "Cardiff": "Cardiff%20UK%20CITB%20test%20centre",
-        "Liverpool": "Liverpool%20UK%20CITB%20test%20centre",
-        "Sheffield": "Sheffield%20UK%20CITB%20test%20centre",
-        "Newcastle upon Tyne": "Newcastle%20upon%20Tyne%20CITB%20test%20centre",
-        "Bristol": "Bristol%20UK%20CITB%20test%20centre",
-        "Nottingham": "Nottingham%20UK%20CITB%20test%20centre",
-        "Other / Remote options": "United%20Kingdom%20CITB%20test%20centre"
-      };
+const testCentreSelect =
+  document.getElementById("test_centre");
 
-      function updateMapFromCentre(centre) {
-        const query = centreMapQueries[centre] || "United%20Kingdom%20CITB%20test%20centre";
-        if (mapFrame) {
-          mapFrame.src = `https://maps.google.com/maps?q=${query}&t=&z=12&ie=UTF8&iwloc=&output=embed`;
-        }
-        if (mapLabel) {
-          mapLabel.textContent = centre
-            ? `Approximate location for: ${centre} (for guidance only)`
-            : "Test centre location (map updates when you choose or search a centre)";
-        }
-      }
+const mapFrame =
+  document.getElementById("testCentreMapFrame");
 
-      if (testCentreSelect) {
-        testCentreSelect.addEventListener("change", () => {
-          const centre = testCentreSelect.value;
-          if (centre) updateMapFromCentre(centre);
-        });
-      }
+const mapLabel =
+  document.getElementById("mapLabel");
 
+
+const centreMapQueries = {
+
+  /* ===== LONDON ===== */
+  "London Stratford":
+    "Stratford London ECS test centre",
+
+  "London Croydon":
+    "Croydon London ECS test centre",
+
+  "London Wembley":
+    "Wembley London ECS test centre",
+
+  "London Hammersmith":
+    "Hammersmith London ECS test centre",
+
+  "London Canary Wharf":
+    "Canary Wharf London ECS test centre",
+
+  "London Enfield":
+    "Enfield London ECS test centre",
+
+  "London Ilford":
+    "Ilford London ECS test centre",
+
+  "London Romford":
+    "Romford London ECS test centre",
+
+
+  /* ===== ENGLAND ===== */
+  "Birmingham":
+    "Birmingham UK ECS test centre",
+
+  "Manchester":
+    "Manchester UK ECS test centre",
+
+  "Leeds":
+    "Leeds UK ECS test centre",
+
+  "Liverpool":
+    "Liverpool UK ECS test centre",
+
+  "Sheffield":
+    "Sheffield UK ECS test centre",
+
+  "Newcastle upon Tyne":
+    "Newcastle upon Tyne ECS test centre",
+
+  "Bristol":
+    "Bristol UK ECS test centre",
+
+  "Nottingham":
+    "Nottingham UK ECS test centre",
+
+  "Leicester":
+    "Leicester UK ECS test centre",
+
+  "Coventry":
+    "Coventry UK ECS test centre",
+
+  "Reading":
+    "Reading UK ECS test centre",
+
+  "Oxford":
+    "Oxford UK ECS test centre",
+
+  "Cambridge":
+    "Cambridge UK ECS test centre",
+
+  "Southampton":
+    "Southampton UK ECS test centre",
+
+  "Portsmouth":
+    "Portsmouth UK ECS test centre",
+
+  "Brighton":
+    "Brighton UK ECS test centre",
+
+  "Milton Keynes":
+    "Milton Keynes ECS test centre",
+
+  "Luton":
+    "Luton UK ECS test centre",
+
+  "Peterborough":
+    "Peterborough UK ECS test centre",
+
+  "Norwich":
+    "Norwich UK ECS test centre",
+
+  "Hull":
+    "Hull UK ECS test centre",
+
+  "York":
+    "York UK ECS test centre",
+
+  "Blackpool":
+    "Blackpool UK ECS test centre",
+
+  "Preston":
+    "Preston UK ECS test centre",
+
+  "Bolton":
+    "Bolton UK ECS test centre",
+
+  "Stoke-on-Trent":
+    "Stoke-on-Trent ECS test centre",
+
+  "Derby":
+    "Derby UK ECS test centre",
+
+  "Plymouth":
+    "Plymouth UK ECS test centre",
+
+  "Exeter":
+    "Exeter UK ECS test centre",
+
+  "Swindon":
+    "Swindon UK ECS test centre",
+
+  "Chelmsford":
+    "Chelmsford UK ECS test centre",
+
+  "Maidstone":
+    "Maidstone UK ECS test centre",
+
+  "Bradford":
+    "Bradford UK ECS test centre",
+
+  "Huddersfield":
+    "Huddersfield UK ECS test centre",
+
+  "Oldham":
+    "Oldham UK ECS test centre",
+
+  "Wolverhampton":
+    "Wolverhampton UK ECS test centre",
+
+  "Northampton":
+    "Northampton UK ECS test centre",
+
+  "Slough":
+    "Slough UK ECS test centre",
+
+  "Watford":
+    "Watford UK ECS test centre",
+
+  "Ipswich":
+    "Ipswich UK ECS test centre",
+
+  "Bournemouth":
+    "Bournemouth UK ECS test centre",
+
+  "Poole":
+    "Poole UK ECS test centre",
+
+  "Cheltenham":
+    "Cheltenham UK ECS test centre",
+
+  "Gloucester":
+    "Gloucester UK ECS test centre",
+
+  "Warrington":
+    "Warrington UK ECS test centre",
+
+  "Burnley":
+    "Burnley UK ECS test centre",
+
+  "Carlisle":
+    "Carlisle UK ECS test centre",
+
+
+  /* ===== SCOTLAND ===== */
+  "Glasgow":
+    "Glasgow UK ECS test centre",
+
+  "Edinburgh":
+    "Edinburgh UK ECS test centre",
+
+  "Aberdeen":
+    "Aberdeen UK ECS test centre",
+
+  "Dundee":
+    "Dundee UK ECS test centre",
+
+  "Inverness":
+    "Inverness UK ECS test centre",
+
+
+  /* ===== WALES ===== */
+  "Cardiff":
+    "Cardiff UK ECS test centre",
+
+  "Swansea":
+    "Swansea UK ECS test centre",
+
+  "Newport Wales":
+    "Newport Wales ECS test centre",
+
+
+  /* ===== NORTHERN IRELAND ===== */
+  "Belfast":
+    "Belfast UK ECS test centre",
+
+
+  /* ===== ONLINE ===== */
+  "Online Assessment":
+    "United Kingdom online ECS assessment",
+
+
+  /* ===== OTHER ===== */
+  "Other":
+    "United Kingdom ECS test centre"
+
+};
+
+
+
+function updateMapFromCentre(centre) {
+
+  const query =
+    centreMapQueries[centre]
+    || "United Kingdom ECS test centre";
+
+  if (mapFrame) {
+
+    mapFrame.src =
+      `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=12&ie=UTF8&iwloc=&output=embed`;
+
+  }
+
+  if (mapLabel) {
+
+    mapLabel.textContent =
+      centre
+      ? `Approximate location for: ${centre}`
+      : "Test centre map updates automatically";
+
+  }
+
+}
+
+
+
+if (testCentreSelect) {
+
+  testCentreSelect.addEventListener("change", () => {
+
+    const centre =
+      testCentreSelect.value;
+
+    updateMapFromCentre(centre);
+
+  });
+
+}
       /* ====== SEARCH FILTER FOR TEST CENTRES ====== */
       const searchInput = document.getElementById("test_centre_search");
 
