@@ -1,380 +1,226 @@
-import { Resend } from "resend";
+document.addEventListener("DOMContentLoaded", function () {
 
+  const form =
+    document.getElementById("ecsForm");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+  if (!form) return;
 
-export default async function handler(req, res) {
+  form.addEventListener("submit", async function (e) {
 
-  // ONLY POST
-  if (req.method !== "POST") {
+    e.preventDefault();
 
-    return res.status(405).json({
-      success: false,
-      error: "Method Not Allowed"
-    });
+    const submitBtn =
+      document.querySelector(".submit-btn");
 
-  }
+    // =========================
+    // DISABLE BUTTON
+    // =========================
 
-  try {
+    submitBtn.disabled = true;
 
-    const data = req.body || {};
+    submitBtn.innerText =
+      "Processing...";
 
-    // REQUIRED FIELDS
-    if (!data.email || !data.full_name) {
+    try {
 
-      return res.status(400).json({
-        success: false,
-        error: "Email and full_name are required"
+      // =========================
+      // FORM DATA
+      // =========================
+
+      const formData =
+        new FormData(form);
+
+      // =========================
+      // CLOUDINARY UPLOAD FUNCTION
+      // =========================
+
+      async function uploadToCloudinary(file) {
+
+        if (!file) return "";
+
+        const cloudData =
+          new FormData();
+
+        cloudData.append(
+          "file",
+          file
+        );
+
+        // YOUR CLOUDINARY PRESET
+        cloudData.append(
+          "upload_preset",
+          "YOUR_UPLOAD_PRESET"
+        );
+
+        const response =
+          await fetch(
+            "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/auto/upload",
+            {
+              method: "POST",
+              body: cloudData
+            }
+          );
+
+        const result =
+          await response.json();
+
+        // ERROR CHECK
+        if (!response.ok) {
+
+          throw new Error(
+            result.error?.message ||
+            "Cloudinary upload failed"
+          );
+
+        }
+
+        return result.secure_url;
+
+      }
+
+      // =========================
+      // GET FILES
+      // =========================
+
+      const photo =
+        form.querySelector(
+          'input[name="photo"]'
+        )?.files[0];
+
+      const idProof =
+        form.querySelector(
+          'input[name="id_proof"]'
+        )?.files[0];
+
+      const hsProof =
+        form.querySelector(
+          'input[name="hs_test_proof"]'
+        )?.files[0];
+
+      // =========================
+      // UPLOAD FILES
+      // =========================
+
+      const photoUrl =
+        await uploadToCloudinary(photo);
+
+      const idProofUrl =
+        await uploadToCloudinary(idProof);
+
+      const hsProofUrl =
+        await uploadToCloudinary(hsProof);
+
+      // =========================
+      // NORMAL FORM DATA
+      // =========================
+
+      const data = {};
+
+      formData.forEach((value, key) => {
+
+        // REMOVE FILE OBJECTS
+        if (!(value instanceof File)) {
+
+          data[key] = value;
+
+        }
+
       });
 
-    }
+      // =========================
+      // ADD FILE URLS
+      // =========================
 
-    // EMAIL VALIDATION
-    const emailRegex =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      data.photo =
+        photoUrl;
 
-    if (!emailRegex.test(data.email)) {
+      data.id_proof =
+        idProofUrl;
 
-      return res.status(400).json({
-        success: false,
-        error: "Invalid email address"
-      });
+      data.hs_test_proof =
+        hsProofUrl;
 
-    }
+      // =========================
+      // SEND TO BACKEND
+      // =========================
 
-    // =========================
-    // REMOVE FILES FROM TABLE
-    // =========================
+      const response =
+        await fetch("/api/send", {
 
-    const normalFields = { ...data };
+          method: "POST",
 
-    delete normalFields.photo;
-    delete normalFields.id_proof;
-    delete normalFields.hs_test_proof;
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
 
-    // =========================
-    // ATTACHMENTS
-    // =========================
+          body:
+            JSON.stringify(data)
 
-    const attachments = [];
+        });
 
-    // PHOTO
-    if (
-      typeof data.photo === "string" &&
-      data.photo.startsWith("data:")
-    ) {
+      const result =
+        await response.json();
 
-      attachments.push({
-        filename: "photo.png",
-        content: data.photo.split(",")[1]
-      });
+      // =========================
+      // API ERROR
+      // =========================
 
-    }
+      if (!response.ok) {
 
-    // ID PROOF
-    if (
-      typeof data.id_proof === "string" &&
-      data.id_proof.startsWith("data:")
-    ) {
+        throw new Error(
+          result.error ||
+          "Submission failed"
+        );
 
-      attachments.push({
-        filename: "id-proof.png",
-        content: data.id_proof.split(",")[1]
-      });
+      }
 
-    }
+      // =========================
+      // SUCCESS ALERT
+      // =========================
 
-    // HS TEST
-    if (
-      typeof data.hs_test_proof === "string" &&
-      data.hs_test_proof.startsWith("data:")
-    ) {
+      alert(
+        "Application submitted successfully!"
+      );
 
-      attachments.push({
-        filename: "hs-proof.png",
-        content: data.hs_test_proof.split(",")[1]
-      });
+      // =========================
+      // RESET FORM
+      // =========================
 
-    }
+      form.reset();
 
-    // =========================
-    // TABLE HTML
-    // =========================
+      // =========================
+      // REDIRECT TO PAYMENT
+      // =========================
 
-    const allDataHtml =
-      Object.entries(normalFields)
-        .map(([key, value]) => {
+      window.location.href =
+        "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 
-          return `
-            <tr>
-              <td style="
-                padding:10px;
-                border:1px solid #ddd;
-                background:#f5f5f5;
-              ">
-                <strong>${String(key)}</strong>
-              </td>
+    } catch (error) {
 
-              <td style="
-                padding:10px;
-                border:1px solid #ddd;
-              ">
-                ${String(value || "-")}
-              </td>
-            </tr>
-          `;
+      console.error(
+        "FORM ERROR:",
+        error
+      );
 
-        })
-        .join("");
-
-    // =========================
-    // ADMIN EMAIL
-    // =========================
-
-    await resend.emails.send({
-
-      from: "ECS Booking <onboarding@resend.dev>",
-
-      to: "applyecs4@gmail.com",
-
-      reply_to: data.email,
-
-      subject:
-        `🔥 New ECS Booking - ${data.full_name}`,
-
-      attachments,
-
-      html: `
-        <div style="
-          font-family:Arial;
-          padding:20px;
-          background:#f9f9f9;
-        ">
-
-          <div style="
-            max-width:700px;
-            margin:auto;
-            background:white;
-            padding:25px;
-            border-radius:12px;
-          ">
-
-            <h2>
-              New ECS Booking Received
-            </h2>
-
-            <table
-              style="
-                width:100%;
-                border-collapse:collapse;
-                margin-top:20px;
-              "
-            >
-              ${allDataHtml}
-            </table>
-
-          </div>
-
-        </div>
-      `
-    });
-
-    // =========================
-    // USER EMAIL
-    // =========================
-
-    await resend.emails.send({
-
-      from: "ECS Booking <onboarding@resend.dev>",
-
-      to: data.email,
-
-      subject:
-        "✅ ECS Booking Confirmation",
-
-      html: `
-        <div style="
-          font-family:Arial;
-          padding:20px;
-        ">
-
-          <h2>
-            Thank you ${data.full_name}
-          </h2>
-
-          <p>
-            Your ECS booking request
-            has been received.
-          </p>
-
-        </div>
-      `
-    });
-
-    // SUCCESS JSON
-    return res.status(200).json({
-      success: true,
-      message: "Emails sent successfully"
-    });
-
-  } catch (error) {
-
-    console.error("EMAIL ERROR:", error);
-
-    return res.status(500).json({
-      success: false,
-      error:
+      alert(
         error.message ||
-        "Internal Server Error"
-    });
+        "Something went wrong"
+      );
 
-  }
-// =========================
-// SEND USER CONFIRMATION
-// =========================
+    } finally {
 
-const userResponse = await resend.emails.send({
+      // =========================
+      // ENABLE BUTTON
+      // =========================
 
-  from: "ECS Booking <onboarding@resend.dev>",
+      submitBtn.disabled = false;
 
-  to: data.email,
+      submitBtn.innerText =
+        "Submit & Proceed to Payment";
 
-  subject: "✅ ECS Booking Confirmation",
+    }
 
-  html: `
-    <div style="
-      font-family:Arial;
-      background:#f4f4f4;
-      padding:30px;
-      line-height:1.7;
-    ">
+  });
 
-      <div style="
-        max-width:700px;
-        margin:auto;
-        background:#ffffff;
-        border-radius:12px;
-        padding:30px;
-      ">
-
-        <h1 style="
-          color:#2e7d32;
-          margin-bottom:20px;
-        ">
-          ✅ Booking Confirmed
-        </h1>
-
-        <p>
-          Hello <strong>${data.full_name}</strong>,
-        </p>
-
-        <p>
-          Thank you for submitting your ECS booking application.
-          Your form has been received successfully.
-        </p>
-
-        <p>
-          Our team will now review your application
-          and contact you shortly by email or phone.
-        </p>
-
-        <hr style="
-          margin:25px 0;
-          border:none;
-          border-top:1px solid #ddd;
-        " />
-
-        <h3>
-          Your Submitted Details
-        </h3>
-
-        <table style="
-          width:100%;
-          border-collapse:collapse;
-          margin-top:15px;
-        ">
-
-          <tr>
-            <td style="padding:10px;border:1px solid #ddd;">
-              Full Name
-            </td>
-
-            <td style="padding:10px;border:1px solid #ddd;">
-              ${data.full_name || "-"}
-            </td>
-          </tr>
-
-          <tr>
-            <td style="padding:10px;border:1px solid #ddd;">
-              Email
-            </td>
-
-            <td style="padding:10px;border:1px solid #ddd;">
-              ${data.email || "-"}
-            </td>
-          </tr>
-
-          <tr>
-            <td style="padding:10px;border:1px solid #ddd;">
-              Mobile
-            </td>
-
-            <td style="padding:10px;border:1px solid #ddd;">
-              ${data.mobile || "-"}
-            </td>
-          </tr>
-
-          <tr>
-            <td style="padding:10px;border:1px solid #ddd;">
-              Application Type
-            </td>
-
-            <td style="padding:10px;border:1px solid #ddd;">
-              ${data.ecs_card_type || "-"}
-            </td>
-          </tr>
-
-        </table>
-
-        <br>
-
-        <h3>
-          Important Instructions
-        </h3>
-
-        <ul>
-          <li>
-            Arrive at least 15 minutes early
-          </li>
-
-          <li>
-            Bring valid original ID
-          </li>
-
-          <li>
-            Phones & bags must be stored in lockers
-          </li>
-
-          <li>
-            Cheating may result in cancellation
-          </li>
-        </ul>
-
-        <br>
-
-        <p>
-          Regards,<br>
-          <strong>ECS Team</strong>
-        </p>
-
-      </div>
-
-    </div>
-  `
 });
-
-console.log(
-  "USER EMAIL SUCCESS:",
-  userResponse
-);
-}
