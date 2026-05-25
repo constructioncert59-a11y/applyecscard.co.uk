@@ -389,35 +389,51 @@ if (!response.ok) {
       // SUCCESS REDIRECT
       // =========================
 
-window.location.href =
-  "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
-    } catch (error) {
+// =========================
+// SUCCESS REDIRECT
+// =========================
 
-      console.error("FORM ERROR:", error);
+alert(
+  "Application submitted successfully!"
+);
 
-      alert(
-        error.message ||
-        "Something went wrong"
-      );
+// SMALL DELAY
+setTimeout(() => {
 
-    } finally {
+  window.location.href =
+    "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 
-      // BUTTON ENABLE
-      if (submitBtn) {
+}, 1000);
 
-        submitBtn.disabled = false;
+} catch (error) {
 
-        submitBtn.innerText =
-          "Submit & Proceed to Payment";
+  console.error(
+    "FORM ERROR:",
+    error
+  );
 
-      }
+  alert(
+    error.message ||
+    "Something went wrong"
+  );
 
-    }
+} finally {
 
-  });
+  // BUTTON ENABLE
+  if (submitBtn) {
+
+    submitBtn.disabled = false;
+
+    submitBtn.innerText =
+      "Submit & Proceed to Payment";
+
+  }
+
+}
 
 });
 
+});
 </script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
