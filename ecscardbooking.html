@@ -303,45 +303,59 @@ const paymentLink =
       // =========================
       // FILE TO BASE64
       // =========================
-document.addEventListener("DOMContentLoaded", function () {
 
-  const form = document.getElementById("ecsForm");
+      async function fileToBase64(file) {
 
-  if (!form) {
-    console.error("Form not found");
-    return;
-  }
+        return new Promise((resolve, reject) => {
 
-  form.addEventListener("submit", async function (e) {
+          const reader = new FileReader();
 
-    e.preventDefault();
+          reader.readAsDataURL(file);
 
-    const submitBtn =
-      form.querySelector(".submit-btn");
+          reader.onload = () => resolve(reader.result);
 
-    const paymentLink =
-      "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
+          reader.onerror = error => reject(error);
 
-    // =========================
-    // BUTTON DISABLE
-    // =========================
+        });
 
-    if (submitBtn) {
-
-      submitBtn.disabled = true;
-
-      submitBtn.innerText =
-        "Processing...";
-
-    }
-
-    try {
-
+      }
       // =========================
-      // FORM DATA
+      // PHOTO
       // =========================
 
-      const formData = new FormData(form);
+      const photo =
+        form.querySelector('input[name="photo"]')?.files[0];
+
+      if (photo) {
+        data.photo =
+          await fileToBase64(photo);
+      }
+
+      // =========================
+      // ID PROOF
+      // =========================
+
+      const idProof =
+        form.querySelector('input[name="id_proof"]')?.files[0];
+
+      if (idProof) {
+        data.id_proof =
+          await fileToBase64(idProof);
+      }
+
+      // =========================
+      // HS TEST PROOF
+      // =========================
+
+      const hsProof =
+        form.querySelector('input[name="hs_test_proof"]')?.files[0];
+
+      if (hsProof) {
+        data.hs_test_proof =
+          await fileToBase64(hsProof);
+      }
+
+      console.log("FINAL DATA:", data);
 
       // =========================
       // SEND TO BACKEND
@@ -351,76 +365,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
         method: "POST",
 
-        body: formData
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(data)
 
       });
 
-      // =========================
-      // RESPONSE
-      // =========================
-
       const text =
-        await response.text();
+  await response.text();
 
-      console.log(
-        "SERVER RESPONSE:",
-        text
-      );
+console.log("SERVER RESPONSE:", text);
 
-      if (!response.ok) {
-
-        throw new Error(
-          text || "Failed to submit"
-        );
-
-      }
+if (!response.ok) {
+  throw new Error(
+    text || "Failed to submit"
+  );
+}
 
       // =========================
-      // SUCCESS
+      // SUCCESS REDIRECT
       // =========================
 
-      alert(
-        "Application submitted successfully!"
-      );
+// =========================
+// SUCCESS REDIRECT
+// =========================
 
-      // SMALL DELAY
-      setTimeout(() => {
+alert(
+  "Application submitted successfully!"
+);
 
-        window.location.href =
-          paymentLink;
+// SMALL DELAY
+setTimeout(() => {
 
-      }, 1000);
+  window.location.href =
+    "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 
-    } catch (error) {
+}, 1000);
 
-      console.error(
-        "FORM ERROR:",
-        error
-      );
+} catch (error) {
 
-      alert(
-        error.message ||
-        "Something went wrong"
-      );
+  console.error(
+    "FORM ERROR:",
+    error
+  );
 
-    } finally {
+  alert(
+    error.message ||
+    "Something went wrong"
+  );
 
-      // =========================
-      // BUTTON ENABLE
-      // =========================
+} finally {
 
-      if (submitBtn) {
+  // BUTTON ENABLE
+  if (submitBtn) {
 
-        submitBtn.disabled = false;
+    submitBtn.disabled = false;
 
-        submitBtn.innerText =
-          "Submit & Proceed to Payment";
+    submitBtn.innerText =
+      "Submit & Proceed to Payment";
 
-      }
+  }
 
-    }
+}
 
-  });
+});
+
+});
 </script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
