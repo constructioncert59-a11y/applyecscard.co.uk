@@ -303,59 +303,45 @@ const paymentLink =
       // =========================
       // FILE TO BASE64
       // =========================
+document.addEventListener("DOMContentLoaded", function () {
 
-      async function fileToBase64(file) {
+  const form = document.getElementById("ecsForm");
 
-        return new Promise((resolve, reject) => {
+  if (!form) {
+    console.error("Form not found");
+    return;
+  }
 
-          const reader = new FileReader();
+  form.addEventListener("submit", async function (e) {
 
-          reader.readAsDataURL(file);
+    e.preventDefault();
 
-          reader.onload = () => resolve(reader.result);
+    const submitBtn =
+      form.querySelector(".submit-btn");
 
-          reader.onerror = error => reject(error);
+    const paymentLink =
+      "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 
-        });
+    // =========================
+    // BUTTON DISABLE
+    // =========================
 
-      }
-      // =========================
-      // PHOTO
-      // =========================
+    if (submitBtn) {
 
-      const photo =
-        form.querySelector('input[name="photo"]')?.files[0];
+      submitBtn.disabled = true;
 
-      if (photo) {
-        data.photo =
-          await fileToBase64(photo);
-      }
+      submitBtn.innerText =
+        "Processing...";
 
-      // =========================
-      // ID PROOF
-      // =========================
+    }
 
-      const idProof =
-        form.querySelector('input[name="id_proof"]')?.files[0];
-
-      if (idProof) {
-        data.id_proof =
-          await fileToBase64(idProof);
-      }
+    try {
 
       // =========================
-      // HS TEST PROOF
+      // FORM DATA
       // =========================
 
-      const hsProof =
-        form.querySelector('input[name="hs_test_proof"]')?.files[0];
-
-      if (hsProof) {
-        data.hs_test_proof =
-          await fileToBase64(hsProof);
-      }
-
-      console.log("FINAL DATA:", data);
+      const formData = new FormData(form);
 
       // =========================
       // SEND TO BACKEND
@@ -365,72 +351,76 @@ const paymentLink =
 
         method: "POST",
 
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify(data)
+        body: formData
 
       });
 
+      // =========================
+      // RESPONSE
+      // =========================
+
       const text =
-  await response.text();
+        await response.text();
 
-console.log("SERVER RESPONSE:", text);
+      console.log(
+        "SERVER RESPONSE:",
+        text
+      );
 
-if (!response.ok) {
-  throw new Error(
-    text || "Failed to submit"
-  );
-}
+      if (!response.ok) {
+
+        throw new Error(
+          text || "Failed to submit"
+        );
+
+      }
 
       // =========================
-      // SUCCESS REDIRECT
+      // SUCCESS
       // =========================
 
-// =========================
-// SUCCESS REDIRECT
-// =========================
+      alert(
+        "Application submitted successfully!"
+      );
 
-alert(
-  "Application submitted successfully!"
-);
+      // SMALL DELAY
+      setTimeout(() => {
 
-// SMALL DELAY
-setTimeout(() => {
+        window.location.href =
+          paymentLink;
 
-  window.location.href =
-    "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
+      }, 1000);
 
-}, 1000);
+    } catch (error) {
 
-} catch (error) {
+      console.error(
+        "FORM ERROR:",
+        error
+      );
 
-  console.error(
-    "FORM ERROR:",
-    error
-  );
+      alert(
+        error.message ||
+        "Something went wrong"
+      );
 
-  alert(
-    error.message ||
-    "Something went wrong"
-  );
+    } finally {
 
-} finally {
+      // =========================
+      // BUTTON ENABLE
+      // =========================
 
-  // BUTTON ENABLE
-  if (submitBtn) {
+      if (submitBtn) {
 
-    submitBtn.disabled = false;
+        submitBtn.disabled = false;
 
-    submitBtn.innerText =
-      "Submit & Proceed to Payment";
+        submitBtn.innerText =
+          "Submit & Proceed to Payment";
 
-  }
+      }
 
-}
+    }
 
-});
+  });
 
 });
 </script>
