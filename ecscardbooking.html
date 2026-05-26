@@ -377,13 +377,6 @@ const paymentLink =
   await response.text();
 
 console.log("SERVER RESPONSE:", text);
-
-if (!response.ok) {
-  throw new Error(
-    text || "Failed to submit"
-  );
-}
-
       // =========================
       // SUCCESS REDIRECT
       // =========================
