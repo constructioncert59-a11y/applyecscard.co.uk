@@ -259,52 +259,49 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // FORM
-  // =========================
+  // ====================================
+  // FORM ELEMENT
+  // ====================================
 
   const form =
     document.getElementById("ecsForm");
 
   if (!form) {
-    console.error("ecsForm not found");
+    console.error("Form not found");
     return;
   }
 
-  // =========================
-  // PAYPAL LINK
-  // =========================
+  // ====================================
+  // PAYMENT LINK
+  // ====================================
 
   const paymentLink =
     "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 
-  // =========================
+  // ====================================
   // SUBMIT BUTTON
-  // =========================
+  // ====================================
 
   const submitBtn =
     form.querySelector(".submit-btn");
 
-  // =========================
-  // MAX FILE SIZE
-  // =========================
+  // ====================================
+  // SETTINGS
+  // ====================================
 
   const MAX_FILE_SIZE =
-    50 * 1024 * 1024; // 50MB
-
-  // =========================
-  // ALLOWED FILE TYPES
-  // =========================
+    100 * 1024 * 1024; // 100MB
 
   const allowedTypes = [
     "image/jpeg",
     "image/png",
+    "image/jpg",
     "application/pdf"
   ];
 
-  // =========================
-  // SUBMIT FORM
-  // =========================
+  // ====================================
+  // FORM SUBMIT
+  // ====================================
 
   form.addEventListener("submit", async (e) => {
 
@@ -312,9 +309,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
 
-      // =========================
+      // ====================================
       // BUTTON LOADING
-      // =========================
+      // ====================================
 
       if (submitBtn) {
 
@@ -325,17 +322,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
 
-      // =========================
+      // ====================================
       // CREATE FORMDATA
-      // =========================
+      // ====================================
 
       const formData =
         new FormData(form);
 
-      // =========================
-      // =========================
+      // ====================================
+      // REQUIRED FIELDS
+      // ====================================
+
+      const requiredFields = [
+        "full_name",
+        "dob",
+        "ni_number",
+        "gender",
+        "street_address",
+        "city",
+        "postcode",
+        "mobile",
+        "email",
+        "confirm_email",
+        "occupation",
+        "hs_test"
+      ];
+
+      for (const field of requiredFields) {
+
+        const value =
+          formData.get(field);
+
+        if (!value || !value.toString().trim()) {
+
+          throw new Error(
+            `${field.replace(/_/g, " ")} is required`
+          );
+
+        }
+
+      }
+
+      // ====================================
+      // EMAIL MATCH CHECK
+      // ====================================
+
+      const email =
+        formData.get("email");
+
+      const confirmEmail =
+        formData.get("confirm_email");
+
+      if (email !== confirmEmail) {
+
+        throw new Error(
+          "Email addresses do not match"
+        );
+
+      }
+
+      // ====================================
+      // EMAIL FORMAT CHECK
+      // ====================================
+
+      const emailRegex =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(email)) {
+
+        throw new Error(
+          "Invalid email address"
+        );
+
+      }
+
+      // ====================================
       // FILE VALIDATION
-      // =========================
+      // ====================================
 
       const fileFields = [
         "photo",
@@ -352,22 +415,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (file) {
 
-          // FILE SIZE CHECK
+          // FILE SIZE
           if (file.size > MAX_FILE_SIZE) {
 
             throw new Error(
-              `${field} file is too large. Maximum 50MB allowed.`
+              `${field.replace(/_/g, " ")} exceeds 100MB limit`
             );
 
           }
 
-          // FILE TYPE CHECK
+          // FILE TYPE
           if (
             !allowedTypes.includes(file.type)
           ) {
 
             throw new Error(
-              `${field} has invalid file type`
+              `${field.replace(/_/g, " ")} file type not allowed`
             );
 
           }
@@ -376,17 +439,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
 
-      // =========================
+      // ====================================
+      // INTERNET CHECK
+      // ====================================
+
+      if (!navigator.onLine) {
+
+        throw new Error(
+          "No internet connection"
+        );
+
+      }
+
+      // ====================================
       // DEBUG
-      // =========================
+      // ====================================
 
       console.log(
         "Submitting application..."
       );
 
-      // =========================
-      // SEND TO BACKEND
-      // =========================
+      // ====================================
+      // API REQUEST
+      // ====================================
 
       const response =
         await fetch("/api/send", {
@@ -397,9 +472,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-      // =========================
-      // HANDLE RESPONSE
-      // =========================
+      // ====================================
+      // RESPONSE TEXT
+      // ====================================
 
       const result =
         await response.text();
@@ -409,49 +484,58 @@ document.addEventListener("DOMContentLoaded", () => {
         result
       );
 
-      // =========================
-      // ERROR RESPONSE
-      // =========================
+      // ====================================
+      // ERROR CHECK
+      // ====================================
 
       if (!response.ok) {
 
         throw new Error(
-          result || "Upload failed"
+          result ||
+          "Upload failed"
         );
 
       }
 
-      // =========================
+      // ====================================
       // SUCCESS
-      // =========================
+      // ====================================
 
       alert(
         "Application submitted successfully!"
       );
 
-      // =========================
-      // RESET FORM
-      // =========================
+      // ====================================
+      // FORM RESET
+      // ====================================
 
       form.reset();
 
-      // =========================
+      // ====================================
       // PAYMENT REDIRECT
-      // =========================
+      // ====================================
 
       setTimeout(() => {
 
         window.location.href =
           paymentLink;
 
-      }, 1200);
+      }, 1500);
 
     } catch (error) {
+
+      // ====================================
+      // ERROR LOG
+      // ====================================
 
       console.error(
         "FORM ERROR:",
         error
       );
+
+      // ====================================
+      // USER ALERT
+      // ====================================
 
       alert(
         error.message ||
@@ -460,9 +544,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } finally {
 
-      // =========================
+      // ====================================
       // BUTTON RESET
-      // =========================
+      // ====================================
 
       if (submitBtn) {
 
