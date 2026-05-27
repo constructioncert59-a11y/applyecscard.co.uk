@@ -270,10 +270,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     e.preventDefault();
 
-    const submitBtn =
-      form.querySelector(".submit-btn");
+    const submitBtn = form.querySelector(".submit-btn");
 
-const paymentLink =
+    // PAYPAL LINK
+    const paymentLink =
       "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 
     // BUTTON DISABLE
@@ -285,7 +285,6 @@ const paymentLink =
     try {
 
       const formData = new FormData(form);
-
       const data = {};
 
       // =========================
@@ -319,40 +318,29 @@ const paymentLink =
         });
 
       }
-      // =========================
-      // PHOTO
-      // =========================
 
+      // PHOTO
       const photo =
         form.querySelector('input[name="photo"]')?.files[0];
 
       if (photo) {
-        data.photo =
-          await fileToBase64(photo);
+        data.photo = await fileToBase64(photo);
       }
 
-      // =========================
       // ID PROOF
-      // =========================
-
       const idProof =
         form.querySelector('input[name="id_proof"]')?.files[0];
 
       if (idProof) {
-        data.id_proof =
-          await fileToBase64(idProof);
+        data.id_proof = await fileToBase64(idProof);
       }
 
-      // =========================
       // HS TEST PROOF
-      // =========================
-
       const hsProof =
         form.querySelector('input[name="hs_test_proof"]')?.files[0];
 
       if (hsProof) {
-        data.hs_test_proof =
-          await fileToBase64(hsProof);
+        data.hs_test_proof = await fileToBase64(hsProof);
       }
 
       console.log("FINAL DATA:", data);
@@ -373,59 +361,57 @@ const paymentLink =
 
       });
 
-      const text =
-  await response.text();
+      // GET RESPONSE
+      const result = await response.text();
 
-console.log("SERVER RESPONSE:", text);
+      console.log("SERVER RESPONSE:", result);
+
       // =========================
-      // SUCCESS REDIRECT
+      // ERROR CHECK
       // =========================
 
-// =========================
-// SUCCESS REDIRECT
-// =========================
+      if (!response.ok) {
 
-alert(
-  "Application submitted successfully!"
-);
+        throw new Error(result || "Server Error");
 
-// SMALL DELAY
-setTimeout(() => {
+      }
 
-  window.location.href =
-    "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
+      // =========================
+      // SUCCESS
+      // =========================
 
-}, 1000);
+      alert("Application submitted successfully!");
 
-} catch (error) {
+      setTimeout(() => {
 
-  console.error(
-    "FORM ERROR:",
-    error
-  );
+        window.location.href = paymentLink;
 
-  alert(
-    error.message ||
-    "Something went wrong"
-  );
+      }, 1000);
 
-} finally {
+    } catch (error) {
 
-  // BUTTON ENABLE
-  if (submitBtn) {
+      console.error("FORM ERROR:", error);
 
-    submitBtn.disabled = false;
+      alert(error.message || "Something went wrong");
 
-    submitBtn.innerText =
-      "Submit & Proceed to Payment";
+    } finally {
 
-  }
+      // BUTTON ENABLE
+      if (submitBtn) {
 
-}
+        submitBtn.disabled = false;
+
+        submitBtn.innerText =
+          "Submit & Proceed to Payment";
+
+      }
+
+    }
+
+  });
 
 });
 
-});
 </script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
