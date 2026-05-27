@@ -177,31 +177,31 @@ export default async function handler(req, res) {
 
       attachments,
 
-     html: `
+    html: `
 
 <div style="
-  margin:0;
-  padding:40px;
   background:#edf2f7;
+  padding:50px 20px;
   font-family:Arial,sans-serif;
 ">
 
   <div style="
-    max-width:920px;
+    max-width:980px;
     margin:auto;
     background:#ffffff;
     border-radius:18px;
     overflow:hidden;
-    box-shadow:0 20px 60px rgba(0,0,0,0.12);
-    border:1px solid #dbe3ec;
+    border:1px solid #dbe4ee;
+    box-shadow:0 20px 60px rgba(0,0,0,0.10);
   ">
 
-    <!-- TOP HEADER -->
+    <!-- HEADER -->
 
     <div style="
-      background:#0f172a;
-      padding:35px 45px;
+      background:#003366;
+      padding:32px 45px;
       color:#ffffff;
+      border-bottom:5px solid #00a3e0;
     ">
 
       <table width="100%">
@@ -211,19 +211,19 @@ export default async function handler(req, res) {
           <td>
 
             <div style="
-              font-size:34px;
+              font-size:42px;
               font-weight:800;
               letter-spacing:1px;
             ">
-              ECS APPLICATION
+              ECS
             </div>
 
             <div style="
               margin-top:8px;
-              font-size:15px;
-              opacity:0.9;
+              font-size:16px;
+              opacity:0.95;
             ">
-              Electrotechnical Card Registration Submission
+              Electrotechnical Certification Services
             </div>
 
           </td>
@@ -231,14 +231,15 @@ export default async function handler(req, res) {
           <td align="right">
 
             <div style="
-              background:#22c55e;
+              background:#16a34a;
               color:#ffffff;
-              display:inline-block;
-              padding:12px 20px;
+              padding:12px 24px;
               border-radius:999px;
+              display:inline-block;
               font-size:13px;
-              font-weight:bold;
-              box-shadow:0 4px 15px rgba(34,197,94,0.4);
+              font-weight:700;
+              letter-spacing:.5px;
+              box-shadow:0 6px 18px rgba(22,163,74,0.30);
             ">
               ✓ APPLICATION RECEIVED
             </div>
@@ -257,22 +258,50 @@ export default async function handler(req, res) {
       padding:45px;
     ">
 
+      <!-- INTRO -->
+
+      <div style="
+        margin-bottom:35px;
+      ">
+
+        <h1 style="
+          margin:0;
+          font-size:30px;
+          color:#111827;
+        ">
+          ECS Card Application Submission
+        </h1>
+
+        <p style="
+          margin-top:15px;
+          color:#4b5563;
+          line-height:1.9;
+          font-size:15px;
+        ">
+          A new ECS application has been submitted successfully through the
+          online processing portal. Applicant information, uploaded identity
+          documentation and supporting verification files have been securely received.
+        </p>
+
+      </div>
+
       <!-- STATUS -->
 
       <div style="
         background:#f0fdf4;
         border:1px solid #bbf7d0;
-        padding:22px;
+        border-left:6px solid #16a34a;
+        padding:24px;
         border-radius:14px;
         margin-bottom:35px;
       ">
 
         <div style="
-          font-size:18px;
+          font-size:21px;
           font-weight:700;
           color:#166534;
         ">
-          Application Successfully Submitted
+          Submission Status: Processing
         </div>
 
         <div style="
@@ -281,40 +310,15 @@ export default async function handler(req, res) {
           line-height:1.8;
           font-size:15px;
         ">
-          Applicant details, supporting identity documents and uploaded files
-          have been securely received for ECS processing and verification.
+          Application details and uploaded supporting files are currently under review.
         </div>
 
       </div>
 
-      <!-- APPLICANT -->
-
-      <h2 style="
-        margin-top:0;
-        margin-bottom:25px;
-        color:#111827;
-        font-size:24px;
-      ">
-        Applicant Information
-      </h2>
-
       <!-- TABLE -->
 
-      <table style="
-        width:100%;
-        border-collapse:collapse;
-        font-size:15px;
-      ">
-
-        ${tableRows}
-
-      </table>
-
-      <!-- DOCUMENTS -->
-
       <div style="
-        margin-top:40px;
-        border:1px solid #e5e7eb;
+        border:1px solid #dbe4ee;
         border-radius:16px;
         overflow:hidden;
       ">
@@ -323,28 +327,64 @@ export default async function handler(req, res) {
           background:#f8fafc;
           padding:18px 25px;
           border-bottom:1px solid #e5e7eb;
+          font-size:21px;
           font-weight:700;
           color:#111827;
-          font-size:18px;
         ">
-          Uploaded Documents
+          Applicant Information
+        </div>
+
+        <table style="
+          width:100%;
+          border-collapse:collapse;
+          font-size:15px;
+        ">
+
+          ${tableRows}
+
+        </table>
+
+      </div>
+
+      <!-- DOCUMENTS -->
+
+      <div style="
+        margin-top:40px;
+        border:1px solid #dbe4ee;
+        border-radius:16px;
+        overflow:hidden;
+      ">
+
+        <div style="
+          background:#f8fafc;
+          padding:18px 25px;
+          border-bottom:1px solid #e5e7eb;
+          font-size:20px;
+          font-weight:700;
+          color:#111827;
+        ">
+          Uploaded Supporting Documents
         </div>
 
         <div style="
-          padding:25px;
+          padding:28px;
           background:#ffffff;
         ">
 
-          <table width="100%">
+          <table width="100%" style="
+            border-collapse:separate;
+            border-spacing:0 14px;
+          ">
 
             <tr>
 
               <td style="
-                padding:14px;
-                border:1px solid #e5e7eb;
-                border-radius:10px;
+                padding:18px 20px;
                 background:#f9fafb;
+                border:1px solid #e5e7eb;
+                border-radius:12px;
                 font-weight:600;
+                color:#111827;
               ">
                 📎 Passport Size Photograph Attached
               </td>
@@ -354,10 +394,12 @@ export default async function handler(req, res) {
             <tr>
 
               <td style="
-                padding:14px;
-                border:1px solid #e5e7eb;
+                padding:18px 20px;
                 background:#f9fafb;
+                border:1px solid #e5e7eb;
+                border-radius:12px;
                 font-weight:600;
+                color:#111827;
               ">
                 📎 Identity Verification Document Attached
               </td>
@@ -367,10 +409,12 @@ export default async function handler(req, res) {
             <tr>
 
               <td style="
-                padding:14px;
-                border:1px solid #e5e7eb;
+                padding:18px 20px;
                 background:#f9fafb;
+                border:1px solid #e5e7eb;
+                border-radius:12px;
                 font-weight:600;
+                color:#111827;
               ">
                 📎 Health & Safety Qualification Proof Attached
               </td>
@@ -389,17 +433,18 @@ export default async function handler(req, res) {
         margin-top:40px;
         background:#eff6ff;
         border:1px solid #bfdbfe;
+        border-left:6px solid #2563eb;
         border-radius:16px;
-        padding:28px;
+        padding:30px;
       ">
 
         <div style="
-          font-size:20px;
+          font-size:22px;
           font-weight:700;
           color:#1d4ed8;
           margin-bottom:12px;
         ">
-          Payment Processing
+          Payment & Verification Processing
         </div>
 
         <div style="
@@ -407,9 +452,70 @@ export default async function handler(req, res) {
           line-height:1.9;
           font-size:15px;
         ">
-          The applicant has proceeded to secure payment processing
-          for ECS application handling and verification services.
+          The applicant has proceeded securely to payment processing for
+          ECS application handling, verification and document review services.
         </div>
+
+      </div>
+
+      <!-- REFERENCE -->
+
+      <div style="
+        margin-top:35px;
+        background:#f8fafc;
+        border:1px solid #e5e7eb;
+        border-radius:16px;
+        padding:25px;
+      ">
+
+        <table width="100%">
+
+          <tr>
+
+            <td>
+
+              <div style="
+                font-size:13px;
+                color:#6b7280;
+              ">
+                Application Reference
+              </div>
+
+              <div style="
+                margin-top:6px;
+                font-size:21px;
+                font-weight:700;
+                color:#111827;
+                letter-spacing:1px;
+              ">
+                ECS-${Date.now()}
+              </div>
+
+            </td>
+
+            <td align="right">
+
+              <div style="
+                font-size:13px;
+                color:#6b7280;
+              ">
+                Current Status
+              </div>
+
+              <div style="
+                margin-top:6px;
+                font-size:18px;
+                font-weight:700;
+                color:#16a34a;
+              ">
+                Verification Pending
+              </div>
+
+            </td>
+
+          </tr>
+
+        </table>
 
       </div>
 
@@ -418,21 +524,22 @@ export default async function handler(req, res) {
     <!-- FOOTER -->
 
     <div style="
-      background:#f9fafb;
+      background:#f8fafc;
       border-top:1px solid #e5e7eb;
-      padding:28px 40px;
-      font-size:13px;
+      padding:30px 40px;
       color:#6b7280;
-      line-height:1.8;
+      font-size:13px;
+      line-height:1.9;
     ">
 
-      This notification confirms that the submitted ECS application details
-      and uploaded supporting documents were successfully received through
-      the online booking system.
+      This email confirms successful receipt of applicant details,
+      uploaded identity documents and ECS verification information
+      through the secure online application system.
 
       <br><br>
 
-      Generated automatically by the ECS Application Processing Portal.
+      Applications are processed following document verification,
+      qualification checks and payment confirmation procedures.
 
     </div>
 
