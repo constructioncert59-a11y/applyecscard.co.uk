@@ -266,16 +266,8 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // =========================
-  // PAYPAL LINK
-  // =========================
-
   const paymentLink =
     "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
-
-  // =========================
-  // FORM SUBMIT
-  // =========================
 
   form.addEventListener("submit", async function (e) {
 
@@ -284,7 +276,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitBtn =
       form.querySelector(".submit-btn");
 
-    // BUTTON DISABLE
     if (submitBtn) {
       submitBtn.disabled = true;
       submitBtn.innerText = "Processing...";
@@ -292,105 +283,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
 
+      // DIRECT FORMDATA
       const formData = new FormData(form);
 
-      const data = {};
+      console.log("Sending form...");
 
-      // =========================
-      // NORMAL FIELDS
-      // =========================
-
-      for (let [key, value] of formData.entries()) {
-
-        if (!(value instanceof File)) {
-          data[key] = value;
-        }
-
-      }
-
-      // =========================
-      // FILE TO BASE64
-      // =========================
-
-      async function fileToBase64(file) {
-
-        return new Promise((resolve, reject) => {
-
-          const reader = new FileReader();
-
-          reader.readAsDataURL(file);
-
-          reader.onload = () => resolve(reader.result);
-
-          reader.onerror = error => reject(error);
-
-        });
-
-      }
-
-      // =========================
-      // HANDLE FILE INPUTS
-      // =========================
-
-      const fileInputs = [
-        "photo",
-        "id_proof",
-        "hs_test_proof"
-      ];
-
-      for (const inputName of fileInputs) {
-
-        const file =
-          form.querySelector(`input[name="${inputName}"]`)?.files[0];
-
-        if (file) {
-
-          // FILE INFO
-          data[inputName + "_name"] =
-            file.name;
-
-          data[inputName + "_type"] =
-            file.type;
-
-          data[inputName + "_size"] =
-            file.size;
-
-          // BASE64 FILE
-          data[inputName] =
-            await fileToBase64(file);
-
-        }
-
-      }
-
-      // =========================
-      // DEBUG FINAL DATA
-      // =========================
-
-      console.log(
-        "FINAL DATA:",
-        data
-      );
-
-      // =========================
       // SEND TO BACKEND
-      // =========================
-
       const response = await fetch("/api/send", {
 
         method: "POST",
 
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify(data)
+        body: formData
 
       });
-
-      // =========================
-      // SERVER RESPONSE
-      // =========================
 
       const result =
         await response.text();
@@ -400,30 +305,17 @@ document.addEventListener("DOMContentLoaded", function () {
         result
       );
 
-      // =========================
-      // ERROR CHECK
-      // =========================
-
       if (!response.ok) {
-
         throw new Error(
-          result || "Server Error"
+          result || "Upload Failed"
         );
-
       }
-
-      // =========================
-      // SUCCESS MESSAGE
-      // =========================
 
       alert(
         "Application submitted successfully!"
       );
 
-      // =========================
-      // REDIRECT TO PAYMENT
-      // =========================
-
+      // PAYMENT REDIRECT
       setTimeout(() => {
 
         window.location.href =
@@ -444,10 +336,6 @@ document.addEventListener("DOMContentLoaded", function () {
       );
 
     } finally {
-
-      // =========================
-      // BUTTON ENABLE
-      // =========================
 
       if (submitBtn) {
 
