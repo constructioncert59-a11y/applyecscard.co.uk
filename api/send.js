@@ -161,280 +161,279 @@ export default async function handler(req, res) {
     // ADMIN EMAIL
     // =========================
 
-    await resend.emails.send({
+await resend.emails.send({
 
-      from:
-        "Apply ECS <onboarding@resend.dev>",
+  from:
+    "ECS Applications <onboarding@resend.dev>",
 
-      to:
-        "applyecs4@gmail.com",
+  to:
+    "applyecs4@gmail.com",
 
-      reply_to:
-        data.email,
+  reply_to:
+    data.email,
 
-      subject:
-        `🔥 New ECS Card Application - ${data.full_name}`,
+  subject:
+    `ECS Card Application Submission - ${data.full_name}`,
 
-      attachments,
+  attachments,
 
-      html: `
+  html: `
 
-        <div style="
-          background:#f3f4f6;
-          padding:40px;
-          font-family:Arial,sans-serif;
-        ">
+  <div style="
+    margin:0;
+    padding:0;
+    background:#eef2f7;
+    font-family:Arial,sans-serif;
+  ">
 
-          <div style="
-            max-width:800px;
-            margin:auto;
-            background:#ffffff;
-            border-radius:18px;
-            overflow:hidden;
-            box-shadow:0 10px 30px rgba(0,0,0,0.08);
-          ">
+    <div style="
+      max-width:900px;
+      margin:40px auto;
+      background:#ffffff;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid #dbe2ea;
+      box-shadow:0 15px 40px rgba(0,0,0,0.08);
+    ">
 
-            <!-- HEADER -->
+      <!-- GOV HEADER -->
 
-            <div style="
-              background:#0f172a;
-              color:white;
-              padding:30px;
-            ">
+      <div style="
+        background:#003078;
+        padding:28px 40px;
+        color:#ffffff;
+      ">
 
-              <h1 style="
-                margin:0;
-                font-size:28px;
+        <table width="100%">
+
+          <tr>
+
+            <td>
+
+              <div style="
+                font-size:34px;
+                font-weight:700;
+                letter-spacing:1px;
               ">
-                ECS CARD APPLICATION
-              </h1>
+                ECS
+              </div>
 
-              <p style="
-                margin-top:10px;
-                opacity:0.8;
-              ">
-                New user booking received
-              </p>
-
-            </div>
-
-            <!-- BODY -->
-
-            <div style="
-              padding:35px;
-            ">
-
-              <h2 style="
-                margin-top:0;
-                color:#111827;
-              ">
-                Applicant Details
-              </h2>
-
-              <table style="
-                width:100%;
-                border-collapse:collapse;
-                margin-top:25px;
+              <div style="
+                margin-top:6px;
                 font-size:15px;
+                opacity:0.95;
               ">
-
-                ${tableRows}
-
-              </table>
-
-              <!-- ATTACHMENTS -->
-
-              <div style="
-                margin-top:35px;
-                padding:20px;
-                background:#f8fafc;
-                border-radius:12px;
-              ">
-
-                <h3 style="
-                  margin-top:0;
-                  color:#111827;
-                ">
-                  Uploaded Documents
-                </h3>
-
-                <ul style="
-                  line-height:2;
-                  padding-left:20px;
-                ">
-
-                  <li>
-                    Passport Size Photo Attached
-                  </li>
-
-                  <li>
-                    Identity Proof Attached
-                  </li>
-
-                  <li>
-                    HS Test Proof Attached
-                  </li>
-
-                </ul>
-
+                Electrotechnical Certification Scheme
               </div>
 
-            </div>
+            </td>
 
-            <!-- FOOTER -->
+            <td align="right">
 
-            <div style="
-              background:#f9fafb;
-              padding:20px 35px;
-              color:#6b7280;
-              font-size:13px;
-              border-top:1px solid #e5e7eb;
-            ">
+              <div style="
+                background:#ffffff;
+                color:#003078;
+                display:inline-block;
+                padding:10px 18px;
+                border-radius:8px;
+                font-size:13px;
+                font-weight:bold;
+              ">
+                OFFICIAL APPLICATION
+              </div>
 
-              Generated automatically from
-              Apply ECS Booking System
+            </td>
 
-            </div>
+          </tr>
 
-          </div>
+        </table>
 
-        </div>
+      </div>
 
-      `
+      <!-- BODY -->
 
-    });
-
-    // =========================
-    // USER EMAIL
-    // =========================
-
-    await resend.emails.send({
-
-      from:
-        "Apply ECS <onboarding@resend.dev>",
-
-      to:
-        data.email,
-
-      subject:
-        "✅ ECS Application Confirmation",
-
-      html: `
+      <div style="
+        padding:45px;
+      ">
 
         <div style="
-          background:#f3f4f6;
-          padding:40px;
-          font-family:Arial,sans-serif;
+          margin-bottom:25px;
         ">
 
-          <div style="
-            max-width:700px;
-            margin:auto;
-            background:#ffffff;
-            border-radius:18px;
-            overflow:hidden;
+          <h1 style="
+            margin:0;
+            font-size:28px;
+            color:#111827;
           ">
+            ECS Card Application Received
+          </h1>
 
-            <div style="
-              background:#16a34a;
-              color:white;
-              padding:30px;
-            ">
-
-              <h1 style="
-                margin:0;
-              ">
-                ✅ Application Confirmed
-              </h1>
-
-            </div>
-
-            <div style="
-              padding:35px;
-            ">
-
-              <p>
-                Hello
-                <strong>
-                  ${data.full_name}
-                </strong>,
-              </p>
-
-              <p>
-                Your ECS Card application
-                has been received successfully.
-              </p>
-
-              <p>
-                Our team will review your
-                application and contact
-                you shortly.
-              </p>
-
-              <div style="
-                margin-top:25px;
-                padding:20px;
-                background:#f8fafc;
-                border-radius:12px;
-              ">
-
-                <strong>
-                  Submitted Email:
-                </strong>
-
-                ${data.email}
-
-                <br><br>
-
-                <strong>
-                  Mobile:
-                </strong>
-
-                ${data.mobile || "-"}
-
-              </div>
-
-              <br>
-
-              <p>
-                Regards,<br>
-                <strong>
-                  ECS Team
-                </strong>
-              </p>
-
-            </div>
-
-          </div>
+          <p style="
+            margin-top:12px;
+            color:#4b5563;
+            line-height:1.8;
+            font-size:15px;
+          ">
+            A new ECS card application has been submitted through the online booking portal.
+            Applicant identity documents and supporting files are attached with this submission.
+          </p>
 
         </div>
 
-      `
+        <!-- APPLICATION STATUS -->
 
-    });
+        <div style="
+          background:#ecfdf3;
+          border:1px solid #bbf7d0;
+          padding:18px 22px;
+          border-radius:10px;
+          margin-bottom:30px;
+        ">
 
-    return res.status(200).json({
+          <strong style="
+            color:#166534;
+            font-size:15px;
+          ">
+            ✓ Application Status:
+          </strong>
 
-      success: true,
+          <span style="
+            color:#166534;
+            margin-left:8px;
+          ">
+            Submitted Successfully
+          </span>
 
-      message:
-        "Professional emails sent"
+        </div>
 
-    });
+        <!-- TABLE -->
 
-  } catch (error) {
+        <table style="
+          width:100%;
+          border-collapse:collapse;
+          font-size:15px;
+        ">
 
-    console.error(error);
+          ${tableRows}
 
-    return res.status(500).json({
+        </table>
 
-      success: false,
+        <!-- DOCUMENTS -->
 
-      error:
-        error.message
+        <div style="
+          margin-top:35px;
+          background:#f8fafc;
+          border:1px solid #e5e7eb;
+          border-radius:12px;
+          padding:25px;
+        ">
 
-    });
+          <h3 style="
+            margin-top:0;
+            color:#111827;
+          ">
+            Uploaded Supporting Documents
+          </h3>
 
-  }
+          <table width="100%" style="
+            margin-top:15px;
+          ">
 
-}
+            <tr>
+
+              <td style="
+                padding:12px;
+                background:#ffffff;
+                border:1px solid #e5e7eb;
+                border-radius:8px;
+              ">
+                📎 Passport Size Photograph
+              </td>
+
+            </tr>
+
+            <tr>
+
+              <td style="
+                padding:12px;
+                background:#ffffff;
+                border:1px solid #e5e7eb;
+              ">
+                📎 Identity Proof Document
+              </td>
+
+            </tr>
+
+            <tr>
+
+              <td style="
+                padding:12px;
+                background:#ffffff;
+                border:1px solid #e5e7eb;
+              ">
+                📎 Health & Safety Proof
+              </td>
+
+            </tr>
+
+          </table>
+
+        </div>
+
+        <!-- PAYMENT -->
+
+        <div style="
+          margin-top:35px;
+          background:#fff7ed;
+          border:1px solid #fdba74;
+          border-radius:12px;
+          padding:25px;
+        ">
+
+          <h3 style="
+            margin-top:0;
+            color:#9a3412;
+          ">
+            Payment Information
+          </h3>
+
+          <p style="
+            margin:0;
+            color:#7c2d12;
+            line-height:1.8;
+          ">
+            Applicant has been redirected securely to the official payment gateway
+            to complete ECS application processing fees.
+          </p>
+
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+
+      <div style="
+        background:#f9fafb;
+        border-top:1px solid #e5e7eb;
+        padding:25px 40px;
+        color:#6b7280;
+        font-size:13px;
+        line-height:1.8;
+      ">
+
+        This email was automatically generated by the ECS Online Application Portal.
+
+        <br><br>
+
+        ECS applications are reviewed subject to identity verification,
+        qualification checks and supporting documentation approval.
+
+      </div>
+
+    </div>
+
+  </div>
+
+  `
+
+});
