@@ -177,130 +177,270 @@ export default async function handler(req, res) {
 
       attachments,
 
-      html: `
+     html: `
+
+<div style="
+  margin:0;
+  padding:40px;
+  background:#edf2f7;
+  font-family:Arial,sans-serif;
+">
+
+  <div style="
+    max-width:920px;
+    margin:auto;
+    background:#ffffff;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,0.12);
+    border:1px solid #dbe3ec;
+  ">
+
+    <!-- TOP HEADER -->
+
+    <div style="
+      background:#0f172a;
+      padding:35px 45px;
+      color:#ffffff;
+    ">
+
+      <table width="100%">
+
+        <tr>
+
+          <td>
+
+            <div style="
+              font-size:34px;
+              font-weight:800;
+              letter-spacing:1px;
+            ">
+              ECS APPLICATION
+            </div>
+
+            <div style="
+              margin-top:8px;
+              font-size:15px;
+              opacity:0.9;
+            ">
+              Electrotechnical Card Registration Submission
+            </div>
+
+          </td>
+
+          <td align="right">
+
+            <div style="
+              background:#22c55e;
+              color:#ffffff;
+              display:inline-block;
+              padding:12px 20px;
+              border-radius:999px;
+              font-size:13px;
+              font-weight:bold;
+              box-shadow:0 4px 15px rgba(34,197,94,0.4);
+            ">
+              ✓ APPLICATION RECEIVED
+            </div>
+
+          </td>
+
+        </tr>
+
+      </table>
+
+    </div>
+
+    <!-- BODY -->
+
+    <div style="
+      padding:45px;
+    ">
+
+      <!-- STATUS -->
+
+      <div style="
+        background:#f0fdf4;
+        border:1px solid #bbf7d0;
+        padding:22px;
+        border-radius:14px;
+        margin-bottom:35px;
+      ">
 
         <div style="
-          background:#f3f4f6;
-          padding:40px;
-          font-family:Arial,sans-serif;
+          font-size:18px;
+          font-weight:700;
+          color:#166534;
+        ">
+          Application Successfully Submitted
+        </div>
+
+        <div style="
+          margin-top:10px;
+          color:#166534;
+          line-height:1.8;
+          font-size:15px;
+        ">
+          Applicant details, supporting identity documents and uploaded files
+          have been securely received for ECS processing and verification.
+        </div>
+
+      </div>
+
+      <!-- APPLICANT -->
+
+      <h2 style="
+        margin-top:0;
+        margin-bottom:25px;
+        color:#111827;
+        font-size:24px;
+      ">
+        Applicant Information
+      </h2>
+
+      <!-- TABLE -->
+
+      <table style="
+        width:100%;
+        border-collapse:collapse;
+        font-size:15px;
+      ">
+
+        ${tableRows}
+
+      </table>
+
+      <!-- DOCUMENTS -->
+
+      <div style="
+        margin-top:40px;
+        border:1px solid #e5e7eb;
+        border-radius:16px;
+        overflow:hidden;
+      ">
+
+        <div style="
+          background:#f8fafc;
+          padding:18px 25px;
+          border-bottom:1px solid #e5e7eb;
+          font-weight:700;
+          color:#111827;
+          font-size:18px;
+        ">
+          Uploaded Documents
+        </div>
+
+        <div style="
+          padding:25px;
+          background:#ffffff;
         ">
 
-          <div style="
-            max-width:800px;
-            margin:auto;
-            background:#ffffff;
-            border-radius:18px;
-            overflow:hidden;
-            box-shadow:0 10px 30px rgba(0,0,0,0.08);
-          ">
+          <table width="100%">
 
-            <!-- HEADER -->
+            <tr>
 
-            <div style="
-              background:#0f172a;
-              color:white;
-              padding:30px;
-            ">
-
-              <h1 style="
-                margin:0;
-                font-size:28px;
+              <td style="
+                padding:14px;
+                border:1px solid #e5e7eb;
+                border-radius:10px;
+                background:#f9fafb;
+                font-weight:600;
               ">
-                ECS CARD APPLICATION
-              </h1>
+                📎 Passport Size Photograph Attached
+              </td>
 
-              <p style="
-                margin-top:10px;
-                opacity:0.8;
+            </tr>
+
+            <tr>
+
+              <td style="
+                padding:14px;
+                border:1px solid #e5e7eb;
+                background:#f9fafb;
+                font-weight:600;
               ">
-                New user booking received
-              </p>
+                📎 Identity Verification Document Attached
+              </td>
 
-            </div>
+            </tr>
 
-            <!-- BODY -->
+            <tr>
 
-            <div style="
-              padding:35px;
-            ">
-
-              <h2 style="
-                margin-top:0;
-                color:#111827;
+              <td style="
+                padding:14px;
+                border:1px solid #e5e7eb;
+                background:#f9fafb;
+                font-weight:600;
               ">
-                Applicant Details
-              </h2>
+                📎 Health & Safety Qualification Proof Attached
+              </td>
 
-              <table style="
-                width:100%;
-                border-collapse:collapse;
-                margin-top:25px;
-                font-size:15px;
-              ">
+            </tr>
 
-                ${tableRows}
-
-              </table>
-
-              <!-- ATTACHMENTS -->
-
-              <div style="
-                margin-top:35px;
-                padding:20px;
-                background:#f8fafc;
-                border-radius:12px;
-              ">
-
-                <h3 style="
-                  margin-top:0;
-                  color:#111827;
-                ">
-                  Uploaded Documents
-                </h3>
-
-                <ul style="
-                  line-height:2;
-                  padding-left:20px;
-                ">
-
-                  <li>
-                    Passport Size Photo Attached
-                  </li>
-
-                  <li>
-                    Identity Proof Attached
-                  </li>
-
-                  <li>
-                    HS Test Proof Attached
-                  </li>
-
-                </ul>
-
-              </div>
-
-            </div>
-
-            <!-- FOOTER -->
-
-            <div style="
-              background:#f9fafb;
-              padding:20px 35px;
-              color:#6b7280;
-              font-size:13px;
-              border-top:1px solid #e5e7eb;
-            ">
-
-              Generated automatically from
-              Apply ECS Booking System
-
-            </div>
-
-          </div>
+          </table>
 
         </div>
 
-      `
+      </div>
+
+      <!-- PAYMENT -->
+
+      <div style="
+        margin-top:40px;
+        background:#eff6ff;
+        border:1px solid #bfdbfe;
+        border-radius:16px;
+        padding:28px;
+      ">
+
+        <div style="
+          font-size:20px;
+          font-weight:700;
+          color:#1d4ed8;
+          margin-bottom:12px;
+        ">
+          Payment Processing
+        </div>
+
+        <div style="
+          color:#1e3a8a;
+          line-height:1.9;
+          font-size:15px;
+        ">
+          The applicant has proceeded to secure payment processing
+          for ECS application handling and verification services.
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div style="
+      background:#f9fafb;
+      border-top:1px solid #e5e7eb;
+      padding:28px 40px;
+      font-size:13px;
+      color:#6b7280;
+      line-height:1.8;
+    ">
+
+      This notification confirms that the submitted ECS application details
+      and uploaded supporting documents were successfully received through
+      the online booking system.
+
+      <br><br>
+
+      Generated automatically by the ECS Application Processing Portal.
+
+    </div>
+
+  </div>
+
+</div>
+
+`
 
     });
 
