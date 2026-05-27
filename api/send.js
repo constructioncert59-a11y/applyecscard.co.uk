@@ -7,7 +7,7 @@ import { Resend } from "resend";
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "20mb"
+      sizeLimit: "50mb"
     }
   }
 };
@@ -38,7 +38,13 @@ export default async function handler(req, res) {
 
   try {
 
+    // =========================
+    // GET DATA
+    // =========================
+
     const data = req.body || {};
+
+    console.log("FULL DATA:", data);
 
     // =========================
     // REQUIRED FIELDS
@@ -52,7 +58,7 @@ export default async function handler(req, res) {
       return res.status(400).json({
         success: false,
         error:
-          "Email and full_name are required"
+          "Email and Full Name required"
       });
 
     }
@@ -68,13 +74,14 @@ export default async function handler(req, res) {
 
       return res.status(400).json({
         success: false,
-        error: "Invalid email address"
+        error:
+          "Invalid Email"
       });
 
     }
 
     // =========================
-    // REMOVE FILES FROM TABLE
+    // REMOVE FILES FROM HTML TABLE
     // =========================
 
     const normalFields = { ...data };
@@ -141,7 +148,7 @@ export default async function handler(req, res) {
     }
 
     // =========================
-    // TABLE HTML
+    // CREATE TABLE
     // =========================
 
     const allDataHtml =
@@ -149,6 +156,7 @@ export default async function handler(req, res) {
         .map(([key, value]) => {
 
           return `
+
             <tr>
 
               <td style="
@@ -173,6 +181,7 @@ export default async function handler(req, res) {
               </td>
 
             </tr>
+
           `;
 
         })
@@ -185,7 +194,7 @@ export default async function handler(req, res) {
     await resend.emails.send({
 
       from:
-        "ECS Booking <onboarding@resend.dev>",
+        "Apply ECS <onboarding@resend.dev>",
 
       to:
         "applyecs4@gmail.com",
@@ -199,6 +208,7 @@ export default async function handler(req, res) {
       attachments,
 
       html: `
+
         <div style="
           font-family:Arial;
           background:#f5f5f5;
@@ -208,7 +218,7 @@ export default async function handler(req, res) {
           <div style="
             max-width:700px;
             margin:auto;
-            background:#ffffff;
+            background:#fff;
             border-radius:12px;
             padding:30px;
           ">
@@ -230,8 +240,14 @@ export default async function handler(req, res) {
           </div>
 
         </div>
+
       `
+
     });
+
+    console.log(
+      "ADMIN EMAIL SENT"
+    );
 
     // =========================
     // USER CONFIRMATION EMAIL
@@ -240,7 +256,7 @@ export default async function handler(req, res) {
     await resend.emails.send({
 
       from:
-        "ECS Booking <onboarding@resend.dev>",
+        "Apply ECS <onboarding@resend.dev>",
 
       to:
         data.email,
@@ -249,24 +265,23 @@ export default async function handler(req, res) {
         "✅ ECS Booking Confirmation",
 
       html: `
+
         <div style="
           font-family:Arial;
           background:#f4f4f4;
           padding:30px;
-          line-height:1.7;
         ">
 
           <div style="
             max-width:700px;
             margin:auto;
-            background:#ffffff;
+            background:#fff;
             border-radius:12px;
             padding:30px;
           ">
 
             <h1 style="
-              color:#2e7d32;
-              margin-bottom:20px;
+              color:green;
             ">
               ✅ Booking Confirmed
             </h1>
@@ -279,77 +294,76 @@ export default async function handler(req, res) {
             </p>
 
             <p>
-              Thank you for submitting your ECS booking application.
-              Your form has been received successfully.
+              Your ECS booking has been received successfully.
             </p>
 
             <p>
-              Our team will review your application
-              and contact you shortly.
+              Our team will contact you shortly.
             </p>
 
-            <hr style="
-              margin:25px 0;
-              border:none;
-              border-top:1px solid #ddd;
-            " />
+            <hr>
 
             <h3>
-              Submitted Details
+              Your Details
             </h3>
 
             <table style="
               width:100%;
               border-collapse:collapse;
-              margin-top:15px;
             ">
 
               <tr>
+
                 <td style="
-                  padding:10px;
                   border:1px solid #ddd;
+                  padding:10px;
                 ">
                   Full Name
                 </td>
 
                 <td style="
-                  padding:10px;
                   border:1px solid #ddd;
+                  padding:10px;
                 ">
                   ${data.full_name || "-"}
                 </td>
+
               </tr>
 
               <tr>
+
                 <td style="
-                  padding:10px;
                   border:1px solid #ddd;
+                  padding:10px;
                 ">
                   Email
                 </td>
 
                 <td style="
-                  padding:10px;
                   border:1px solid #ddd;
+                  padding:10px;
                 ">
                   ${data.email || "-"}
                 </td>
+
               </tr>
 
               <tr>
+
                 <td style="
-                  padding:10px;
                   border:1px solid #ddd;
+                  padding:10px;
                 ">
                   Mobile
                 </td>
 
                 <td style="
-                  padding:10px;
                   border:1px solid #ddd;
+                  padding:10px;
                 ">
                   ${data.mobile || "-"}
                 </td>
+
               </tr>
 
             </table>
@@ -366,11 +380,17 @@ export default async function handler(req, res) {
           </div>
 
         </div>
+
       `
+
     });
 
+    console.log(
+      "USER EMAIL SENT"
+    );
+
     // =========================
-    // SUCCESS RESPONSE
+    // SUCCESS
     // =========================
 
     return res.status(200).json({
@@ -378,7 +398,7 @@ export default async function handler(req, res) {
       success: true,
 
       message:
-        "Emails sent successfully"
+        "Both emails sent successfully"
 
     });
 
