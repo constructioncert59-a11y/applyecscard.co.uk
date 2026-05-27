@@ -176,17 +176,16 @@ export default async function handler(req, res) {
         `🔥 New ECS Card Application - ${data.full_name}`,
 
       attachments,
-
-    html: `
+html: `
 
 <div style="
-  background:#edf2f7;
+  background:#eef3f9;
   padding:50px 20px;
   font-family:Arial,sans-serif;
 ">
 
-  <div style="
-    max-width:980px;
+  <div id="receipt" style="
+    max-width:1000px;
     margin:auto;
     background:#ffffff;
     border-radius:18px;
@@ -199,8 +198,8 @@ export default async function handler(req, res) {
 
     <div style="
       background:#003366;
-      padding:32px 45px;
       color:#ffffff;
+      padding:34px 45px;
       border-bottom:5px solid #00a3e0;
     ">
 
@@ -211,7 +210,7 @@ export default async function handler(req, res) {
           <td>
 
             <div style="
-              font-size:42px;
+              font-size:44px;
               font-weight:800;
               letter-spacing:1px;
             ">
@@ -239,9 +238,8 @@ export default async function handler(req, res) {
               font-size:13px;
               font-weight:700;
               letter-spacing:.5px;
-              box-shadow:0 6px 18px rgba(22,163,74,0.30);
             ">
-              ✓ APPLICATION RECEIVED
+              ✓ SUBMISSION VERIFIED
             </div>
 
           </td>
@@ -252,13 +250,13 @@ export default async function handler(req, res) {
 
     </div>
 
-    <!-- BODY -->
+    <!-- MAIN -->
 
     <div style="
       padding:45px;
     ">
 
-      <!-- INTRO -->
+      <!-- TITLE -->
 
       <div style="
         margin-bottom:35px;
@@ -266,21 +264,21 @@ export default async function handler(req, res) {
 
         <h1 style="
           margin:0;
-          font-size:30px;
+          font-size:32px;
           color:#111827;
         ">
-          ECS Card Application Submission
+          ECS Card Application Receipt
         </h1>
 
         <p style="
-          margin-top:15px;
+          margin-top:14px;
           color:#4b5563;
           line-height:1.9;
           font-size:15px;
         ">
-          A new ECS application has been submitted successfully through the
-          online processing portal. Applicant information, uploaded identity
-          documentation and supporting verification files have been securely received.
+          This receipt confirms that the applicant information,
+          uploaded documents and verification details have been
+          securely received through the ECS application system.
         </p>
 
       </div>
@@ -291,26 +289,27 @@ export default async function handler(req, res) {
         background:#f0fdf4;
         border:1px solid #bbf7d0;
         border-left:6px solid #16a34a;
+        border-radius:16px;
         padding:24px;
-        border-radius:14px;
         margin-bottom:35px;
       ">
 
         <div style="
-          font-size:21px;
+          font-size:22px;
           font-weight:700;
           color:#166534;
         ">
-          Submission Status: Processing
+          Application Status: Processing
         </div>
 
         <div style="
           margin-top:10px;
           color:#166534;
-          line-height:1.8;
+          line-height:1.9;
           font-size:15px;
         ">
-          Application details and uploaded supporting files are currently under review.
+          Supporting identity files and qualification documents
+          were uploaded successfully and are pending verification.
         </div>
 
       </div>
@@ -319,7 +318,7 @@ export default async function handler(req, res) {
 
       <div style="
         border:1px solid #dbe4ee;
-        border-radius:16px;
+        border-radius:18px;
         overflow:hidden;
       ">
 
@@ -327,7 +326,7 @@ export default async function handler(req, res) {
           background:#f8fafc;
           padding:18px 25px;
           border-bottom:1px solid #e5e7eb;
-          font-size:21px;
+          font-size:22px;
           font-weight:700;
           color:#111827;
         ">
@@ -351,7 +350,7 @@ export default async function handler(req, res) {
       <div style="
         margin-top:40px;
         border:1px solid #dbe4ee;
-        border-radius:16px;
+        border-radius:18px;
         overflow:hidden;
       ">
 
@@ -363,11 +362,11 @@ export default async function handler(req, res) {
           font-weight:700;
           color:#111827;
         ">
-          Uploaded Supporting Documents
+          Uploaded Verification Documents
         </div>
 
         <div style="
-          padding:28px;
+          padding:30px;
           background:#ffffff;
         ">
 
@@ -386,7 +385,7 @@ export default async function handler(req, res) {
                 font-weight:600;
                 color:#111827;
               ">
-                📎 Passport Size Photograph Attached
+                📎 Passport Size Photograph Uploaded
               </td>
 
             </tr>
@@ -401,7 +400,7 @@ export default async function handler(req, res) {
                 font-weight:600;
                 color:#111827;
               ">
-                📎 Identity Verification Document Attached
+                📎 Identity Verification Document Uploaded
               </td>
 
             </tr>
@@ -416,7 +415,7 @@ export default async function handler(req, res) {
                 font-weight:600;
                 color:#111827;
               ">
-                📎 Health & Safety Qualification Proof Attached
+                📎 Health & Safety Qualification Proof Uploaded
               </td>
 
             </tr>
@@ -434,7 +433,7 @@ export default async function handler(req, res) {
         background:#eff6ff;
         border:1px solid #bfdbfe;
         border-left:6px solid #2563eb;
-        border-radius:16px;
+        border-radius:18px;
         padding:30px;
       ">
 
@@ -444,7 +443,7 @@ export default async function handler(req, res) {
           color:#1d4ed8;
           margin-bottom:12px;
         ">
-          Payment & Verification Processing
+          Payment Processing
         </div>
 
         <div style="
@@ -452,8 +451,8 @@ export default async function handler(req, res) {
           line-height:1.9;
           font-size:15px;
         ">
-          The applicant has proceeded securely to payment processing for
-          ECS application handling, verification and document review services.
+          Applicant has securely proceeded to payment processing
+          for ECS application handling, verification and review services.
         </div>
 
       </div>
@@ -461,11 +460,11 @@ export default async function handler(req, res) {
       <!-- REFERENCE -->
 
       <div style="
-        margin-top:35px;
+        margin-top:40px;
         background:#f8fafc;
         border:1px solid #e5e7eb;
-        border-radius:16px;
-        padding:25px;
+        border-radius:18px;
+        padding:28px;
       ">
 
         <table width="100%">
@@ -478,13 +477,13 @@ export default async function handler(req, res) {
                 font-size:13px;
                 color:#6b7280;
               ">
-                Application Reference
+                Submission Reference
               </div>
 
               <div style="
-                margin-top:6px;
-                font-size:21px;
-                font-weight:700;
+                margin-top:8px;
+                font-size:22px;
+                font-weight:800;
                 color:#111827;
                 letter-spacing:1px;
               ">
@@ -499,16 +498,16 @@ export default async function handler(req, res) {
                 font-size:13px;
                 color:#6b7280;
               ">
-                Current Status
+                Verification Status
               </div>
 
               <div style="
-                margin-top:6px;
+                margin-top:8px;
                 font-size:18px;
                 font-weight:700;
                 color:#16a34a;
               ">
-                Verification Pending
+                Pending Review
               </div>
 
             </td>
@@ -516,6 +515,29 @@ export default async function handler(req, res) {
           </tr>
 
         </table>
+
+      </div>
+
+      <!-- PRINT BUTTON -->
+
+      <div style="
+        margin-top:45px;
+        text-align:center;
+      ">
+
+        <button onclick="window.print()" style="
+          background:#003366;
+          color:#ffffff;
+          border:none;
+          padding:16px 34px;
+          border-radius:10px;
+          font-size:16px;
+          font-weight:700;
+          cursor:pointer;
+          box-shadow:0 8px 20px rgba(0,51,102,0.25);
+        ">
+          🖨 Download / Print Receipt
+        </button>
 
       </div>
 
@@ -532,20 +554,40 @@ export default async function handler(req, res) {
       line-height:1.9;
     ">
 
-      This email confirms successful receipt of applicant details,
-      uploaded identity documents and ECS verification information
-      through the secure online application system.
+      This receipt confirms successful receipt of applicant information,
+      uploaded identity documentation and ECS verification details
+      through the secure online application portal.
 
       <br><br>
 
-      Applications are processed following document verification,
-      qualification checks and payment confirmation procedures.
+      Applications are processed following verification,
+      qualification review and payment confirmation procedures.
 
     </div>
 
   </div>
 
 </div>
+
+<style>
+
+@media print {
+
+  body {
+
+    background:#ffffff !important;
+
+  }
+
+  button {
+
+    display:none !important;
+
+  }
+
+}
+
+</style>
 
 `
 
