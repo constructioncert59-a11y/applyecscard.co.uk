@@ -272,7 +272,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const submitBtn = form.querySelector(".submit-btn");
 
-    // PAYPAL LINK
     const paymentLink =
       "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 
@@ -285,6 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
 
       const formData = new FormData(form);
+
       const data = {};
 
       // =========================
@@ -361,27 +361,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
       });
 
-      // GET RESPONSE
-      const result = await response.text();
+      const text = await response.text();
 
-      console.log("SERVER RESPONSE:", result);
+      console.log("SERVER RESPONSE:", text);
 
       // =========================
-      // ERROR CHECK
+      // CHECK ERROR
       // =========================
 
       if (!response.ok) {
-
-        throw new Error(result || "Server Error");
-
+        throw new Error(text || "Server Error");
       }
 
       // =========================
       // SUCCESS
       // =========================
 
-      alert("Application submitted successfully!");
+      alert(
+        "Application submitted successfully!"
+      );
 
+      // REDIRECT
       setTimeout(() => {
 
         window.location.href = paymentLink;
@@ -390,9 +390,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     } catch (error) {
 
-      console.error("FORM ERROR:", error);
+      console.error(
+        "FORM ERROR:",
+        error
+      );
 
-      alert(error.message || "Something went wrong");
+      alert(
+        error.message ||
+        "Something went wrong"
+      );
 
     } finally {
 
