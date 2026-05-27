@@ -17,8 +17,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
 
     return res.status(405).json({
-      success: false,
-      error: "Method Not Allowed"
+      success: false
     });
 
   }
@@ -26,8 +25,6 @@ export default async function handler(req, res) {
   try {
 
     const data = req.body || {};
-
-    console.log("FULL DATA:", data);
 
     // =========================
     // VALIDATION
@@ -40,8 +37,7 @@ export default async function handler(req, res) {
 
       return res.status(400).json({
         success: false,
-        error:
-          "Full Name and Email required"
+        error: "Name & Email Required"
       });
 
     }
@@ -52,16 +48,14 @@ export default async function handler(req, res) {
 
     const attachments = [];
 
-    // PHOTO
     if (
-      typeof data.photo === "string" &&
+      data.photo &&
       data.photo.startsWith("data:")
     ) {
 
       attachments.push({
 
-        filename:
-          "passport-photo.png",
+        filename: "photo.png",
 
         content:
           data.photo.split(",")[1]
@@ -70,16 +64,14 @@ export default async function handler(req, res) {
 
     }
 
-    // ID PROOF
     if (
-      typeof data.id_proof === "string" &&
+      data.id_proof &&
       data.id_proof.startsWith("data:")
     ) {
 
       attachments.push({
 
-        filename:
-          "identity-proof.png",
+        filename: "id-proof.png",
 
         content:
           data.id_proof.split(",")[1]
@@ -88,16 +80,14 @@ export default async function handler(req, res) {
 
     }
 
-    // HS TEST
     if (
-      typeof data.hs_test_proof === "string" &&
+      data.hs_test_proof &&
       data.hs_test_proof.startsWith("data:")
     ) {
 
       attachments.push({
 
-        filename:
-          "hs-test-proof.png",
+        filename: "hs-proof.png",
 
         content:
           data.hs_test_proof.split(",")[1]
@@ -107,7 +97,7 @@ export default async function handler(req, res) {
     }
 
     // =========================
-    // REMOVE FILES FROM TABLE
+    // REMOVE FILES
     // =========================
 
     const normalFields = { ...data };
@@ -117,7 +107,7 @@ export default async function handler(req, res) {
     delete normalFields.hs_test_proof;
 
     // =========================
-    // PROFESSIONAL TABLE
+    // TABLE ROWS
     // =========================
 
     const tableRows =
@@ -126,45 +116,45 @@ export default async function handler(req, res) {
 
         return `
 
-          <tr>
+        <tr>
 
-            <td style="
-              padding:14px;
-              border:1px solid #e5e5e5;
-              background:#f8fafc;
-              font-weight:600;
-              text-transform:capitalize;
-              width:35%;
-            ">
+          <td style="
+            padding:14px;
+            border:1px solid #dbe4ee;
+            background:#f8fafc;
+            font-weight:700;
+            width:35%;
+            text-transform:capitalize;
+          ">
 
-              ${key.replaceAll("_", " ")}
+            ${key.replaceAll("_", " ")}
 
-            </td>
+          </td>
 
-            <td style="
-              padding:14px;
-              border:1px solid #e5e5e5;
-              color:#111827;
-            ">
+          <td style="
+            padding:14px;
+            border:1px solid #dbe4ee;
+            color:#111827;
+          ">
 
-              ${value || "-"}
+            ${value || "-"}
 
-            </td>
+          </td>
 
-          </tr>
+        </tr>
 
         `;
 
       }).join("");
 
     // =========================
-    // ADMIN EMAIL
+    // EMAIL SEND
     // =========================
 
     await resend.emails.send({
 
       from:
-        "Apply ECS <onboarding@resend.dev>",
+        "ECS Applications <onboarding@resend.dev>",
 
       to:
         "applyecs4@gmail.com",
@@ -173,435 +163,317 @@ export default async function handler(req, res) {
         data.email,
 
       subject:
-        `🔥 New ECS Card Application - ${data.full_name}`,
+        `ECS Application - ${data.full_name}`,
 
       attachments,
-html: `
 
-<div style="
-  background:#eef3f9;
-  padding:50px 20px;
-  font-family:Arial,sans-serif;
-">
-
-  <div id="receipt" style="
-    max-width:1000px;
-    margin:auto;
-    background:#ffffff;
-    border-radius:18px;
-    overflow:hidden;
-    border:1px solid #dbe4ee;
-    box-shadow:0 20px 60px rgba(0,0,0,0.10);
-  ">
-
-    <!-- HEADER -->
-
-    <div style="
-      background:#003366;
-      color:#ffffff;
-      padding:34px 45px;
-      border-bottom:5px solid #00a3e0;
-    ">
-
-      <table width="100%">
-
-        <tr>
-
-          <td>
-
-            <div style="
-              font-size:44px;
-              font-weight:800;
-              letter-spacing:1px;
-            ">
-              ECS
-            </div>
-
-            <div style="
-              margin-top:8px;
-              font-size:16px;
-              opacity:0.95;
-            ">
-              Electrotechnical Certification Services
-            </div>
-
-          </td>
-
-          <td align="right">
-
-            <div style="
-              background:#16a34a;
-              color:#ffffff;
-              padding:12px 24px;
-              border-radius:999px;
-              display:inline-block;
-              font-size:13px;
-              font-weight:700;
-              letter-spacing:.5px;
-            ">
-              ✓ SUBMISSION VERIFIED
-            </div>
-
-          </td>
-
-        </tr>
-
-      </table>
-
-    </div>
-
-    <!-- MAIN -->
-
-    <div style="
-      padding:45px;
-    ">
-
-      <!-- TITLE -->
+      html: `
 
       <div style="
-        margin-bottom:35px;
-      ">
-
-        <h1 style="
-          margin:0;
-          font-size:32px;
-          color:#111827;
-        ">
-          ECS Card Application Receipt
-        </h1>
-
-        <p style="
-          margin-top:14px;
-          color:#4b5563;
-          line-height:1.9;
-          font-size:15px;
-        ">
-          This receipt confirms that the applicant information,
-          uploaded documents and verification details have been
-          securely received through the ECS application system.
-        </p>
-
-      </div>
-
-      <!-- STATUS -->
-
-      <div style="
-        background:#f0fdf4;
-        border:1px solid #bbf7d0;
-        border-left:6px solid #16a34a;
-        border-radius:16px;
-        padding:24px;
-        margin-bottom:35px;
+        background:#eef3f9;
+        padding:50px 20px;
+        font-family:Arial,sans-serif;
       ">
 
         <div style="
-          font-size:22px;
-          font-weight:700;
-          color:#166534;
-        ">
-          Application Status: Processing
-        </div>
-
-        <div style="
-          margin-top:10px;
-          color:#166534;
-          line-height:1.9;
-          font-size:15px;
-        ">
-          Supporting identity files and qualification documents
-          were uploaded successfully and are pending verification.
-        </div>
-
-      </div>
-
-      <!-- TABLE -->
-
-      <div style="
-        border:1px solid #dbe4ee;
-        border-radius:18px;
-        overflow:hidden;
-      ">
-
-        <div style="
-          background:#f8fafc;
-          padding:18px 25px;
-          border-bottom:1px solid #e5e7eb;
-          font-size:22px;
-          font-weight:700;
-          color:#111827;
-        ">
-          Applicant Information
-        </div>
-
-        <table style="
-          width:100%;
-          border-collapse:collapse;
-          font-size:15px;
-        ">
-
-          ${tableRows}
-
-        </table>
-
-      </div>
-
-      <!-- DOCUMENTS -->
-
-      <div style="
-        margin-top:40px;
-        border:1px solid #dbe4ee;
-        border-radius:18px;
-        overflow:hidden;
-      ">
-
-        <div style="
-          background:#f8fafc;
-          padding:18px 25px;
-          border-bottom:1px solid #e5e7eb;
-          font-size:20px;
-          font-weight:700;
-          color:#111827;
-        ">
-          Uploaded Verification Documents
-        </div>
-
-        <div style="
-          padding:30px;
+          max-width:1000px;
+          margin:auto;
           background:#ffffff;
+          border-radius:18px;
+          overflow:hidden;
+          border:1px solid #dbe4ee;
+          box-shadow:0 20px 60px rgba(0,0,0,0.10);
         ">
 
-          <table width="100%" style="
-            border-collapse:separate;
-            border-spacing:0 14px;
+          <!-- HEADER -->
+
+          <div style="
+            background:#003366;
+            color:#ffffff;
+            padding:34px 45px;
+            border-bottom:5px solid #00a3e0;
           ">
 
-            <tr>
+            <table width="100%">
 
-              <td style="
-                padding:18px 20px;
-                background:#f9fafb;
-                border:1px solid #e5e7eb;
-                border-radius:12px;
-                font-weight:600;
-                color:#111827;
-              ">
-                📎 Passport Size Photograph Uploaded
-              </td>
+              <tr>
 
-            </tr>
+                <td>
 
-            <tr>
+                  <div style="
+                    font-size:44px;
+                    font-weight:800;
+                  ">
+                    ECS
+                  </div>
 
-              <td style="
-                padding:18px 20px;
-                background:#f9fafb;
-                border:1px solid #e5e7eb;
-                border-radius:12px;
-                font-weight:600;
-                color:#111827;
-              ">
-                📎 Identity Verification Document Uploaded
-              </td>
+                  <div style="
+                    margin-top:8px;
+                    font-size:16px;
+                  ">
+                    Electrotechnical Certification Services
+                  </div>
 
-            </tr>
+                </td>
 
-            <tr>
+                <td align="right">
 
-              <td style="
-                padding:18px 20px;
-                background:#f9fafb;
-                border:1px solid #e5e7eb;
-                border-radius:12px;
-                font-weight:600;
-                color:#111827;
-              ">
-                📎 Health & Safety Qualification Proof Uploaded
-              </td>
+                  <div style="
+                    background:#16a34a;
+                    color:#ffffff;
+                    padding:12px 24px;
+                    border-radius:999px;
+                    font-size:13px;
+                    font-weight:700;
+                    display:inline-block;
+                  ">
+                    ✓ APPLICATION RECEIVED
+                  </div>
 
-            </tr>
+                </td>
 
-          </table>
+              </tr>
 
-        </div>
+            </table>
 
-      </div>
+          </div>
 
-      <!-- PAYMENT -->
+          <!-- BODY -->
 
-      <div style="
-        margin-top:40px;
-        background:#eff6ff;
-        border:1px solid #bfdbfe;
-        border-left:6px solid #2563eb;
-        border-radius:18px;
-        padding:30px;
-      ">
+          <div style="
+            padding:45px;
+          ">
 
-        <div style="
-          font-size:22px;
-          font-weight:700;
-          color:#1d4ed8;
-          margin-bottom:12px;
-        ">
-          Payment Processing
-        </div>
+            <h1 style="
+              margin-top:0;
+              font-size:32px;
+              color:#111827;
+            ">
+              ECS Card Application Receipt
+            </h1>
 
-        <div style="
-          color:#1e3a8a;
-          line-height:1.9;
-          font-size:15px;
-        ">
-          Applicant has securely proceeded to payment processing
-          for ECS application handling, verification and review services.
-        </div>
+            <p style="
+              color:#4b5563;
+              line-height:1.9;
+              font-size:15px;
+            ">
+              This receipt confirms successful submission of applicant information,
+              uploaded identity documents and ECS verification files.
+            </p>
 
-      </div>
+            <!-- STATUS -->
 
-      <!-- REFERENCE -->
-
-      <div style="
-        margin-top:40px;
-        background:#f8fafc;
-        border:1px solid #e5e7eb;
-        border-radius:18px;
-        padding:28px;
-      ">
-
-        <table width="100%">
-
-          <tr>
-
-            <td>
+            <div style="
+              background:#f0fdf4;
+              border:1px solid #bbf7d0;
+              border-left:6px solid #16a34a;
+              border-radius:16px;
+              padding:24px;
+              margin-top:30px;
+              margin-bottom:35px;
+            ">
 
               <div style="
-                font-size:13px;
-                color:#6b7280;
-              ">
-                Submission Reference
-              </div>
-
-              <div style="
-                margin-top:8px;
                 font-size:22px;
-                font-weight:800;
-                color:#111827;
-                letter-spacing:1px;
-              ">
-                ECS-${Date.now()}
-              </div>
-
-            </td>
-
-            <td align="right">
-
-              <div style="
-                font-size:13px;
-                color:#6b7280;
-              ">
-                Verification Status
-              </div>
-
-              <div style="
-                margin-top:8px;
-                font-size:18px;
                 font-weight:700;
-                color:#16a34a;
+                color:#166534;
               ">
-                Pending Review
+                Verification Status: Pending Review
               </div>
 
-            </td>
+            </div>
 
-          </tr>
+            <!-- TABLE -->
 
-        </table>
+            <div style="
+              border:1px solid #dbe4ee;
+              border-radius:18px;
+              overflow:hidden;
+            ">
+
+              <div style="
+                background:#f8fafc;
+                padding:18px 25px;
+                border-bottom:1px solid #e5e7eb;
+                font-size:22px;
+                font-weight:700;
+              ">
+                Applicant Information
+              </div>
+
+              <table style="
+                width:100%;
+                border-collapse:collapse;
+                font-size:15px;
+              ">
+
+                ${tableRows}
+
+              </table>
+
+            </div>
+
+            <!-- DOCUMENTS -->
+
+            <div style="
+              margin-top:40px;
+              border:1px solid #dbe4ee;
+              border-radius:18px;
+              overflow:hidden;
+            ">
+
+              <div style="
+                background:#f8fafc;
+                padding:18px 25px;
+                border-bottom:1px solid #e5e7eb;
+                font-size:20px;
+                font-weight:700;
+              ">
+                Uploaded Documents
+              </div>
+
+              <div style="
+                padding:30px;
+              ">
+
+                <div style="
+                  padding:16px;
+                  background:#f9fafb;
+                  border:1px solid #e5e7eb;
+                  border-radius:12px;
+                  margin-bottom:14px;
+                  font-weight:600;
+                ">
+                  📎 Passport Size Photo Uploaded
+                </div>
+
+                <div style="
+                  padding:16px;
+                  background:#f9fafb;
+                  border:1px solid #e5e7eb;
+                  border-radius:12px;
+                  margin-bottom:14px;
+                  font-weight:600;
+                ">
+                  📎 Identity Verification Uploaded
+                </div>
+
+                <div style="
+                  padding:16px;
+                  background:#f9fafb;
+                  border:1px solid #e5e7eb;
+                  border-radius:12px;
+                  font-weight:600;
+                ">
+                  📎 Health & Safety Proof Uploaded
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- REFERENCE -->
+
+            <div style="
+              margin-top:40px;
+              background:#f8fafc;
+              border:1px solid #e5e7eb;
+              border-radius:18px;
+              padding:28px;
+            ">
+
+              <table width="100%">
+
+                <tr>
+
+                  <td>
+
+                    <div style="
+                      font-size:13px;
+                      color:#6b7280;
+                    ">
+                      Submission Reference
+                    </div>
+
+                    <div style="
+                      margin-top:8px;
+                      font-size:22px;
+                      font-weight:800;
+                      color:#111827;
+                    ">
+                      ECS-${Date.now()}
+                    </div>
+
+                  </td>
+
+                  <td align="right">
+
+                    <div style="
+                      font-size:13px;
+                      color:#6b7280;
+                    ">
+                      Status
+                    </div>
+
+                    <div style="
+                      margin-top:8px;
+                      font-size:18px;
+                      font-weight:700;
+                      color:#16a34a;
+                    ">
+                      Pending Review
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              </table>
+
+            </div>
+
+          </div>
+
+          <!-- FOOTER -->
+
+          <div style="
+            background:#f8fafc;
+            border-top:1px solid #e5e7eb;
+            padding:30px 40px;
+            color:#6b7280;
+            font-size:13px;
+            line-height:1.9;
+          ">
+
+            This receipt confirms successful receipt of uploaded documents
+            and ECS application verification details.
+
+          </div>
+
+        </div>
 
       </div>
 
-      <!-- PRINT BUTTON -->
+      `
 
-      <div style="
-        margin-top:45px;
-        text-align:center;
-      ">
+    });
 
-        <button onclick="window.print()" style="
-          background:#003366;
-          color:#ffffff;
-          border:none;
-          padding:16px 34px;
-          border-radius:10px;
-          font-size:16px;
-          font-weight:700;
-          cursor:pointer;
-          box-shadow:0 8px 20px rgba(0,51,102,0.25);
-        ">
-          🖨 Download / Print Receipt
-        </button>
+    // =========================
+    // SUCCESS
+    // =========================
 
-      </div>
-
-    </div>
-
-    <!-- FOOTER -->
-
-    <div style="
-      background:#f8fafc;
-      border-top:1px solid #e5e7eb;
-      padding:30px 40px;
-      color:#6b7280;
-      font-size:13px;
-      line-height:1.9;
-    ">
-
-      This receipt confirms successful receipt of applicant information,
-      uploaded identity documentation and ECS verification details
-      through the secure online application portal.
-
-      <br><br>
-
-      Applications are processed following verification,
-      qualification review and payment confirmation procedures.
-
-    </div>
-
-  </div>
-
-</div>
-
-<style>
-
-@media print {
-
-  body {
-
-    background:#ffffff !important;
-
-  }
-
-  button {
-
-    display:none !important;
-
-  }
-
-}
-
-</style>
-
-`
     return res.status(200).json({
 
       success: true,
 
       message:
-        "Professional emails sent"
+        "Email Sent Successfully"
 
     });
 
   } catch (error) {
 
-    console.error(error);
+    console.log(error);
 
     return res.status(500).json({
 
@@ -615,46 +487,3 @@ html: `
   }
 
 }
-<!-- PRINT + DOWNLOAD RECEIPT BUTTON -->
-
-<div style="
-  margin-top:40px;
-  text-align:center;
-">
-
-  <button onclick="window.print()" style="
-    background:#003366;
-    color:#ffffff;
-    border:none;
-    padding:16px 34px;
-    border-radius:10px;
-    font-size:16px;
-    font-weight:700;
-    cursor:pointer;
-    box-shadow:0 8px 20px rgba(0,51,102,0.25);
-  ">
-    🖨 Download / Print Receipt
-  </button>
-
-</div>
-
-
-<style>
-
-@media print {
-
-  body {
-
-    background:#ffffff !important;
-
-  }
-
-  button {
-
-    display:none !important;
-
-  }
-
-}
-
-</style>
