@@ -255,12 +255,20 @@
       </div>
     </form>
   </section>
+<!-- ========================================= -->
+<!-- PROFESSIONAL LARGE FILE UPLOAD VERSION -->
+<!-- CLOUDINARY DIRECT UPLOAD SYSTEM -->
+<!-- NO VERCEL PAYLOAD ERROR -->
+<!-- ========================================= -->
+
+<script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+
 <script>
 
 document.addEventListener("DOMContentLoaded", () => {
 
   // ====================================
-  // FORM ELEMENT
+  // FORM
   // ====================================
 
   const form =
@@ -272,7 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ====================================
-  // PAYMENT LINK
+  // PAYPAL LINK
   // ====================================
 
   const paymentLink =
@@ -286,18 +294,61 @@ document.addEventListener("DOMContentLoaded", () => {
     form.querySelector(".submit-btn");
 
   // ====================================
-  // SETTINGS
+  // CLOUDINARY CONFIG
   // ====================================
 
-  const MAX_FILE_SIZE =
-    100 * 1024 * 1024; // 100MB
+  const CLOUD_NAME =
+    "YOUR_CLOUDINARY_NAME";
 
-  const allowedTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/jpg",
-    "application/pdf"
-  ];
+  const UPLOAD_PRESET =
+    "YOUR_UPLOAD_PRESET";
+
+  // ====================================
+  // UPLOAD FILE TO CLOUDINARY
+  // ====================================
+
+  async function uploadToCloudinary(file) {
+
+    const formData =
+      new FormData();
+
+    formData.append(
+      "file",
+      file
+    );
+
+    formData.append(
+      "upload_preset",
+      UPLOAD_PRESET
+    );
+
+    const response =
+      await fetch(
+
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+
+        {
+          method: "POST",
+          body: formData
+        }
+
+      );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error?.message ||
+        "Cloud upload failed"
+      );
+
+    }
+
+    return data.secure_url;
+
+  }
 
   // ====================================
   // FORM SUBMIT
@@ -318,62 +369,56 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.disabled = true;
 
         submitBtn.innerHTML =
-          "Processing...";
+          "Uploading Files...";
 
       }
 
       // ====================================
-      // CREATE FORMDATA
+      // CREATE DATA OBJECT
       // ====================================
+
+      const data = {};
 
       const formData =
         new FormData(form);
 
       // ====================================
-      // REQUIRED FIELDS
+      // NORMAL FIELDS
       // ====================================
 
-      const requiredFields = [
-        "full_name",
-        "dob",
-        "ni_number",
-        "gender",
-        "street_address",
-        "city",
-        "postcode",
-        "mobile",
-        "email",
-        "confirm_email",
-        "occupation",
-        "hs_test"
-      ];
+      for (let [key, value] of formData.entries()) {
 
-      for (const field of requiredFields) {
+        if (!(value instanceof File)) {
 
-        const value =
-          formData.get(field);
-
-        if (!value || !value.toString().trim()) {
-
-          throw new Error(
-            `${field.replace(/_/g, " ")} is required`
-          );
+          data[key] = value;
 
         }
 
       }
 
       // ====================================
-      // EMAIL MATCH CHECK
+      // REQUIRED CHECK
       // ====================================
 
-      const email =
-        formData.get("email");
+      if (
+        !data.full_name ||
+        !data.email
+      ) {
 
-      const confirmEmail =
-        formData.get("confirm_email");
+        throw new Error(
+          "Full Name and Email are required"
+        );
 
-      if (email !== confirmEmail) {
+      }
+
+      // ====================================
+      // EMAIL CHECK
+      // ====================================
+
+      if (
+        data.email !==
+        data.confirm_email
+      ) {
 
         throw new Error(
           "Email addresses do not match"
@@ -382,22 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // ====================================
-      // EMAIL FORMAT CHECK
-      // ====================================
-
-      const emailRegex =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      if (!emailRegex.test(email)) {
-
-        throw new Error(
-          "Invalid email address"
-        );
-
-      }
-
-      // ====================================
-      // FILE VALIDATION
+      // FILE FIELDS
       // ====================================
 
       const fileFields = [
@@ -405,6 +435,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "id_proof",
         "hs_test_proof"
       ];
+
+      // ====================================
+      // UPLOAD FILES
+      // ====================================
 
       for (const field of fileFields) {
 
@@ -415,66 +449,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (file) {
 
-          // FILE SIZE
-          if (file.size > MAX_FILE_SIZE) {
+          submitBtn.innerHTML =
+            `Uploading ${field}...`;
 
-            throw new Error(
-              `${field.replace(/_/g, " ")} exceeds 100MB limit`
-            );
+          // CLOUDINARY UPLOAD
+          const uploadedUrl =
+            await uploadToCloudinary(file);
 
-          }
-
-          // FILE TYPE
-          if (
-            !allowedTypes.includes(file.type)
-          ) {
-
-            throw new Error(
-              `${field.replace(/_/g, " ")} file type not allowed`
-            );
-
-          }
+          // SAVE URL
+          data[field] =
+            uploadedUrl;
 
         }
 
       }
 
       // ====================================
-      // INTERNET CHECK
+      // SEND LIGHTWEIGHT DATA
       // ====================================
 
-      if (!navigator.onLine) {
-
-        throw new Error(
-          "No internet connection"
-        );
-
-      }
-
-      // ====================================
-      // DEBUG
-      // ====================================
-
-      console.log(
-        "Submitting application..."
-      );
-
-      // ====================================
-      // API REQUEST
-      // ====================================
+      submitBtn.innerHTML =
+        "Submitting Application...";
 
       const response =
         await fetch("/api/send", {
 
           method: "POST",
 
-          body: formData
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify(data)
 
         });
-
-      // ====================================
-      // RESPONSE TEXT
-      // ====================================
 
       const result =
         await response.text();
@@ -484,15 +494,11 @@ document.addEventListener("DOMContentLoaded", () => {
         result
       );
 
-      // ====================================
-      // ERROR CHECK
-      // ====================================
-
       if (!response.ok) {
 
         throw new Error(
           result ||
-          "Upload failed"
+          "Application failed"
         );
 
       }
@@ -506,7 +512,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       // ====================================
-      // FORM RESET
+      // RESET FORM
       // ====================================
 
       form.reset();
@@ -524,18 +530,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (error) {
 
-      // ====================================
-      // ERROR LOG
-      // ====================================
-
       console.error(
         "FORM ERROR:",
         error
       );
-
-      // ====================================
-      // USER ALERT
-      // ====================================
 
       alert(
         error.message ||
@@ -543,10 +541,6 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
     } finally {
-
-      // ====================================
-      // BUTTON RESET
-      // ====================================
 
       if (submitBtn) {
 
