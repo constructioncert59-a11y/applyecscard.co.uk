@@ -243,9 +243,9 @@
         <div class="summary-box" id="summaryBox"></div>
 
         <h3>Payment</h3>
-        <p><strong>Total Fee: <span id="totalFee">£79.00</span></strong></p>
+        <p><strong>Total Fee: <span id="totalFee">£95.00</span></strong></p>
         <p class="small-print">
-          Indicative fees: New ECS card from £79, renewal or replacement from £79.
+          Indicative fees: New ECS card from £95, renewal or replacement from £95.
           Final cost may depend on your route and any additional services.
         </p>
 
@@ -573,9 +573,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalFeeSpan = document.getElementById("totalFee");
 
     const priceMap = {
-      new: "£79.00",
-      renewal: "£79.00",
-      replacement: "£79.00"
+      new: "£95.00",
+      renewal: "£95.00",
+      replacement: "£95.00"
     };
 
     function showStep(step) {
@@ -618,7 +618,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!form || !summaryBox) return;
       const formData = new FormData(form);
       const cardType = formData.get("ecs_card_type");
-      const price = priceMap[cardType] || "£79.00";
+      const price = priceMap[cardType] || "£95.00";
 
       summaryBox.innerHTML = `
         <p><strong>Name:</strong> ${formData.get("full_name") || ""}</p>
@@ -675,7 +675,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
       if (totalFeeSpan && selectedType) {
-        totalFeeSpan.textContent = priceMap[selectedType] || "£79.00";
+        totalFeeSpan.textContent = priceMap[selectedType] || "£95.00";
       }
     }
 
