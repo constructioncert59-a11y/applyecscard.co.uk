@@ -4,7 +4,7 @@
 // ---------------------------
 
 // Admin email where you want to receive messages
-$adminEmail = "booking@applyecscard.co.uk";
+$adminEmail = "applyecs4@gmail.com";
 
 // Email subject for admin
 $adminSubject = "New Contact Enquiry - Apply ECS";
