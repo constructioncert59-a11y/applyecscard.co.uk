@@ -333,38 +333,6 @@ document.addEventListener("DOMContentLoaded", () => {
         new FormData(form);
 
       // =========================
-      // REQUIRED FIELD CHECK
-      // =========================
-
-      const fullName =
-        formData.get("full_name");
-
-      const email =
-        formData.get("email");
-
-      if (!fullName || !email) {
-
-        throw new Error(
-          "Full Name and Email are required"
-        );
-
-      }
-
-      // =========================
-      // EMAIL MATCH CHECK
-      // =========================
-
-      const confirmEmail =
-        formData.get("confirm_email");
-
-      if (email !== confirmEmail) {
-
-        throw new Error(
-          "Email addresses do not match"
-        );
-
-      }
-
       // =========================
       // FILE VALIDATION
       // =========================
