@@ -288,6 +288,25 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = {};
 
       // =========================
+      // FILE SIZE LIMIT
+      // =========================
+
+      const MAX_FILE_SIZE =
+        5 * 1024 * 1024; // 5MB
+
+      function validateFile(file, fileName) {
+
+        if (file && file.size > MAX_FILE_SIZE) {
+
+          throw new Error(
+            `${fileName} size must be less than 5MB`
+          );
+
+        }
+
+      }
+
+      // =========================
       // NORMAL FIELDS
       // =========================
 
@@ -319,25 +338,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
       }
 
+      // =========================
       // PHOTO
+      // =========================
+
       const photo =
         form.querySelector('input[name="photo"]')?.files[0];
+
+      validateFile(photo, "Photo");
 
       if (photo) {
         data.photo = await fileToBase64(photo);
       }
 
+      // =========================
       // ID PROOF
+      // =========================
+
       const idProof =
         form.querySelector('input[name="id_proof"]')?.files[0];
+
+      validateFile(idProof, "ID Proof");
 
       if (idProof) {
         data.id_proof = await fileToBase64(idProof);
       }
 
+      // =========================
       // HS TEST PROOF
+      // =========================
+
       const hsProof =
         form.querySelector('input[name="hs_test_proof"]')?.files[0];
+
+      validateFile(hsProof, "HS Test Proof");
 
       if (hsProof) {
         data.hs_test_proof = await fileToBase64(hsProof);
