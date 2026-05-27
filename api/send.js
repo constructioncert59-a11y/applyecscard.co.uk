@@ -137,7 +137,7 @@ export default async function handler(req, res) {
               width:35%;
             ">
 
-              ${key.replaceAll("_", " ")}
+              ${key.replaceAll(" ", " ")}
 
             </td>
 
