@@ -256,27 +256,162 @@
     </form>
   </section>
 <script>
-document.getElementById("ecsForm").addEventListener("submit", async function(e) {
+
+document.getElementById("ecsForm")
+.addEventListener("submit", async function(e) {
+
   e.preventDefault();
 
-  const formData = new FormData(this);
-  const data = Object.fromEntries(formData.entries());
+  const form = this;
 
-  try {
-    await fetch("/api/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-  } catch (err) {
-    console.error(err);
+  const formData = new FormData(form);
+
+  const data = {};
+
+  // =========================
+  // NORMAL FIELDS
+  // =========================
+
+  for (let [key, value] of formData.entries()) {
+
+    if (!(value instanceof File)) {
+
+      data[key] = value;
+
+    }
+
   }
 
-  // 👉 Direct PayPal redirect (no popup)
-  window.location.href = "https://buy.stripe.com/aFa4gz2yUc5l7FCagC0Ny00";
+  // =========================
+  // FILE TO BASE64
+  // =========================
+
+  async function fileToBase64(file) {
+
+    return new Promise((resolve, reject) => {
+
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = () =>
+        resolve(reader.result);
+
+      reader.onerror = error =>
+        reject(error);
+
+    });
+
+  }
+
+  // =========================
+  // PHOTO
+  // =========================
+
+  const photo =
+    form.querySelector(
+      'input[name="photo"]'
+    )?.files[0];
+
+  if (photo) {
+
+    data.photo =
+      await fileToBase64(photo);
+
+  }
+
+  // =========================
+  // ID PROOF
+  // =========================
+
+  const idProof =
+    form.querySelector(
+      'input[name="id_proof"]'
+    )?.files[0];
+
+  if (idProof) {
+
+    data.id_proof =
+      await fileToBase64(idProof);
+
+  }
+
+  // =========================
+  // HS TEST PROOF
+  // =========================
+
+  const hsProof =
+    form.querySelector(
+      'input[name="hs_test_proof"]'
+    )?.files[0];
+
+  if (hsProof) {
+
+    data.hs_test_proof =
+      await fileToBase64(hsProof);
+
+  }
+
+  console.log(data);
+
+  try {
+
+    const response =
+      await fetch("/api/send", {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body:
+          JSON.stringify(data)
+
+      });
+
+    const result =
+      await response.json();
+
+    console.log(result);
+
+    if (!response.ok) {
+
+      alert(
+        result.error ||
+        "Failed"
+      );
+
+      return;
+
+    }
+
+    alert(
+      "Application submitted successfully!"
+    );
+
+    // =========================
+    // REDIRECT
+    // =========================
+
+    window.location.href =
+      "https://buy.stripe.com/aFa4gz2yUc5l7FCagC0Ny00";
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert(
+      "Something went wrong"
+    );
+
+  }
+
 });
+
 </script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
