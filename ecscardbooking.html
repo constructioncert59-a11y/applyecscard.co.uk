@@ -259,11 +259,15 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  const form = document.getElementById("ecsForm");
+  const form =
+    document.getElementById("ecsForm");
 
   if (!form) {
+
     console.error("Form not found");
+
     return;
+
   }
 
   form.addEventListener("submit", async function (e) {
@@ -276,7 +280,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const paymentLink =
       "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 
+    // =========================
     // BUTTON DISABLE
+    // =========================
+
     if (submitBtn) {
 
       submitBtn.disabled = true;
@@ -342,8 +349,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (photo) {
 
-        data.photo =
-          await fileToBase64(photo);
+        try {
+
+          data.photo =
+            await fileToBase64(photo);
+
+        } catch (err) {
+
+          console.error(
+            "PHOTO ERROR:",
+            err
+          );
+
+        }
 
       }
 
@@ -358,8 +376,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (idProof) {
 
-        data.id_proof =
-          await fileToBase64(idProof);
+        try {
+
+          data.id_proof =
+            await fileToBase64(idProof);
+
+        } catch (err) {
+
+          console.error(
+            "ID ERROR:",
+            err
+          );
+
+        }
 
       }
 
@@ -374,8 +403,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (hsProof) {
 
-        data.hs_test_proof =
-          await fileToBase64(hsProof);
+        try {
+
+          data.hs_test_proof =
+            await fileToBase64(hsProof);
+
+        } catch (err) {
+
+          console.error(
+            "HS ERROR:",
+            err
+          );
+
+        }
 
       }
 
@@ -393,8 +433,10 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "POST",
 
         headers: {
+
           "Content-Type":
             "application/json"
+
         },
 
         body:
@@ -412,22 +454,26 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
       })
-      .catch((err) => {
+      .catch((error) => {
 
         console.error(
           "BACKGROUND ERROR:",
-          err
+          error
         );
 
       });
 
       // =========================
-      // ALWAYS REDIRECT
+      // ALWAYS SUCCESS
       // =========================
 
       alert(
         "Application submitted successfully!"
       );
+
+      // =========================
+      // PAYPAL REDIRECT
+      // =========================
 
       setTimeout(() => {
 
@@ -443,13 +489,18 @@ document.addEventListener("DOMContentLoaded", function () {
         error
       );
 
-      // EVEN IF ERROR
-      // STILL REDIRECT
+      // =========================
+      // FORCE REDIRECT
+      // =========================
 
       window.location.href =
         paymentLink;
 
     } finally {
+
+      // =========================
+      // BUTTON ENABLE
+      // =========================
 
       if (submitBtn) {
 
