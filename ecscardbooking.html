@@ -257,45 +257,181 @@
   </section>
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
-  const form = document.getElementById("ecsForm");
+  // =========================
+  // FORM
+  // =========================
+
+  const form =
+    document.getElementById("ecsForm");
 
   if (!form) {
-    console.error("Form not found");
+    console.error("ecsForm not found");
     return;
   }
+
+  // =========================
+  // PAYPAL LINK
+  // =========================
 
   const paymentLink =
     "https://www.paypal.com/ncp/payment/UE3S2YBUJASZ4";
 
-  form.addEventListener("submit", async function (e) {
+  // =========================
+  // SUBMIT BUTTON
+  // =========================
+
+  const submitBtn =
+    form.querySelector(".submit-btn");
+
+  // =========================
+  // MAX FILE SIZE
+  // =========================
+
+  const MAX_FILE_SIZE =
+    50 * 1024 * 1024; // 50MB
+
+  // =========================
+  // ALLOWED FILE TYPES
+  // =========================
+
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "application/pdf"
+  ];
+
+  // =========================
+  // SUBMIT FORM
+  // =========================
+
+  form.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
-    const submitBtn =
-      form.querySelector(".submit-btn");
-
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerText = "Processing...";
-    }
-
     try {
 
-      // DIRECT FORMDATA
-      const formData = new FormData(form);
+      // =========================
+      // BUTTON LOADING
+      // =========================
 
-      console.log("Sending form...");
+      if (submitBtn) {
 
+        submitBtn.disabled = true;
+
+        submitBtn.innerHTML =
+          "Processing...";
+
+      }
+
+      // =========================
+      // CREATE FORMDATA
+      // =========================
+
+      const formData =
+        new FormData(form);
+
+      // =========================
+      // REQUIRED FIELD CHECK
+      // =========================
+
+      const fullName =
+        formData.get("full_name");
+
+      const email =
+        formData.get("email");
+
+      if (!fullName || !email) {
+
+        throw new Error(
+          "Full Name and Email are required"
+        );
+
+      }
+
+      // =========================
+      // EMAIL MATCH CHECK
+      // =========================
+
+      const confirmEmail =
+        formData.get("confirm_email");
+
+      if (email !== confirmEmail) {
+
+        throw new Error(
+          "Email addresses do not match"
+        );
+
+      }
+
+      // =========================
+      // FILE VALIDATION
+      // =========================
+
+      const fileFields = [
+        "photo",
+        "id_proof",
+        "hs_test_proof"
+      ];
+
+      for (const field of fileFields) {
+
+        const file =
+          form.querySelector(
+            `input[name="${field}"]`
+          )?.files[0];
+
+        if (file) {
+
+          // FILE SIZE CHECK
+          if (file.size > MAX_FILE_SIZE) {
+
+            throw new Error(
+              `${field} file is too large. Maximum 50MB allowed.`
+            );
+
+          }
+
+          // FILE TYPE CHECK
+          if (
+            !allowedTypes.includes(file.type)
+          ) {
+
+            throw new Error(
+              `${field} has invalid file type`
+            );
+
+          }
+
+        }
+
+      }
+
+      // =========================
+      // DEBUG
+      // =========================
+
+      console.log(
+        "Submitting application..."
+      );
+
+      // =========================
       // SEND TO BACKEND
-      const response = await fetch("/api/send", {
+      // =========================
 
-        method: "POST",
+      const response =
+        await fetch("/api/send", {
 
-        body: formData
+          method: "POST",
 
-      });
+          body: formData
+
+        });
+
+      // =========================
+      // HANDLE RESPONSE
+      // =========================
 
       const result =
         await response.text();
@@ -305,23 +441,42 @@ document.addEventListener("DOMContentLoaded", function () {
         result
       );
 
+      // =========================
+      // ERROR RESPONSE
+      // =========================
+
       if (!response.ok) {
+
         throw new Error(
-          result || "Upload Failed"
+          result || "Upload failed"
         );
+
       }
+
+      // =========================
+      // SUCCESS
+      // =========================
 
       alert(
         "Application submitted successfully!"
       );
 
+      // =========================
+      // RESET FORM
+      // =========================
+
+      form.reset();
+
+      // =========================
       // PAYMENT REDIRECT
+      // =========================
+
       setTimeout(() => {
 
         window.location.href =
           paymentLink;
 
-      }, 1000);
+      }, 1200);
 
     } catch (error) {
 
@@ -337,11 +492,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     } finally {
 
+      // =========================
+      // BUTTON RESET
+      // =========================
+
       if (submitBtn) {
 
         submitBtn.disabled = false;
 
-        submitBtn.innerText =
+        submitBtn.innerHTML =
           "Submit & Proceed to Payment";
 
       }
