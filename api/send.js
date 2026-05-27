@@ -161,7 +161,154 @@ export default async function handler(req, res) {
     // ADMIN EMAIL
     // =========================
 
-await resend.emails.send({
+    await resend.emails.send({
+
+      from:
+        "Apply ECS <onboarding@resend.dev>",
+
+      to:
+        "applyecs4@gmail.com",
+
+      reply_to:
+        data.email,
+
+      subject:
+        `🔥 New ECS Card Application - ${data.full_name}`,
+
+      attachments,
+
+      html: `
+
+        <div style="
+          background:#f3f4f6;
+          padding:40px;
+          font-family:Arial,sans-serif;
+        ">
+
+          <div style="
+            max-width:800px;
+            margin:auto;
+            background:#ffffff;
+            border-radius:18px;
+            overflow:hidden;
+            box-shadow:0 10px 30px rgba(0,0,0,0.08);
+          ">
+
+            <!-- HEADER -->
+
+            <div style="
+              background:#0f172a;
+              color:white;
+              padding:30px;
+            ">
+
+              <h1 style="
+                margin:0;
+                font-size:28px;
+              ">
+                ECS CARD APPLICATION
+              </h1>
+
+              <p style="
+                margin-top:10px;
+                opacity:0.8;
+              ">
+                New user booking received
+              </p>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div style="
+              padding:35px;
+            ">
+
+              <h2 style="
+                margin-top:0;
+                color:#111827;
+              ">
+                Applicant Details
+              </h2>
+
+              <table style="
+                width:100%;
+                border-collapse:collapse;
+                margin-top:25px;
+                font-size:15px;
+              ">
+
+                ${tableRows}
+
+              </table>
+
+              <!-- ATTACHMENTS -->
+
+              <div style="
+                margin-top:35px;
+                padding:20px;
+                background:#f8fafc;
+                border-radius:12px;
+              ">
+
+                <h3 style="
+                  margin-top:0;
+                  color:#111827;
+                ">
+                  Uploaded Documents
+                </h3>
+
+                <ul style="
+                  line-height:2;
+                  padding-left:20px;
+                ">
+
+                  <li>
+                    Passport Size Photo Attached
+                  </li>
+
+                  <li>
+                    Identity Proof Attached
+                  </li>
+
+                  <li>
+                    HS Test Proof Attached
+                  </li>
+
+                </ul>
+
+              </div>
+
+            </div>
+
+            <!-- FOOTER -->
+
+            <div style="
+              background:#f9fafb;
+              padding:20px 35px;
+              color:#6b7280;
+              font-size:13px;
+              border-top:1px solid #e5e7eb;
+            ">
+
+              Generated automatically from
+              Apply ECS Booking System
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `
+
+    });
+
+    // =========================
+    // USER EMAIL
+    // =========================
+
+    await resend.emails.send({
 
   from:
     "ECS Applications <onboarding@resend.dev>",
@@ -437,3 +584,29 @@ await resend.emails.send({
   `
 
 });
+
+    return res.status(200).json({
+
+      success: true,
+
+      message:
+        "Professional emails sent"
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    return res.status(500).json({
+
+      success: false,
+
+      error:
+        error.message
+
+    });
+
+  }
+
+}
