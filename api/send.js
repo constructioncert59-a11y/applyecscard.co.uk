@@ -1,5 +1,9 @@
 import { Resend } from "resend";
 
+// =========================
+// BODY SIZE LIMIT
+// =========================
+
 export const config = {
   api: {
     bodyParser: {
@@ -8,26 +12,42 @@ export const config = {
   }
 };
 
+// =========================
+// RESEND
+// =========================
+
 const resend = new Resend(
   process.env.RESEND_API_KEY
 );
 
+// =========================
+// API HANDLER
+// =========================
+
 export default async function handler(req, res) {
 
+  // ONLY POST
   if (req.method !== "POST") {
 
     return res.status(405).json({
-      success: false
+      success: false,
+      error: "Method Not Allowed"
     });
 
   }
 
   try {
 
+    // =========================
+    // GET DATA
+    // =========================
+
     const data = req.body || {};
 
+    console.log("FULL DATA:", data);
+
     // =========================
-    // VALIDATION
+    // REQUIRED FIELDS
     // =========================
 
     if (
@@ -37,10 +57,38 @@ export default async function handler(req, res) {
 
       return res.status(400).json({
         success: false,
-        error: "Name & Email Required"
+        error:
+          "Email and Full Name required"
       });
 
     }
+
+    // =========================
+    // EMAIL VALIDATION
+    // =========================
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(data.email)) {
+
+      return res.status(400).json({
+        success: false,
+        error:
+          "Invalid Email"
+      });
+
+    }
+
+    // =========================
+    // REMOVE FILES FROM HTML TABLE
+    // =========================
+
+    const normalFields = { ...data };
+
+    delete normalFields.photo;
+    delete normalFields.id_proof;
+    delete normalFields.hs_test_proof;
 
     // =========================
     // ATTACHMENTS
@@ -48,8 +96,9 @@ export default async function handler(req, res) {
 
     const attachments = [];
 
+    // PHOTO
     if (
-      data.photo &&
+      typeof data.photo === "string" &&
       data.photo.startsWith("data:")
     ) {
 
@@ -64,8 +113,9 @@ export default async function handler(req, res) {
 
     }
 
+    // ID PROOF
     if (
-      data.id_proof &&
+      typeof data.id_proof === "string" &&
       data.id_proof.startsWith("data:")
     ) {
 
@@ -80,8 +130,9 @@ export default async function handler(req, res) {
 
     }
 
+    // HS TEST PROOF
     if (
-      data.hs_test_proof &&
+      typeof data.hs_test_proof === "string" &&
       data.hs_test_proof.startsWith("data:")
     ) {
 
@@ -97,64 +148,53 @@ export default async function handler(req, res) {
     }
 
     // =========================
-    // REMOVE FILES
+    // CREATE TABLE
     // =========================
 
-    const normalFields = { ...data };
-
-    delete normalFields.photo;
-    delete normalFields.id_proof;
-    delete normalFields.hs_test_proof;
-
-    // =========================
-    // TABLE ROWS
-    // =========================
-
-    const tableRows =
+    const allDataHtml =
       Object.entries(normalFields)
-      .map(([key, value]) => {
+        .map(([key, value]) => {
 
-        return `
+          return `
 
-        <tr>
+            <tr>
 
-          <td style="
-            padding:14px;
-            border:1px solid #dbe4ee;
-            background:#f8fafc;
-            font-weight:700;
-            width:35%;
-            text-transform:capitalize;
-          ">
+              <td style="
+                padding:10px;
+                border:1px solid #ddd;
+                background:#f5f5f5;
+              ">
 
-            ${key.replaceAll("_", " ")}
+                <strong>
+                  ${String(key)}
+                </strong>
 
-          </td>
+              </td>
 
-          <td style="
-            padding:14px;
-            border:1px solid #dbe4ee;
-            color:#111827;
-          ">
+              <td style="
+                padding:10px;
+                border:1px solid #ddd;
+              ">
 
-            ${value || "-"}
+                ${String(value || "-")}
 
-          </td>
+              </td>
 
-        </tr>
+            </tr>
 
-        `;
+          `;
 
-      }).join("");
+        })
+        .join("");
 
     // =========================
-    // EMAIL SEND
+    // ADMIN EMAIL
     // =========================
 
     await resend.emails.send({
 
       from:
-        "ECS Applications <onboarding@resend.dev>",
+        "Apply ECS <onboarding@resend.dev>",
 
       to:
         "applyecs4@gmail.com",
@@ -163,300 +203,191 @@ export default async function handler(req, res) {
         data.email,
 
       subject:
-        `ECS Application - ${data.full_name}`,
+        `🔥 New ECS Booking - ${data.full_name}`,
 
       attachments,
 
       html: `
 
-      <div style="
-        background:#eef3f9;
-        padding:50px 20px;
-        font-family:Arial,sans-serif;
-      ">
-
         <div style="
-          max-width:1000px;
-          margin:auto;
-          background:#ffffff;
-          border-radius:18px;
-          overflow:hidden;
-          border:1px solid #dbe4ee;
-          box-shadow:0 20px 60px rgba(0,0,0,0.10);
+          font-family:Arial;
+          background:#f5f5f5;
+          padding:30px;
         ">
 
-          <!-- HEADER -->
-
           <div style="
-            background:#003366;
-            color:#ffffff;
-            padding:34px 45px;
-            border-bottom:5px solid #00a3e0;
+            max-width:700px;
+            margin:auto;
+            background:#fff;
+            border-radius:12px;
+            padding:30px;
           ">
 
-            <table width="100%">
+            <h2>
+              New ECS Booking Received
+            </h2>
+
+            <table style="
+              width:100%;
+              border-collapse:collapse;
+              margin-top:20px;
+            ">
+
+              ${allDataHtml}
+
+            </table>
+
+          </div>
+
+        </div>
+
+      `
+
+    });
+
+    console.log(
+      "ADMIN EMAIL SENT"
+    );
+
+    // =========================
+    // USER CONFIRMATION EMAIL
+    // =========================
+
+    await resend.emails.send({
+
+      from:
+        "Apply ECS <onboarding@resend.dev>",
+
+      to:
+        data.email,
+
+      subject:
+        "✅ ECS Booking Confirmation",
+
+      html: `
+
+        <div style="
+          font-family:Arial;
+          background:#f4f4f4;
+          padding:30px;
+        ">
+
+          <div style="
+            max-width:700px;
+            margin:auto;
+            background:#fff;
+            border-radius:12px;
+            padding:30px;
+          ">
+
+            <h1 style="
+              color:green;
+            ">
+              ✅ Booking Confirmed
+            </h1>
+
+            <p>
+              Hello
+              <strong>
+                ${data.full_name}
+              </strong>,
+            </p>
+
+            <p>
+              Your ECS booking has been received successfully.
+            </p>
+
+            <p>
+              Our team will contact you shortly.
+            </p>
+
+            <hr>
+
+            <h3>
+              Your Details
+            </h3>
+
+            <table style="
+              width:100%;
+              border-collapse:collapse;
+            ">
 
               <tr>
 
-                <td>
-
-                  <div style="
-                    font-size:44px;
-                    font-weight:800;
-                  ">
-                    ECS
-                  </div>
-
-                  <div style="
-                    margin-top:8px;
-                    font-size:16px;
-                  ">
-                    Electrotechnical Certification Services
-                  </div>
-
+                <td style="
+                  border:1px solid #ddd;
+                  padding:10px;
+                ">
+                  Full Name
                 </td>
 
-                <td align="right">
+                <td style="
+                  border:1px solid #ddd;
+                  padding:10px;
+                ">
+                  ${data.full_name || "-"}
+                </td>
 
-                  <div style="
-                    background:#16a34a;
-                    color:#ffffff;
-                    padding:12px 24px;
-                    border-radius:999px;
-                    font-size:13px;
-                    font-weight:700;
-                    display:inline-block;
-                  ">
-                    ✓ APPLICATION RECEIVED
-                  </div>
+              </tr>
 
+              <tr>
+
+                <td style="
+                  border:1px solid #ddd;
+                  padding:10px;
+                ">
+                  Email
+                </td>
+
+                <td style="
+                  border:1px solid #ddd;
+                  padding:10px;
+                ">
+                  ${data.email || "-"}
+                </td>
+
+              </tr>
+
+              <tr>
+
+                <td style="
+                  border:1px solid #ddd;
+                  padding:10px;
+                ">
+                  Mobile
+                </td>
+
+                <td style="
+                  border:1px solid #ddd;
+                  padding:10px;
+                ">
+                  ${data.mobile || "-"}
                 </td>
 
               </tr>
 
             </table>
 
-          </div>
+            <br>
 
-          <!-- BODY -->
-
-          <div style="
-            padding:45px;
-          ">
-
-            <h1 style="
-              margin-top:0;
-              font-size:32px;
-              color:#111827;
-            ">
-              ECS Card Application Receipt
-            </h1>
-
-            <p style="
-              color:#4b5563;
-              line-height:1.9;
-              font-size:15px;
-            ">
-              This receipt confirms successful submission of applicant information,
-              uploaded identity documents and ECS verification files.
+            <p>
+              Regards,<br>
+              <strong>
+                ECS Team
+              </strong>
             </p>
-
-            <!-- STATUS -->
-
-            <div style="
-              background:#f0fdf4;
-              border:1px solid #bbf7d0;
-              border-left:6px solid #16a34a;
-              border-radius:16px;
-              padding:24px;
-              margin-top:30px;
-              margin-bottom:35px;
-            ">
-
-              <div style="
-                font-size:22px;
-                font-weight:700;
-                color:#166534;
-              ">
-                Verification Status: Pending Review
-              </div>
-
-            </div>
-
-            <!-- TABLE -->
-
-            <div style="
-              border:1px solid #dbe4ee;
-              border-radius:18px;
-              overflow:hidden;
-            ">
-
-              <div style="
-                background:#f8fafc;
-                padding:18px 25px;
-                border-bottom:1px solid #e5e7eb;
-                font-size:22px;
-                font-weight:700;
-              ">
-                Applicant Information
-              </div>
-
-              <table style="
-                width:100%;
-                border-collapse:collapse;
-                font-size:15px;
-              ">
-
-                ${tableRows}
-
-              </table>
-
-            </div>
-
-            <!-- DOCUMENTS -->
-
-            <div style="
-              margin-top:40px;
-              border:1px solid #dbe4ee;
-              border-radius:18px;
-              overflow:hidden;
-            ">
-
-              <div style="
-                background:#f8fafc;
-                padding:18px 25px;
-                border-bottom:1px solid #e5e7eb;
-                font-size:20px;
-                font-weight:700;
-              ">
-                Uploaded Documents
-              </div>
-
-              <div style="
-                padding:30px;
-              ">
-
-                <div style="
-                  padding:16px;
-                  background:#f9fafb;
-                  border:1px solid #e5e7eb;
-                  border-radius:12px;
-                  margin-bottom:14px;
-                  font-weight:600;
-                ">
-                  📎 Passport Size Photo Uploaded
-                </div>
-
-                <div style="
-                  padding:16px;
-                  background:#f9fafb;
-                  border:1px solid #e5e7eb;
-                  border-radius:12px;
-                  margin-bottom:14px;
-                  font-weight:600;
-                ">
-                  📎 Identity Verification Uploaded
-                </div>
-
-                <div style="
-                  padding:16px;
-                  background:#f9fafb;
-                  border:1px solid #e5e7eb;
-                  border-radius:12px;
-                  font-weight:600;
-                ">
-                  📎 Health & Safety Proof Uploaded
-                </div>
-
-              </div>
-
-            </div>
-
-            <!-- REFERENCE -->
-
-            <div style="
-              margin-top:40px;
-              background:#f8fafc;
-              border:1px solid #e5e7eb;
-              border-radius:18px;
-              padding:28px;
-            ">
-
-              <table width="100%">
-
-                <tr>
-
-                  <td>
-
-                    <div style="
-                      font-size:13px;
-                      color:#6b7280;
-                    ">
-                      Submission Reference
-                    </div>
-
-                    <div style="
-                      margin-top:8px;
-                      font-size:22px;
-                      font-weight:800;
-                      color:#111827;
-                    ">
-                      ECS-${Date.now()}
-                    </div>
-
-                  </td>
-
-                  <td align="right">
-
-                    <div style="
-                      font-size:13px;
-                      color:#6b7280;
-                    ">
-                      Status
-                    </div>
-
-                    <div style="
-                      margin-top:8px;
-                      font-size:18px;
-                      font-weight:700;
-                      color:#16a34a;
-                    ">
-                      Pending Review
-                    </div>
-
-                  </td>
-
-                </tr>
-
-              </table>
-
-            </div>
-
-          </div>
-
-          <!-- FOOTER -->
-
-          <div style="
-            background:#f8fafc;
-            border-top:1px solid #e5e7eb;
-            padding:30px 40px;
-            color:#6b7280;
-            font-size:13px;
-            line-height:1.9;
-          ">
-
-            This receipt confirms successful receipt of uploaded documents
-            and ECS application verification details.
 
           </div>
 
         </div>
 
-      </div>
-
       `
 
     });
+
+    console.log(
+      "USER EMAIL SENT"
+    );
 
     // =========================
     // SUCCESS
@@ -467,23 +398,28 @@ export default async function handler(req, res) {
       success: true,
 
       message:
-        "Email Sent Successfully"
+        "Both emails sent successfully"
 
     });
 
   } catch (error) {
 
-    console.log(error);
+    console.error(
+      "EMAIL ERROR:",
+      error
+    );
 
     return res.status(500).json({
 
       success: false,
 
       error:
-        error.message
+        error.message ||
+        "Internal Server Error"
 
     });
 
   }
 
 }
+ 
