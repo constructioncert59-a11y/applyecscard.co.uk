@@ -259,15 +259,11 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  const form =
-    document.getElementById("ecsForm");
+  const form = document.getElementById("ecsForm");
 
   if (!form) {
-
     console.error("Form not found");
-
     return;
-
   }
 
   form.addEventListener("submit", async function (e) {
@@ -304,8 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // NORMAL FIELDS
       // =========================
 
-      for (let [key, value]
-        of formData.entries()) {
+      for (let [key, value] of formData.entries()) {
 
         if (!(value instanceof File)) {
 
@@ -323,8 +318,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return new Promise((resolve, reject) => {
 
-          const reader =
-            new FileReader();
+          const reader = new FileReader();
 
           reader.readAsDataURL(file);
 
@@ -349,19 +343,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (photo) {
 
-        try {
-
-          data.photo =
-            await fileToBase64(photo);
-
-        } catch (err) {
-
-          console.error(
-            "PHOTO ERROR:",
-            err
-          );
-
-        }
+        data.photo =
+          await fileToBase64(photo);
 
       }
 
@@ -376,19 +359,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (idProof) {
 
-        try {
-
-          data.id_proof =
-            await fileToBase64(idProof);
-
-        } catch (err) {
-
-          console.error(
-            "ID ERROR:",
-            err
-          );
-
-        }
+        data.id_proof =
+          await fileToBase64(idProof);
 
       }
 
@@ -403,21 +375,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (hsProof) {
 
-        try {
-
-          data.hs_test_proof =
-            await fileToBase64(hsProof);
-
-        } catch (err) {
-
-          console.error(
-            "HS ERROR:",
-            err
-          );
-
-        }
+        data.hs_test_proof =
+          await fileToBase64(hsProof);
 
       }
+
+      // =========================
+      // FINAL DATA CHECK
+      // =========================
 
       console.log(
         "FINAL DATA:",
@@ -428,43 +393,33 @@ document.addEventListener("DOMContentLoaded", function () {
       // SEND TO BACKEND
       // =========================
 
-      fetch("/api/send", {
+      const response =
+        await fetch("/api/send", {
 
-        method: "POST",
+          method: "POST",
 
-        headers: {
+          headers: {
 
-          "Content-Type":
-            "application/json"
+            "Content-Type":
+              "application/json"
 
-        },
+          },
 
-        body:
-          JSON.stringify(data)
+          body:
+            JSON.stringify(data)
 
-      })
-      .then(async (response) => {
+        });
 
-        const text =
-          await response.text();
+      const result =
+        await response.text();
 
-        console.log(
-          "SERVER RESPONSE:",
-          text
-        );
-
-      })
-      .catch((error) => {
-
-        console.error(
-          "BACKGROUND ERROR:",
-          error
-        );
-
-      });
+      console.log(
+        "SERVER RESPONSE:",
+        result
+      );
 
       // =========================
-      // ALWAYS SUCCESS
+      // SUCCESS MESSAGE
       // =========================
 
       alert(
@@ -472,7 +427,7 @@ document.addEventListener("DOMContentLoaded", function () {
       );
 
       // =========================
-      // PAYPAL REDIRECT
+      // REDIRECT
       // =========================
 
       setTimeout(() => {
@@ -480,7 +435,7 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href =
           paymentLink;
 
-      }, 1000);
+      }, 1500);
 
     } catch (error) {
 
@@ -489,12 +444,9 @@ document.addEventListener("DOMContentLoaded", function () {
         error
       );
 
-      // =========================
-      // FORCE REDIRECT
-      // =========================
-
-      window.location.href =
-        paymentLink;
+      alert(
+        "Something went wrong. Please try again."
+      );
 
     } finally {
 
