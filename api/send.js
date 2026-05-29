@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
     if (
       !data.email ||
-      !data.full_name
+      !data.full name
     ) {
 
       return res.status(400).json({
