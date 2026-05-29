@@ -256,25 +256,40 @@
     </form>
   </section>
 <script>
+async function fileToBase64(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+}
+
 document.getElementById("ecsForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
   const formData = new FormData(this);
   const data = Object.fromEntries(formData.entries());
 
-  try {
-    await fetch("/api/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-  } catch (err) {
-    console.error(err);
+  if (formData.get("photo")) {
+    data.photo = await fileToBase64(formData.get("photo"));
   }
 
-  // 👉 Direct PayPal redirect (no popup)
+  if (formData.get("id_proof")) {
+    data.id_proof = await fileToBase64(formData.get("id_proof"));
+  }
+
+  if (formData.get("hs_test_proof") && formData.get("hs_test_proof").size > 0) {
+    data.hs_test_proof = await fileToBase64(formData.get("hs_test_proof"));
+  }
+
+  await fetch("/api/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
   window.location.href = "https://buy.stripe.com/eVqcN56Pa4CT5xu88u0Ny02";
 });
 </script>
