@@ -1,279 +1,416 @@
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>UKECSAPPLY - Professional Electrical Certification in the UK</title>
   <link rel="icon" href="https://applyecscard.co.uk//img/ecs.png" type="image/png">
   <link rel="apple-touch-icon" href="https://applyecscard.co.uk//img/ecs.png">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G95RNYHK78"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Google Fonts + smooth base -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G95RNYHK78"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-G95RNYHK78');
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  gtag('config', 'G-G95RNYHK78');
-</script>
-        <style>
-/* ----------- RESET ----------- */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fafcff;
+      color: #0b2b42;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-top: 88px;
+    }
 
-/* ----------- BODY ----------- */
-body {
-  font-family: 'Poppins', sans-serif;
-  color: #1e3c72; /* dark blue text */
-  min-height: 100vh;
-  overflow-x: hidden;
-  padding-top: 80px;
-}
+    /* ---------- FIXED HEADER (premium white) ---------- */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      z-index: 1100;
+      background: #ffffff;
+      backdrop-filter: blur(0px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 14px 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s ease;
+    }
 
-/* ----------- HEADER (FIXED – WHITE) ----------- */
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 1000;
+    .navbar {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
 
-  background: #ffffff; /* 🔥 WHITE */
-  border-bottom: 1px solid #e5e5e5;
+    /* brand */
+    .nav-brand {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #0f2b3d 0%, #1a4a6f 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-brand span {
+      font-weight: 600;
+      background: none;
+      color: #1e5a7d;
+    }
 
-  padding: 17px 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  animation: slideDown 0.6s ease;
-}
+    /* Desktop menu */
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
 
-@keyframes slideDown {
-  from { transform: translateY(-100%); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
+    .nav-menu li {
+      position: relative;
+    }
 
-/* ----------- NAVBAR ----------- */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1400px;
-  margin: 0 auto;
-}
+    .nav-menu a {
+      text-decoration: none;
+      color: #1f3b4c;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 60px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      display: inline-block;
+      white-space: nowrap;
+    }
 
-/* ----------- BRAND ----------- */
-.nav-brand {
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: #1e3c72;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+    .nav-menu a:hover,
+    .nav-menu a.active {
+      background: #eef3fc;
+      color: #0a2c3f;
+    }
 
-/* ----------- MENU ----------- */
-/* ----------- MENU ----------- */
-.nav-menu {
-  list-style: none;
-  display: flex;
-  gap: 15px; /* 🔥 equal spacing */
+    /* CTA BUTTON premium style */
+    .cta-nav {
+      background: #0a2c3f !important;
+      color: white !important;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      padding: 8px 20px !important;
+      font-weight: 600;
+      border-radius: 40px !important;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-nav:hover {
+      background: #124263 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(10,44,63,0.12);
+    }
 
-    
-}
+    /* DROPDOWN mega style */
+    .has-dropdown {
+      position: relative;
+    }
 
-.nav-menu li {
-  position: relative;
-}
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 20px 24px;
+      min-width: 460px;
+      max-width: 560px;
+      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0,0,0,0.02);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      backdrop-filter: blur(0px);
+      z-index: 1200;
+    }
 
-.nav-menu a {
-  text-decoration: none;
-  color: #1e3c72; /* 🔥 dark blue */
-  font-weight: 500;
-  padding: 10px 10px;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  display: block;
-  font-size: 15px;
-}
+    .has-dropdown:hover .dropdown {
+      display: flex;
+      flex-direction: column;
+    }
 
-.nav-menu a:hover,
-.nav-menu a.active {
-  background: #f2f6ff;
-  color: #000000; /* black */
-}   
-/* ----------- DROPDOWN ----------- */
-.dropdown {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 15px;
-  min-width: 340px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-  border: 1px solid #e5e5e5;
-}
+    /* Accordion grid inside dropdown */
+    .accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
 
-.has-dropdown:hover .dropdown {
-  display: flex;
-  flex-direction: column;
-}
+    .accordion-item {
+      border-bottom: 1px solid #edf2f7;
+    }
 
-.dropdown a {
-  color: #1e3c72;
-  padding: 8px 12px;
-  text-decoration: none;
-  font-size: 15px;
-}
+    .accordion-header {
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: left;
+      padding: 12px 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #0f3b4f;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+      border-radius: 14px;
+    }
 
-.dropdown a:hover {
-  background: #f2f6ff;
-  border-radius: 4px;
-  color: #000;
-}
+    .accordion-header:hover {
+      background: #f5f9ff;
+    }
 
-/* ----------- ACCORDION ----------- */
-.accordion-header {
-  background: none;
-  color: #1e3c72;
-  border: none;
-  width: 100%;
-  text-align: left;
-  padding: 8px 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-}
+    .accordion-header::after {
+      content: "▾";
+      font-size: 1rem;
+      transition: transform 0.2s;
+      opacity: 0.7;
+    }
 
-.accordion-header:hover {
-  background: #f2f6ff;
-  border-radius: 4px;
-}
+    .accordion-header.active::after {
+      transform: rotate(180deg);
+    }
 
-.accordion-content {
-  display: none;
-  flex-direction: column;
-  padding-left: 10px;
-}
+    .accordion-content {
+      display: none;
+      flex-direction: column;
+      padding: 6px 0 12px 16px;
+      gap: 6px;
+    }
 
-.accordion-content a {
-  padding: 6px 10px;
-  color: #1e3c72;
-  font-size: 14px;
-  text-decoration: none;
-}
+    .accordion-content a {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: #2c4b62;
+      white-space: normal;
+      border-radius: 14px;
+      transition: all 0.15s;
+    }
 
-.accordion-content a:hover {
-  background: #f2f6ff;
-  border-radius: 4px;
-  color: #000;
-}
+    .accordion-content a:hover {
+      background: #eef3fc;
+      color: #05212e;
+      transform: translateX(4px);
+    }
 
-/* ----------- HAMBURGER ----------- */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  cursor: pointer;
-  gap: 5px;
-}
+    /* UK badge */
+    .uk-badge {
+      background: linear-gradient(90deg, #cf142b 33%, #ffffff 33%, #ffffff 66%, #00247d 66%);
+      color: #111;
+      padding: 2px 8px;
+      border-radius: 40px;
+      font-size: 9px;
+      font-weight: 800;
+      margin-left: 6px;
+      display: inline-block;
+      letter-spacing: 0.3px;
+    }
 
-.hamburger span {
-  width: 28px;
-  height: 3px;
-  background: #1e3c72;
-  border-radius: 2px;
-}
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+      z-index: 1150;
+    }
 
-/* ----------- MOBILE ----------- */
-@media (max-width: 992px) {
-  .hamburger { display: flex; }
+    .hamburger span {
+      width: 28px;
+      height: 2.5px;
+      background: #1f3b4c;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
 
-  .nav-menu {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 80%;
-    max-width: 320px;
-    height: 100vh;
-    flex-direction: column;
-    padding: 20px 20px 40px;
-    background: #ffffff;
-    transition: left 0.3s ease;
-    z-index: 999;
-    overflow-y: auto;
-    border-right: 1px solid #e5e5e5;
-  }
+    /* MOBILE FIRST */
+    @media (max-width: 1100px) {
+      .nav-menu a {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+      }
+    }
 
-  .nav-menu.active {
-    left: 0;
-  }
+    @media (max-width: 992px) {
+      body {
+        padding-top: 78px;
+      }
+      .header {
+        padding: 12px 20px;
+      }
+      .hamburger {
+        display: flex;
+      }
 
-  .nav-menu a {
-    padding: 12px;
-    border-bottom: 1px solid #e5e5e5;
-  }
+      .nav-menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 85%;
+        max-width: 380px;
+        height: 100vh;
+        background: #ffffff;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 90px 20px 40px 24px;
+        gap: 12px;
+        transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        z-index: 1050;
+        overflow-y: auto;
+        box-shadow: 4px 0 32px rgba(0, 0, 0, 0.08);
+        border-right: 1px solid #eef2f6;
+      }
 
-  .dropdown {
-    position: static;
-    box-shadow: none;
-    padding: 0;
-  }
-}
+      .nav-menu.active {
+        left: 0;
+      }
 
-/* ===============================
-   CTA BUTTON – IMAGE MATCH
-================================ */
-.cta-button {
-  padding: 12px 26px;
-  background: #ffffff;              /* pure white */
-  color: #0f172a;                   /* dark text */
-  font-size: 15px;
-  font-weight: 500;
-  text-decoration: none;
+      .nav-menu li {
+        width: 100%;
+      }
 
-  border-radius: 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+      .nav-menu a {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        white-space: normal;
+        font-size: 1rem;
+      }
 
-  box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.08),
-    0 2px 6px rgba(0, 0, 0, 0.04);
+      /* mobile dropdown becomes inline accordion */
+      .has-dropdown .dropdown {
+        position: static;
+        display: block;
+        opacity: 1;
+        visibility: visible;
+        box-shadow: none;
+        padding: 0;
+        min-width: auto;
+        max-width: 100%;
+        background: transparent;
+        border: none;
+        margin-top: 0;
+      }
 
-  transition: 
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-}
+      .has-dropdown:hover .dropdown {
+        display: block;
+      }
 
-/* Hover – very soft lift */
-.cta-button:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 14px 30px rgba(0, 0, 0, 0.12),
-    0 4px 10px rgba(0, 0, 0, 0.06);
-}
+      .dropdown {
+        display: none;
+      }
 
-/* Active (click) */
-.cta-button:active {
-  transform: translateY(0);
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.10);
-}
+      /* forcing toggle via click - we'll handle via JS */
+      .dropdown.mobile-open {
+        display: flex !important;
+      }
 
-/* ----------- UK BADGE ----------- */
-.uk-badge {
-  background: linear-gradient(90deg, #cf142b 33%, #ffffff 33%, #ffffff 66%, #00247d 66%);
-  color: #000;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: bold;
-}
-</style>
+      .accordion-header {
+        padding: 14px 8px;
+        font-size: 0.95rem;
+      }
 
+      .accordion-content a {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+      }
+
+      .cta-nav {
+        text-align: center;
+        margin-top: 12px;
+      }
+    }
+
+    /* backdrop overlay for mobile menu */
+    .menu-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(2px);
+      z-index: 1040;
+    }
+    .menu-overlay.active {
+      display: block;
+    }
+
+    /* demo content to show scroll & responsiveness */
+    .hero-spacer {
+      max-width: 1280px;
+      margin: 2rem auto;
+      padding: 3rem 2rem;
+      background: linear-gradient(120deg, #f1f9fe 0%, #ffffff 100%);
+      border-radius: 48px;
+      text-align: center;
+    }
+    .hero-spacer h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #0a2e42;
+    }
+    .hero-spacer p {
+      font-size: 1.1rem;
+      margin-top: 1rem;
+      color: #2d4f6e;
+    }
+    .grid-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .card {
+      background: white;
+      border-radius: 28px;
+      padding: 1.5rem;
+      box-shadow: 0 12px 24px -12px rgba(0,0,0,0.08);
+      width: 260px;
+      border: 1px solid #eef2f0;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #4b6f88;
+      border-top: 1px solid #e2edf2;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 600px) {
+      .hero-spacer h1 {
+        font-size: 1.8rem;
+      }
+      .card {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
 </head>
 <body>
 <header class="header">
@@ -291,13 +428,12 @@ body {
       <li><a href="book.html">Book Now</a></li>
       <li><a href="ecs-group-booking.html">Group Book <span class="uk-badge">SAVE</span></a></li>
 
-      <!-- ECS Dropdown -->
-      <li class="has-dropdown">
+      <!-- ECS Dropdown (full mega accordion) -->
+      <li class="has-dropdown" id="ecsDropdownLi">
         <a href="#">ECS Cards ▾</a>
-        <div class="dropdown">
+        <div class="dropdown" id="ecsDropdownMenu">
           <div class="accordion">
-
-            <!-- 1. Entry Level -->
+            <!-- Entry Level -->
             <div class="accordion-item">
               <button class="accordion-header">Entry Level ▾</button>
               <div class="accordion-content">
@@ -310,8 +446,7 @@ body {
                 <a href="ecs-provisional-installation-electrician-card.html">Provisional Installation Electrician</a>
               </div>
             </div>
-
-            <!-- 2. Skilled -->
+            <!-- Skilled (Gold Cards) -->
             <div class="accordion-item">
               <button class="accordion-header">Skilled (Gold Cards & Related) ▾</button>
               <div class="accordion-content">
@@ -332,8 +467,6 @@ body {
                 <a href="ecs-instruments-mechanic-card.html">Instruments Mechanic</a>
               </div>
             </div>
-
-            <!-- 3. Supervisory & Management -->
             <div class="accordion-item">
               <button class="accordion-header">Supervisory & Management ▾</button>
               <div class="accordion-content">
@@ -345,8 +478,6 @@ body {
                 <a href="ecs-site-support-occupations-card.html">Site Support Occupations</a>
               </div>
             </div>
-
-            <!-- 4. Professional -->
             <div class="accordion-item">
               <button class="accordion-header">Professional & Qualified ▾</button>
               <div class="accordion-content">
@@ -355,8 +486,6 @@ body {
                 <a href="ecs-visitor-card.html">Visitor Card</a>
               </div>
             </div>
-
-            <!-- 5. FESS -->
             <div class="accordion-item">
               <button class="accordion-header">FESS (Fire, Emergency & Security) ▾</button>
               <div class="accordion-content">
@@ -367,8 +496,6 @@ body {
                 <a href="building-controls-installer-engineer-ecs-card.html">Building Controls Installer / Engineer</a>
               </div>
             </div>
-
-            <!-- 6. Network -->
             <div class="accordion-item">
               <button class="accordion-header">Network Infrastructure & Telecoms ▾</button>
               <div class="accordion-content">
@@ -381,8 +508,6 @@ body {
                 <a href="ecs-telecoms-operative-card.html">Telecoms Operative</a>
               </div>
             </div>
-
-            <!-- 7. AV -->
             <div class="accordion-item">
               <button class="accordion-header">AV, Media & Creative ▾</button>
               <div class="accordion-content">
@@ -396,8 +521,6 @@ body {
                 <a href="avixa-commercial-av-integrator.html">AVIXA Commercial AV Integrator</a>
               </div>
             </div>
-
-            <!-- 8. Other Specialist -->
             <div class="accordion-item">
               <button class="accordion-header">Other Specialist ▾</button>
               <div class="accordion-content">
@@ -407,8 +530,6 @@ body {
                 <a href="work-based-assessor-card.html">Work-based Assessor</a>
               </div>
             </div>
-
-            <!-- 9. Partner Scheme -->
             <div class="accordion-item">
               <button class="accordion-header">Partner & Professional Schemes ▾</button>
               <div class="accordion-content">
@@ -417,17 +538,15 @@ body {
                 <a href="sll-lighting-professional-card.html">SLL Lighting Professional</a>
               </div>
             </div>
-
           </div>
         </div>
       </li>
 
-      <!-- UK ECS Tests -->
-      <li class="has-dropdown">
+      <!-- UK ECS Tests Dropdown -->
+      <li class="has-dropdown" id="testsDropdownLi">
         <a href="ecs-test.html">ECS Tests ▾</a>
-        <div class="dropdown">
+        <div class="dropdown" id="testsDropdownMenu">
           <div class="accordion">
-
             <div class="accordion-item">
               <button class="accordion-header">Health, Safety & Environment Tests ▾</button>
               <div class="accordion-content">
@@ -436,7 +555,6 @@ body {
                 <a href="ecs-renewal-health-and-safety-test.html">Renewal H&S Test</a>
               </div>
             </div>
-
             <div class="accordion-item">
               <button class="accordion-header">Electrical Knowledge Tests ▾</button>
               <div class="accordion-content">
@@ -446,7 +564,6 @@ body {
                 <a href="ecs-technician-test.html">Technician Test</a>
               </div>
             </div>
-
             <div class="accordion-item">
               <button class="accordion-header">FESS (Fire & Security) Tests ▾</button>
               <div class="accordion-content">
@@ -456,7 +573,6 @@ body {
                 <a href="ecs-fess-engineer-test.html">FESS Engineer Test</a>
               </div>
             </div>
-
             <div class="accordion-item">
               <button class="accordion-header">Network & Telecoms Tests ▾</button>
               <div class="accordion-content">
@@ -466,7 +582,6 @@ body {
                 <a href="ecs-signal-distribution-specialist-test.html">Signal Distribution Specialist Test</a>
               </div>
             </div>
-
             <div class="accordion-item">
               <button class="accordion-header">AV & Media Tests ▾</button>
               <div class="accordion-content">
@@ -476,7 +591,6 @@ body {
                 <a href="ecs-sound-engineer-test.html">Sound Engineer Test</a>
               </div>
             </div>
-
             <div class="accordion-item">
               <button class="accordion-header">Specialist & Other Tests ▾</button>
               <div class="accordion-content">
@@ -485,54 +599,209 @@ body {
                 <a href="ecs-visitor-supervisor-test.html">Visitor & Supervisor Test</a>
               </div>
             </div>
-                <a href="https://applyecscard.co.uk/ecs/">ECS BLOG</a>
+            <a href="https://applyecscard.co.uk/ecs/" style="margin-top: 12px; display: block; font-weight: 500;">ECS BLOG</a>
           </div>
         </div>
       </li>
 
       <li><a href="ecs-test-centre.html">ECS Test Centres</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="ecs-cards.html" class="cta-button">Get Your ECS Card</a></li>
+      <li><a href="ecs-cards.html" class="cta-nav">Get Your ECS Card</a></li>
     </ul>
   </nav>
 </header>
 
+<!-- overlay for mobile -->
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<!-- Main content sample (just for demo) -->
+<main>
+  <div class="hero-spacer">
+    <h1>Professional Electrical Certification</h1>
+    <p>UK's most trusted ECS card & assessment centre — fully mobile responsive navigation</p>
+  </div>
+  <div class="grid-cards">
+    <div class="card"><h3>⚡ Gold Card</h3><p>Installation electrician, approved electrician & more.</p></div>
+    <div class="card"><h3>📋 H&S Test</h3><p>ECS Health, Safety & Environment assessment made simple.</p></div>
+    <div class="card"><h3>🎓 Apprentice Card</h3><p>Start your electrical career with recognised credentials.</p></div>
+  </div>
+</main>
+<footer>
+  <p>© 2025 UKECSAPPLY — Professional ECS Certification & Training. All rights reserved.</p>
+</footer>
+
 <script>
-// -------- HAMBURGER TOGGLE --------
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.getElementById('navMenu');
+  (function() {
+    // -------- HAMBURGER + OVERLAY (mobile menu) --------
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    const overlay = document.getElementById('menuOverlay');
 
-if (hamburger && navMenu) {
-  hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-  });
-
-  // -------- CLOSE MOBILE MENU ON RESIZE --------
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 992) {
-      navMenu.classList.remove('active');
-      hamburger.classList.remove('active');
+    function closeMenu() {
+      if (navMenu) navMenu.classList.remove('active');
+      if (overlay) overlay.classList.remove('active');
+      if (hamburger) hamburger.classList.remove('active');
+      // optional: reset any open dropdowns inside mobile? we keep as is (no force)
     }
-  });
-}
 
-// -------- ACCORDION DROPDOWN (CLICK TO OPEN/CLOSE) --------
-document.querySelectorAll(".accordion-header").forEach((button) => {
-  button.addEventListener("click", () => {
-    const content = button.nextElementSibling;
-    const isOpen = button.classList.contains("active");
-
-    if (isOpen) {
-      button.classList.remove("active");
-      content.style.display = "none";
-    } else {
-      button.classList.add("active");
-      content.style.display = "flex";
+    function openMenu() {
+      if (navMenu) navMenu.classList.add('active');
+      if (overlay) overlay.classList.add('active');
     }
-  });
-});
+
+    if (hamburger && navMenu) {
+      hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (navMenu.classList.contains('active')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', () => {
+        closeMenu();
+      });
+    }
+
+    // close on window resize above breakpoint
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 992) {
+        closeMenu();
+      }
+    });
+
+    // ACCORDION LOGIC (for both desktop and mobile inside dropdowns)
+    // Desktop works with hover but we also allow clicking on accordion headers to open content
+    // For mobile, we need to ensure dropdown visibility + accordion toggle works.
+    // Also, we want to handle the case that on mobile, dropdowns are not hover-based, we rely on click expand? But we manage via native accordion that the parent dropdown is always visible after clicking? 
+    // Because we already made .dropdown not hidden on mobile? Actually mobile has position static, but we still need to see content.
+    // Our CSS: on max-width 992px .has-dropdown .dropdown is not hidden initially (display:block? Actually CSS said .dropdown { display: none; } but on mobile we override? Let's ensure mobile sees dropdown.
+    // We'll modify: For mobile, we will make .dropdown display: block BUT we still respect clicking on top-level ECS Cards? But to not show huge list by default we'll set style: on mobile default dropdown is block? We need to preserve compactness.
+    // Better approach: On mobile, we want the dropdown to be visible ONLY when we click on the parent <a> or something? To be user-friendly, we set initial dropdown to display: none on mobile as well, then we add toggle click for dropdown on mobile. 
+    // But we gave .dropdown display: flex? In media we set .dropdown to display:none? Let's fix: In mobile we will define .dropdown to appear only after user taps "ECS Cards ▾".
+    // We'll implement per device: On desktop hover, on mobile click toggle for dropdown. 
+    
+    // This makes it professional
+    const isMobile = () => window.innerWidth <= 992;
+
+    function handleMobileDropdowns() {
+      const dropdownParents = document.querySelectorAll('.has-dropdown');
+      dropdownParents.forEach(parent => {
+        const triggerLink = parent.querySelector('a:first-child');
+        const dropdownDiv = parent.querySelector('.dropdown');
+        if (!triggerLink || !dropdownDiv) return;
+        
+        // remove any previous inline event to avoid double
+        const newTrigger = triggerLink.cloneNode(true);
+        triggerLink.parentNode.replaceChild(newTrigger, triggerLink);
+        const updatedDropdown = parent.querySelector('.dropdown');
+        
+        if (isMobile()) {
+          // mobile: prevent default navigation if # or same? We'll handle toggle
+          newTrigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            // close all other dropdowns
+            document.querySelectorAll('.has-dropdown .dropdown').forEach(dd => {
+              if (dd !== updatedDropdown && dd.classList.contains('mobile-open')) {
+                dd.classList.remove('mobile-open');
+              }
+            });
+            updatedDropdown.classList.toggle('mobile-open');
+          });
+        } else {
+          // desktop: remove any leftover mobile-open class
+          updatedDropdown.classList.remove('mobile-open');
+          newTrigger.removeEventListener('click', () => {});
+        }
+      });
+    }
+
+    // initial call and on resize
+    function refreshMobileLogic() {
+      const allDropdowns = document.querySelectorAll('.has-dropdown .dropdown');
+      if (isMobile()) {
+        allDropdowns.forEach(dd => {
+          dd.style.display = ''; // reset to use class .mobile-open
+          if (!dd.classList.contains('mobile-open')) dd.style.display = 'none';
+          else dd.style.display = 'flex';
+        });
+      } else {
+        allDropdowns.forEach(dd => {
+          dd.style.display = '';
+          dd.classList.remove('mobile-open');
+        });
+      }
+      handleMobileDropdowns();
+    }
+
+    // Accordion header toggles (works on both versions)
+    document.querySelectorAll('.accordion-header').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const content = btn.nextElementSibling;
+        const isActive = btn.classList.contains('active');
+        if (isActive) {
+          btn.classList.remove('active');
+          if (content) content.style.display = 'none';
+        } else {
+          btn.classList.add('active');
+          if (content) content.style.display = 'flex';
+        }
+      });
+    });
+
+    // initial sync to avoid dropdown content being hidden in any wrong state
+    function syncAccordionFromState() {
+      document.querySelectorAll('.accordion-header').forEach(btn => {
+        const content = btn.nextElementSibling;
+        if (btn.classList.contains('active')) {
+          if (content) content.style.display = 'flex';
+        } else {
+          if (content) content.style.display = 'none';
+        }
+      });
+    }
+
+    window.addEventListener('resize', () => {
+      refreshMobileLogic();
+      // close menu on resize if open
+      if (window.innerWidth > 992 && navMenu.classList.contains('active')) closeMenu();
+    });
+    refreshMobileLogic();
+    syncAccordionFromState();
+
+    // close mobile dropdowns when clicking outside maybe
+    document.addEventListener('click', (e) => {
+      if (isMobile() && navMenu && navMenu.classList.contains('active')) {
+        let target = e.target;
+        if (!navMenu.contains(target) && !hamburger.contains(target) && !overlay.contains(target)) {
+          closeMenu();
+        }
+      }
+      // optional close mobile dropdown if click outside
+      if (isMobile()) {
+        const openDropdown = document.querySelector('.dropdown.mobile-open');
+        if (openDropdown && !openDropdown.parentElement.contains(e.target) && !e.target.closest('.has-dropdown')) {
+          openDropdown.classList.remove('mobile-open');
+          if (openDropdown) openDropdown.style.display = 'none';
+        }
+      }
+    });
+    
+    // fix for desktop hover to still work: avoid conflict with mobile-open
+    function updateDesktopHover() {
+      if (!isMobile()) {
+        document.querySelectorAll('.has-dropdown .dropdown').forEach(d => {
+          d.style.display = '';
+          d.classList.remove('mobile-open');
+        });
+      }
+    }
+    updateDesktopHover();
+  })();
 </script>
 </body>
 </html>
-    
