@@ -137,7 +137,7 @@ export default async function handler(req, res) {
               width:35%;
             ">
 
-              ${key.replaceAll(" ", " ")}
+              ${key.replaceAll("_", " ")}
 
             </td>
 
@@ -147,7 +147,7 @@ export default async function handler(req, res) {
               color:#111827;
             ">
 
-              ${value || "-"}
+              ${value || " "}
 
             </td>
 
