@@ -1,18 +1,19 @@
+# Turn on Rewrite Engine
 RewriteEngine On
 
-# www → non-www
-RewriteCond %{HTTP_HOST} ^www\.booknino\.co\.uk$ [NC]
-RewriteRule ^(.*)$ https://booknino.co.uk/$1 [R=301,L]
+# 0. WWW to non-WWW redirect
+RewriteCond %{HTTP_HOST} ^www\.applyecscard\.co\.uk [NC]
+RewriteRule ^(.*)$ https://applyecscard.co.uk/$1 [R=301,L]
 
-# Don't touch /blog
+# 1. Don't touch /blog (WordPress ka folder)
 RewriteRule ^blog/ - [L]
 
-# Redirect /page.html -> /page
-RewriteCond %{THE_REQUEST} \s/([^.]+)\.html[\s?] [NC]
+# 2. Redirect /page.html -> /page  (SEO friendly)
+RewriteCond %{THE_REQUEST} "\s/+(.+?)\.html[\s?]"
 RewriteRule ^ %1 [R=301,L]
 
-# Internally serve .html files
-RewriteCond %{REQUEST_FILENAME} !-f
+# 3. /page ko internally /page.html se serve karo
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-RewriteRule ^([^/]+)/?$ $1.html [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]
