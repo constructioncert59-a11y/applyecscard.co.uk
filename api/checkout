@@ -1,40 +1,40 @@
 const nodemailer = require('nodemailer');
 
 module.exports = async (req, res) => {
-    // सिर्फ POST मेथड स्वीकार करें
+    // केवल POST स्वीकार करें
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).send('Method Not Allowed');
     }
 
     try {
         const data = req.body;
 
-        // आवश्यक फ़ील्ड की जाँच (बेसिक)
+        // आवश्यक फ़ील्ड चेक करें
         const required = ['first_name', 'last_name', 'email', 'phone', 'address_line_1', 'city', 'postcode', 'terms_accepted'];
         for (let field of required) {
             if (!data[field] || data[field].trim() === '') {
-                return res.status(400).json({ error: `Missing field: ${field}` });
+                // अगर कोई फ़ील्ड खाली है, तो फॉर्म पर वापस भेजें (या एरर दिखाएँ)
+                // सरलता के लिए हम एरर मैसेज के साथ रीडायरेक्ट कर सकते हैं
+                return res.redirect(302, '/e-learning-checkout?error=missing_fields');
             }
         }
 
-        // ईमेल कंफर्मेशन चेक (फ्रंट‑एंड पर हो चुका है, फिर भी)
+        // ईमेल कन्फर्मेशन
         if (data.email !== data.confirm_email) {
-            return res.status(400).json({ error: 'Emails do not match' });
+            return res.redirect(302, '/e-learning-checkout?error=email_mismatch');
         }
 
-        // --- 1. ईमेल भेजें (booking@applyecscard.co.uk) ---
-        // SMTP कॉन्फ़िगरेशन – Environment Variables से लें
+        // --- ईमेल भेजें ---
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',          // Gmail का उदाहरण
+            host: 'smtp.gmail.com',
             port: 587,
             secure: false,
             auth: {
-                user: process.env.EMAIL_USER,     // Vercel Env Var में डालें
-                pass: process.env.EMAIL_PASS,     // App Password
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
             },
         });
 
-        // ईमेल की सामग्री
         const mailOptions = {
             from: `"E-Learning Checkout" <${process.env.EMAIL_USER}>`,
             to: 'booking@applyecscard.co.uk',
@@ -54,17 +54,14 @@ module.exports = async (req, res) => {
             `,
         };
 
-        // ईमेल भेजें (await करें)
         await transporter.sendMail(mailOptions);
 
-        // --- 2. सफल रिस्पॉन्स – रीडायरेक्ट URL भेजें ---
-        return res.status(200).json({
-            success: true,
-            redirect: 'https://buy.stripe.com/dRm6oz0Sj1nffCP8IBeUU00'
-        });
+        // --- सफल होने पर सीधा स्ट्राइप पेज पर रीडायरेक्ट करें ---
+        return res.redirect(302, 'https://buy.stripe.com/dRm6oz0Sj1nffCP8IBeUU00');
 
     } catch (error) {
         console.error('Checkout API error:', error);
-        return res.status(500).json({ error: 'Internal server error', message: error.message });
+        // एरर होने पर भी स्ट्राइप पर भेज सकते हैं, या एरर पेज दिखा सकते हैं
+        return res.redirect(302, '/e-learning-checkout?error=server_error');
     }
 };
