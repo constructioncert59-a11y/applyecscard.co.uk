@@ -267,9 +267,9 @@
         <div class="summary-box" id="summaryBox"></div>
 
         <h3>Payment</h3>
-        <p><strong>Total Fee: <span id="totalFee">£95.00</span></strong></p>
+        <p><strong>Total Fee: <span id="totalFee">£99.00</span></strong></p>
         <p class="small-print">
-          Indicative fees: New ECS card from £95, renewal or replacement from £95.
+          Indicative fees: New ECS card from £99, renewal or replacement from £99.
           Final cost may depend on your route and any additional services.
         </p>
 
@@ -312,8 +312,6 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
-  statusBox.className = "sending";
-  statusBox.textContent = "Uploading your documents, please wait...";
 
   try {
     const photoFile = form.querySelector('input[name="photo"]').files[0];
@@ -426,9 +424,9 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
     const totalFeeSpan = document.getElementById("totalFee");
 
     const priceMap = {
-      new: "£95.00",
-      renewal: "£95.00",
-      replacement: "£95.00"
+      new: "£99.00",
+      renewal: "£99.00",
+      replacement: "£99.00"
     };
 
     function showStep(step) {
@@ -471,7 +469,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
       if (!form || !summaryBox) return;
       const formData = new FormData(form);
       const cardType = formData.get("ecs_card_type");
-      const price = priceMap[cardType] || "£95.00";
+      const price = priceMap[cardType] || "£99.00";
 
       summaryBox.innerHTML = `
         <p><strong>Name:</strong> ${formData.get("full_name") || ""}</p>
@@ -528,7 +526,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
         }
       }
       if (totalFeeSpan && selectedType) {
-        totalFeeSpan.textContent = priceMap[selectedType] || "£95.00";
+        totalFeeSpan.textContent = priceMap[selectedType] || "£99.00";
       }
     }
 
