@@ -48,6 +48,30 @@
     }
   }
   </script>
+
+  <style>
+    /* Simple submit-status indicator so users see it's actually sending */
+    #submitStatus {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+    #submitStatus.sending {
+      display: block;
+      background: #eaf1ff;
+      color: #1a3a8f;
+      border: 1px solid #c3d4f5;
+    }
+    #submitStatus.error {
+      display: block;
+      background: #fdecea;
+      color: #b3261e;
+      border: 1px solid #f5c2c0;
+    }
+  </style>
 </head>
 <body>
   <!-- Common header (loaded from header.html via header.js) -->
@@ -97,7 +121,7 @@
     </div>
 
           
-    <form id="ecsForm">
+    <form id="ecsForm" enctype="multipart/form-data">
       <!-- STEP 1: PERSONAL + CARD + UPLOADS -->
       <div class="form-step active">
         <h1 style="color:#3f498cf8;">ECS CARD APPLICATION</h1>
@@ -249,32 +273,54 @@
           Final cost may depend on your route and any additional services.
         </p>
 
+        <div id="submitStatus"></div>
+
         <button type="button" class="prev-btn">Previous</button>
         <!-- Final submit button (no .next-btn class so JS doesn't treat it as wizard button) -->
-        <button type="submit" class="submit-btn">Submit &amp; Proceed to Payment</button>
+        <button type="submit" class="submit-btn" id="submitBtn">Submit &amp; Proceed to Payment</button>
       </div>
     </form>
   </section>
 <script>
-document.getElementById("ecsForm").addEventListener("submit", async function(e) {
+document.getElementById("ecsForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
+  const submitBtn = document.getElementById("submitBtn");
+  const statusBox = document.getElementById("submitStatus");
+
+  // ✅ FIX: send the raw FormData (multipart/form-data) so file uploads
+  // (photo, ID proof, H&S test proof) actually travel with the request.
+  // Do NOT JSON.stringify FormData — File objects don't survive JSON
+  // conversion, which is why uploaded documents were never reaching email.
+  // Do NOT set a Content-Type header manually — the browser sets the
+  // correct "multipart/form-data; boundary=..." header automatically.
   const formData = new FormData(this);
-  const data = Object.fromEntries(formData.entries());
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+  statusBox.className = "sending";
+  statusBox.textContent = "Uploading your documents, please wait...";
 
   try {
-    await fetch("/api/send", {
+    const response = await fetch("/api/send", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+      body: formData
     });
+
+    if (!response.ok) {
+      throw new Error("Server responded with status " + response.status);
+    }
+
+    // Only redirect to payment once the documents have actually been sent
+    window.location.href = "https://buy.stripe.com/9B63cy7PYdIeclY9My3oA01";
   } catch (err) {
     console.error(err);
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit & Proceed to Payment";
+    statusBox.className = "error";
+    statusBox.textContent =
+      "Sorry, we couldn't submit your documents. Please check your connection and try again.";
   }
-
-  window.location.href = "https://buy.stripe.com/9B63cy7PYdIeclY9My3oA01";
 });
 </script>
   <script>
@@ -452,4 +498,3 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
   </script>
 </body>
 </html>
-    
