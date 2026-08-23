@@ -894,7 +894,7 @@
               Once we have checked your request and confirmed a test slot, we will process payment securely.
               The fee covers the CITB test charge plus our administration for managing your ECS-related booking.
             </p>
-            <p class="summary-total"><strong>Indicative total fee: £70.00</strong></p>
+            <p class="summary-total"><strong>Indicative total fee: £75.00</strong></p>
 
             <div class="form-buttons">
               <button type="button" class="prev-btn">Previous</button>
@@ -925,14 +925,29 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     });
 
     if (!response.ok) {
-      throw new Error("Booking submission failed (status " + response.status + ")");
+      // Try to pull the real error message out of book.php's response
+      // so the actual problem is visible instead of a generic message.
+      let detail = "";
+      try {
+        const text = await response.text();
+        const match = text.match(/<li>(.*?)<\/li>/g);
+        if (match && match.length) {
+          detail = match.map(li => li.replace(/<\/?li>/g, "")).join("\n");
+        } else {
+          const h2 = text.match(/<h2>(.*?)<\/h2>/);
+          if (h2) detail = h2[1];
+        }
+      } catch (readErr) {
+        console.error(readErr);
+      }
+      throw new Error(detail || ("Booking submission failed (status " + response.status + ")"));
     }
 
     // 👉 Only redirect to payment once the booking + emails were sent successfully
     window.location.href = "https://buy.stripe.com/5kQ4gt8ZIcfXfKM2c15Vu00";
   } catch (err) {
     console.error(err);
-    alert("Sorry, there was a problem submitting your booking. Please check your details and try again, or email booking@applyecscard.co.uk.");
+    alert("Sorry, there was a problem submitting your booking:\n\n" + (err.message || "Unknown error") + "\n\nPlease check your details and try again, or email booking@applyecscard.co.uk.");
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.textContent = "Submit booking request";
@@ -1008,7 +1023,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
           <p><strong>Preferred time:</strong> ${formData.get("test_time") || "-"}</p>
           <p><strong>ID document:</strong> ${(formData.get("id_document") && formData.get("id_document").name) || "-"}</p>
           <p><strong>Photo:</strong> ${(formData.get("applicant_photo") && formData.get("applicant_photo").name) || "-"}</p>
-          <p class="summary-total"><strong>Indicative total fee:</strong> £70.00 (CITB test &amp; admin)</p>
+          <p class="summary-total"><strong>Indicative total fee:</strong> £75.00 (CITB test &amp; admin)</p>
         `;
       }
 
