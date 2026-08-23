@@ -40,6 +40,65 @@ $testDate       = post_value("test_date");
 $testTime       = post_value("test_time");
 $agreeTerms     = isset($_POST["agree_terms"]) ? "Yes" : "No";
 
+// --- File upload handling (ID document + applicant photo) ---
+$maxFileSize   = 20 * 1024 * 1024; // 20MB per file (mail servers typically cap total attachments around 20-25MB)
+$allowedMimes  = [
+    "image/jpeg" => "jpg",
+    "image/png"  => "png",
+    "image/webp" => "webp",
+    "application/pdf" => "pdf",
+];
+$attachments = []; // each: ["filename" => ..., "mime" => ..., "data" => raw bytes]
+$fileErrors = [];
+
+function validate_and_read_upload($fieldKey, $label, $allowedMimes, $maxFileSize, &$fileErrors) {
+    if (!isset($_FILES[$fieldKey]) || $_FILES[$fieldKey]["error"] === UPLOAD_ERR_NO_FILE) {
+        $fileErrors[] = $label . " is required.";
+        return null;
+    }
+    $file = $_FILES[$fieldKey];
+
+    if ($file["error"] !== UPLOAD_ERR_OK) {
+        $fileErrors[] = "There was a problem uploading " . $label . ".";
+        return null;
+    }
+
+    if ($file["size"] > $maxFileSize) {
+        $fileErrors[] = $label . " must be smaller than 20MB.";
+        return null;
+    }
+
+    // Validate real file type (not just the extension) using finfo
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime  = $finfo->file($file["tmp_name"]);
+
+    if (!isset($allowedMimes[$mime])) {
+        $fileErrors[] = $label . " must be a JPG, PNG, WEBP or PDF file.";
+        return null;
+    }
+
+    $data = file_get_contents($file["tmp_name"]);
+    if ($data === false) {
+        $fileErrors[] = "Could not read the uploaded " . $label . ".";
+        return null;
+    }
+
+    $safeBaseName = preg_replace('/[^A-Za-z0-9_\-]/', '_', pathinfo($file["name"], PATHINFO_FILENAME));
+    $ext = $allowedMimes[$mime];
+
+    return [
+        "filename" => $fieldKey . "_" . $safeBaseName . "." . $ext,
+        "mime"     => $mime,
+        "data"     => $data,
+    ];
+}
+
+$idDocument = validate_and_read_upload("id_document", "ID document", $allowedMimes, $maxFileSize, $fileErrors);
+if ($idDocument) $attachments[] = $idDocument;
+
+$applicantPhoto = validate_and_read_upload("applicant_photo", "Applicant photo", $allowedMimes, $maxFileSize, $fileErrors);
+if ($applicantPhoto) $attachments[] = $applicantPhoto;
+
 // Basic validation
 $errors = [];
 
@@ -84,8 +143,12 @@ if ($agreeTerms !== "Yes") {
     $errors[] = "You must agree to the booking terms and conditions.";
 }
 
+// Merge in file upload errors
+$errors = array_merge($errors, $fileErrors);
+
 // If errors exist, show simple error page
 if (!empty($errors)) {
+    http_response_code(400);
     echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Booking Error</title></head><body>";
     echo "<h2>There was a problem with your booking.</h2>";
     echo "<ul>";
@@ -156,6 +219,9 @@ $adminMessage = "
     <tr><th>Agreed to terms</th><td>" . htmlspecialchars($agreeTerms) . "</td></tr>
   </table>
 
+  <h3>Attachments</h3>
+  <p>ID document and applicant photo are attached to this email.</p>
+
   <p style='margin-top:15px;font-size:12px;color:#777;'>
     Submitted at: " . date("Y-m-d H:i:s") . " (server time)
   </p>
@@ -164,10 +230,28 @@ $adminMessage = "
 </html>
 ";
 
+// Build a multipart/mixed email so the ID document + photo are attached
+$boundary = "ECS_" . md5(uniqid((string) time(), true));
+
 $headersAdmin  = "MIME-Version: 1.0\r\n";
-$headersAdmin .= "Content-Type: text/html; charset=UTF-8\r\n";
+$headersAdmin .= "Content-Type: multipart/mixed; boundary=\"" . $boundary . "\"\r\n";
 $headersAdmin .= "From: Apply ECS <no-reply@applyecscard.co.uk>\r\n";
 $headersAdmin .= "Reply-To: " . $cleanEmail . "\r\n";
+
+$adminBody  = "--" . $boundary . "\r\n";
+$adminBody .= "Content-Type: text/html; charset=UTF-8\r\n";
+$adminBody .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
+$adminBody .= $adminMessage . "\r\n";
+
+foreach ($attachments as $file) {
+    $adminBody .= "--" . $boundary . "\r\n";
+    $adminBody .= "Content-Type: " . $file["mime"] . "; name=\"" . $file["filename"] . "\"\r\n";
+    $adminBody .= "Content-Transfer-Encoding: base64\r\n";
+    $adminBody .= "Content-Disposition: attachment; filename=\"" . $file["filename"] . "\"\r\n\r\n";
+    $adminBody .= chunk_split(base64_encode($file["data"])) . "\r\n";
+}
+
+$adminBody .= "--" . $boundary . "--";
 
 // ---------- EMAIL TO USER ----------
 $userSubject = "Your CITB Test Booking Request - Apply ECS";
@@ -225,7 +309,7 @@ $headersUser .= "From: Apply ECS <no-reply@applyecscard.co.uk>\r\n";
 $headersUser .= "Reply-To: booking@applyecscard.co.uk\r\n";
 
 // ---------- SEND EMAILS ----------
-$adminMailSent = mail($adminEmail, $adminSubject, $adminMessage, $headersAdmin);
+$adminMailSent = mail($adminEmail, $adminSubject, $adminBody, $headersAdmin);
 $userMailSent  = mail($cleanEmail, $userSubject, $userMessage, $headersUser);
 
 // If both emails sent successfully → redirect to payment
@@ -234,6 +318,7 @@ if ($adminMailSent && $userMailSent) {
     exit;
 } else {
     // fallback – if any email fails
+    http_response_code(500);
     echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Booking Error</title></head><body>";
     echo "<h2>There was a problem submitting your booking.</h2>";
     echo "<p>We could not send confirmation emails at this time.</p>";
