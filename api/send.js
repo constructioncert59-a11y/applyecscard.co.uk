@@ -46,11 +46,51 @@ export default async function handler(req, res) {
 
     }
 
+    if (
+      !data.id_proof ||
+      typeof data.id_proof !== "string" ||
+      !data.id_proof.startsWith("data:")
+    ) {
+
+      return res.status(400).json({
+        success: false,
+        error:
+          "ID document upload is required"
+      });
+
+    }
+
+    if (
+      !data.photo ||
+      typeof data.photo !== "string" ||
+      !data.photo.startsWith("data:")
+    ) {
+
+      return res.status(400).json({
+        success: false,
+        error:
+          "Photo upload is required"
+      });
+
+    }
+
     // =========================
     // ATTACHMENTS
     // =========================
 
     const attachments = [];
+
+    // Helper: pick a correct file extension from the data URL's mime type
+    function extFromDataUrl(dataUrl, fallback) {
+      const match = /^data:([^;]+);base64,/.exec(dataUrl || "");
+      if (!match) return fallback;
+      const mime = match[1];
+      if (mime === "image/jpeg") return "jpg";
+      if (mime === "image/png") return "png";
+      if (mime === "image/webp") return "webp";
+      if (mime === "application/pdf") return "pdf";
+      return fallback;
+    }
 
     // PHOTO
     if (
@@ -61,7 +101,7 @@ export default async function handler(req, res) {
       attachments.push({
 
         filename:
-          "passport-photo.png",
+          "passport-photo." + extFromDataUrl(data.photo, "png"),
 
         content:
           data.photo.split(",")[1]
@@ -79,7 +119,7 @@ export default async function handler(req, res) {
       attachments.push({
 
         filename:
-          "identity-proof.png",
+          "identity-proof." + extFromDataUrl(data.id_proof, "png"),
 
         content:
           data.id_proof.split(",")[1]
