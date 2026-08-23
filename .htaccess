@@ -20,3 +20,15 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+)$ $1.html [L]
+
+# 4. Allow larger file uploads for booking form (ID document + photo)
+# Works only if PHP runs as an Apache module (mod_php). If your host uses
+# PHP-FPM / CGI, set these values instead in your hosting control panel
+# or in a php.ini / .user.ini file (upload_max_filesize, post_max_size).
+<IfModule mod_php.c>
+  php_value upload_max_filesize 25M
+  php_value post_max_size 30M
+  php_value max_execution_time 300
+  php_value max_input_time 300
+  php_value memory_limit 128M
+</IfModule>
