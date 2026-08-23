@@ -527,7 +527,7 @@
 
         <!-- Booking Form -->
 
-<form id="ecsForm" enctype="multipart/form-data">
+<form id="ecsForm">
   <!-- Step 1 -->
           <div class="form-step active" id="booking-form">
             <h1>CITB Test Booking for ECS</h1>
@@ -652,14 +652,14 @@
               <label for="id_document">Upload photo ID (passport or driving licence)*</label>
               <input type="file" id="id_document" name="id_document" class="form-control"
                      accept="image/jpeg,image/png,image/webp,.pdf" required>
-              <div class="small-note">Accepted formats: JPG, PNG, WEBP or PDF. Max file size 20MB.</div>
+              <div class="small-note">Accepted formats: JPG, PNG, WEBP or PDF. Max file size 15MB.</div>
             </div>
 
             <div class="form-group">
               <label for="applicant_photo">Upload a recent passport-style photo of yourself*</label>
               <input type="file" id="applicant_photo" name="applicant_photo" class="form-control"
                      accept="image/jpeg,image/png,image/webp" required>
-              <div class="small-note">Accepted formats: JPG, PNG or WEBP. Max file size 20MB.</div>
+              <div class="small-note">Accepted formats: JPG, PNG or WEBP. Max file size 15MB.</div>
             </div>
 
             <h3>Step 3: Contact details</h3>
@@ -915,32 +915,65 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     submitBtn.textContent = "Submitting…";
   }
 
-  // FormData automatically includes the uploaded ID document + photo files
-  const formData = new FormData(this);
+  const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB per file
+
+  // Convert a File into a base64 data URL (what /api/send expects)
+  function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve(null);
+      if (file.size > MAX_FILE_SIZE) {
+        return reject(new Error(file.name + " is larger than 15MB. Please upload a smaller file."));
+      }
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("Could not read " + file.name));
+      reader.readAsDataURL(file);
+    });
+  }
 
   try {
-    const response = await fetch("book.php", {
+    const formData = new FormData(this);
+
+    // Pull out the file inputs separately — everything else goes through as-is
+    const idFile = this.querySelector('#id_document').files[0];
+    const photoFile = this.querySelector('#applicant_photo').files[0];
+
+    if (!idFile) throw new Error("Please upload your ID document.");
+    if (!photoFile) throw new Error("Please upload your photo.");
+
+    const [idProofDataUrl, photoDataUrl] = await Promise.all([
+      readFileAsDataURL(idFile),
+      readFileAsDataURL(photoFile)
+    ]);
+
+    // Build the plain-field payload (skip the raw File objects + checkbox handled separately)
+    const payload = {};
+    for (const [key, value] of formData.entries()) {
+      if (key === "id_document" || key === "applicant_photo") continue;
+      payload[key] = value;
+    }
+    payload.agree_terms = this.querySelector('#agree_terms').checked ? "Yes" : "No";
+
+    // Field names expected by /api/send
+    payload.id_proof = idProofDataUrl;
+    payload.photo = photoDataUrl;
+
+    const response = await fetch("/api/send", {
       method: "POST",
-      body: formData
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
 
-    if (!response.ok) {
-      // Try to pull the real error message out of book.php's response
-      // so the actual problem is visible instead of a generic message.
-      let detail = "";
-      try {
-        const text = await response.text();
-        const match = text.match(/<li>(.*?)<\/li>/g);
-        if (match && match.length) {
-          detail = match.map(li => li.replace(/<\/?li>/g, "")).join("\n");
-        } else {
-          const h2 = text.match(/<h2>(.*?)<\/h2>/);
-          if (h2) detail = h2[1];
-        }
-      } catch (readErr) {
-        console.error(readErr);
-      }
-      throw new Error(detail || ("Booking submission failed (status " + response.status + ")"));
+    let result = null;
+    try {
+      result = await response.json();
+    } catch (parseErr) {
+      // response wasn't JSON
+    }
+
+    if (!response.ok || !result || result.success !== true) {
+      const message = (result && result.error) ? result.error : ("Booking submission failed (status " + response.status + ")");
+      throw new Error(message);
     }
 
     // 👉 Only redirect to payment once the booking + emails were sent successfully
