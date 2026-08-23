@@ -15,6 +15,20 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     exit;
 }
 
+// Detect: PHP silently drops $_POST and $_FILES when the upload exceeds
+// the server's post_max_size (this is the #1 cause of "problem submitting
+// your booking" when large ID/photo files are attached). Catch it here and
+// give a clear, correct error instead of confusing "field is required" errors.
+if (empty($_POST) && empty($_FILES) && isset($_SERVER["CONTENT_LENGTH"]) && (int) $_SERVER["CONTENT_LENGTH"] > 0) {
+    http_response_code(400);
+    echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Booking Error</title></head><body>";
+    echo "<h2>There was a problem with your booking.</h2>";
+    echo "<ul><li>Your uploaded files are too large for this server to accept. Please use smaller files (under a few MB each) or contact booking@applyecscard.co.uk for help.</li></ul>";
+    echo "<p><a href='javascript:history.back()'>Go back and correct the form.</a></p>";
+    echo "</body></html>";
+    exit;
+}
+
 // Helper: safe function for retrieving POST values
 function post_value($key) {
     return isset($_POST[$key]) ? trim($_POST[$key]) : "";
@@ -58,8 +72,13 @@ function validate_and_read_upload($fieldKey, $label, $allowedMimes, $maxFileSize
     }
     $file = $_FILES[$fieldKey];
 
+    if ($file["error"] === UPLOAD_ERR_INI_SIZE || $file["error"] === UPLOAD_ERR_FORM_SIZE) {
+        $fileErrors[] = $label . " is too large for the server to accept. Please upload a smaller file.";
+        return null;
+    }
+
     if ($file["error"] !== UPLOAD_ERR_OK) {
-        $fileErrors[] = "There was a problem uploading " . $label . ".";
+        $fileErrors[] = "There was a problem uploading " . $label . " (error code " . $file["error"] . ").";
         return null;
     }
 
@@ -68,11 +87,29 @@ function validate_and_read_upload($fieldKey, $label, $allowedMimes, $maxFileSize
         return null;
     }
 
-    // Validate real file type (not just the extension) using finfo
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime  = $finfo->file($file["tmp_name"]);
+    // Determine the file extension both from the original filename and,
+    // where possible, from the real file content (finfo). Some hosts have
+    // an outdated/incomplete magic database and can misreport PNG/WEBP as
+    // application/octet-stream, so we fall back to the extension rather
+    // than rejecting a genuinely valid image.
+    $extFromName = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+    $allowedExts = ["jpg" => "image/jpeg", "jpeg" => "image/jpeg", "png" => "image/png", "webp" => "image/webp", "pdf" => "application/pdf"];
 
-    if (!isset($allowedMimes[$mime])) {
+    $mime = null;
+    if (class_exists("finfo")) {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $detected = $finfo->file($file["tmp_name"]);
+        if (isset($allowedMimes[$detected])) {
+            $mime = $detected;
+        }
+    }
+
+    // Fall back to trusting the extension if MIME detection was inconclusive
+    if ($mime === null && isset($allowedExts[$extFromName])) {
+        $mime = $allowedExts[$extFromName];
+    }
+
+    if ($mime === null) {
         $fileErrors[] = $label . " must be a JPG, PNG, WEBP or PDF file.";
         return null;
     }
