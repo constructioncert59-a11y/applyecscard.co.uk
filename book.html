@@ -648,20 +648,6 @@
               </select>
             </div>
 
-            <div class="form-group">
-              <label for="id_document">Upload photo ID (passport or driving licence)*</label>
-              <input type="file" id="id_document" name="id_document" class="form-control"
-                     accept="image/jpeg,image/png,image/webp,.pdf" required>
-              <div class="small-note">Accepted formats: JPG, PNG, WEBP or PDF. Max file size 15MB.</div>
-            </div>
-
-            <div class="form-group">
-              <label for="applicant_photo">Upload a recent passport-style photo of yourself*</label>
-              <input type="file" id="applicant_photo" name="applicant_photo" class="form-control"
-                     accept="image/jpeg,image/png,image/webp" required>
-              <div class="small-note">Accepted formats: JPG, PNG or WEBP. Max file size 15MB.</div>
-            </div>
-
             <h3>Step 3: Contact details</h3>
 
             <div class="form-group">
@@ -915,48 +901,15 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     submitBtn.textContent = "Submitting…";
   }
 
-  const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB per file
-
-  // Convert a File into a base64 data URL (what /api/send expects)
-  function readFileAsDataURL(file) {
-    return new Promise((resolve, reject) => {
-      if (!file) return resolve(null);
-      if (file.size > MAX_FILE_SIZE) {
-        return reject(new Error(file.name + " is larger than 15MB. Please upload a smaller file."));
-      }
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error("Could not read " + file.name));
-      reader.readAsDataURL(file);
-    });
-  }
-
   try {
     const formData = new FormData(this);
 
-    // Pull out the file inputs separately — everything else goes through as-is
-    const idFile = this.querySelector('#id_document').files[0];
-    const photoFile = this.querySelector('#applicant_photo').files[0];
-
-    if (!idFile) throw new Error("Please upload your ID document.");
-    if (!photoFile) throw new Error("Please upload your photo.");
-
-    const [idProofDataUrl, photoDataUrl] = await Promise.all([
-      readFileAsDataURL(idFile),
-      readFileAsDataURL(photoFile)
-    ]);
-
-    // Build the plain-field payload (skip the raw File objects + checkbox handled separately)
+    // Build the plain-field payload
     const payload = {};
     for (const [key, value] of formData.entries()) {
-      if (key === "id_document" || key === "applicant_photo") continue;
       payload[key] = value;
     }
     payload.agree_terms = this.querySelector('#agree_terms').checked ? "Yes" : "No";
-
-    // Field names expected by /api/send
-    payload.id_proof = idProofDataUrl;
-    payload.photo = photoDataUrl;
 
     const response = await fetch("/api/send", {
       method: "POST",
@@ -1054,8 +1007,6 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
           <p><strong>Preferred test centre:</strong> ${formData.get("test_centre") || "-"}</p>
           <p><strong>Preferred date:</strong> ${formattedDate || "-"}</p>
           <p><strong>Preferred time:</strong> ${formData.get("test_time") || "-"}</p>
-          <p><strong>ID document:</strong> ${(formData.get("id_document") && formData.get("id_document").name) || "-"}</p>
-          <p><strong>Photo:</strong> ${(formData.get("applicant_photo") && formData.get("applicant_photo").name) || "-"}</p>
           <p class="summary-total"><strong>Indicative total fee:</strong> £75.00 (CITB test &amp; admin)</p>
         `;
       }
