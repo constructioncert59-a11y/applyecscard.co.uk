@@ -55,37 +55,8 @@ export default async function handler(req, res) {
 
     }
 
-    if (!isTestBooking) {
-
-      if (
-        !data.id_proof ||
-        typeof data.id_proof !== "string" ||
-        !data.id_proof.startsWith("data:")
-      ) {
-
-        return res.status(400).json({
-          success: false,
-          error:
-            "ID document upload is required"
-        });
-
-      }
-
-      if (
-        !data.photo ||
-        typeof data.photo !== "string" ||
-        !data.photo.startsWith("data:")
-      ) {
-
-        return res.status(400).json({
-          success: false,
-          error:
-            "Photo upload is required"
-        });
-
-      }
-
-    }
+    // Photo / ID proof uploads are optional on the card application form now.
+    // (Previously required — kept here only as a comment for reference.)
 
     // =========================
     // ATTACHMENTS
@@ -231,8 +202,19 @@ export default async function handler(req, res) {
       ? `📝 New CITB Test Booking - ${data.full_name}`
       : `🔥 New ECS Card Application - ${data.full_name}`;
 
-    const attachmentsSectionHtml = isTestBooking
-      ? "" // no uploads on the test booking form, so no attachments block
+    const uploadedDocLines = [];
+    if (attachments.some(a => a.filename.startsWith("passport-photo"))) {
+      uploadedDocLines.push("Passport Size Photo Attached");
+    }
+    if (attachments.some(a => a.filename.startsWith("identity-proof"))) {
+      uploadedDocLines.push("Identity Proof Attached");
+    }
+    if (attachments.some(a => a.filename.startsWith("hs-test-proof"))) {
+      uploadedDocLines.push("HS Test Proof Attached");
+    }
+
+    const attachmentsSectionHtml = (isTestBooking || uploadedDocLines.length === 0)
+      ? "" // no uploads on the test booking form, or nothing was uploaded on the card form
       : `
           <div style="
             margin-top:35px;
@@ -253,17 +235,7 @@ export default async function handler(req, res) {
               padding-left:20px;
             ">
 
-              <li>
-                Passport Size Photo Attached
-              </li>
-
-              <li>
-                Identity Proof Attached
-              </li>
-
-              <li>
-                HS Test Proof Attached
-              </li>
+              ${uploadedDocLines.map(line => `<li>${line}</li>`).join("")}
 
             </ul>
 
