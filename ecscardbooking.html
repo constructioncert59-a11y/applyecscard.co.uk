@@ -233,13 +233,13 @@
         </div>
 
         <div class="form-group">
-          <label>Upload Passport Size Photo*</label>
-          <input type="file" name="photo" accept=".jpg,.png" required>
+          <label>Upload Passport Size Photo (optional)</label>
+          <input type="file" name="photo" accept=".jpg,.png">
         </div>
 
         <div class="form-group">
-          <label>Upload Identity Proof (Passport / Driving Licence)*</label>
-          <input type="file" name="id_proof" accept=".jpg,.png,.pdf" required>
+          <label>Upload Identity Proof (Passport / Driving Licence) (optional)</label>
+          <input type="file" name="id_proof" accept=".jpg,.png,.pdf">
         </div>
 
         <button type="button" class="next-btn">Next</button>
@@ -361,9 +361,8 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
     const idProofFile = form.querySelector('input[name="id_proof"]').files[0];
     const hsTestFile = form.querySelector('input[name="hs_test_proof"]').files[0];
 
-    if (!photoFile) throw new Error("Please upload your passport-style photo.");
-    if (!idProofFile) throw new Error("Please upload your identity proof.");
-
+    // Uploads are optional now — compressImageFile() already resolves to
+    // null when no file is selected, so we just proceed either way.
     const [photoDataUrl, idProofDataUrl, hsTestDataUrl] = await Promise.all([
       compressImageFile(photoFile),
       compressImageFile(idProofFile),
@@ -378,8 +377,8 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
       payload[key] = value;
     }
     payload.agree_terms = form.querySelector('input[name="agree_terms"]').checked ? "Yes" : "No";
-    payload.photo = photoDataUrl;
-    payload.id_proof = idProofDataUrl;
+    if (photoDataUrl) payload.photo = photoDataUrl;
+    if (idProofDataUrl) payload.id_proof = idProofDataUrl;
     if (hsTestDataUrl) payload.hs_test_proof = hsTestDataUrl;
 
     const controller = new AbortController();
