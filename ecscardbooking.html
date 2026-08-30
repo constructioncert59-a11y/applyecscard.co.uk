@@ -282,8 +282,16 @@
     </form>
   </section>
 <script>
-document.getElementById("ecsForm").addEventListener("submit", async function (e) {
+document.addEventListener("DOMContentLoaded", () => {
+  const ecsFormEl = document.getElementById("ecsForm");
+  if (!ecsFormEl) {
+    console.error("ecsForm not found in DOM — submit handler not attached.");
+    return;
+  }
+
+  ecsFormEl.addEventListener("submit", async function (e) {
   e.preventDefault();
+  console.log("Submit clicked — starting submission...");
 
   const submitBtn = document.getElementById("submitBtn");
   const statusBox = document.getElementById("submitStatus");
@@ -420,6 +428,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function (e)
       ? "This is taking too long to submit. Please check your connection and try again, or use smaller photos."
       : "Sorry, we couldn't submit your documents: " + (err.message || "Unknown error") + " Please check your details and try again.";
   }
+  });
 });
 </script>
   <script>
