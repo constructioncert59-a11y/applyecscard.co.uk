@@ -1,544 +1,1888 @@
 <!DOCTYPE html>
 <html lang="en-GB">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- ✅ SEO Title (~55–60 chars, UK-focused) -->
   <title>Apply for ECS Card Online | New, Renewal & Replacement UK</title>
 
-  <!-- ✅ Meta Description (UK-focused, ECS keywords) -->
-  <meta name="description" content="Apply online for an ECS card in the UK. Send a secure ECS card application for new, renewal or replacement cards, upload your ID and qualifications and get help with ECS Health, Safety & Environment test requirements." />
+  <meta name="description"
+    content="Apply online for an ECS card in the UK. Submit your ECS card application for new, renewal or replacement cards." />
 
-  <!-- (Optional) Keyword Tag -->
-  <meta name="keywords" content="apply ecs card, ecs card application, ecs card renewal, ecs card replacement, ecs card uk, electrician ecs card, apply ecs online" />
+  <meta name="keywords"
+    content="apply ecs card, ecs card application, ecs card renewal, ecs card replacement, ecs card uk, electrician ecs card" />
 
-  <!-- ✅ Robots & Canonical -->
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <link rel="canonical" href="https://applyecscard.co.uk/ecscardbooking" />
+  <meta name="robots"
+    content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
 
-  <!-- ✅ Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Apply for ECS Card Online | New, Renewal & Replacement UK" />
-  <meta property="og:description" content="Start your ECS card application online for new, renewal or replacement cards, including ECS Health, Safety & Environment test support." />
-  <meta property="og:url" content="https://applyecscard.co.uk/ecscardbooking" />
-  <meta property="og:site_name" content="Apply ECS" />
+  <link rel="canonical"
+    href="https://applyecscard.co.uk/ecscardbooking" />
 
-  <!-- ✅ Twitter Card -->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Apply for ECS Card Online | New, Renewal & Replacement UK" />
-  <meta name="twitter:description" content="Apply online for your ECS card with UK-focused guidance on new, renewal and replacement routes." />
-
-  <!-- CSS & Icons -->
   <link rel="stylesheet" href="book.css" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 
-  <!-- ✅ JSON-LD: WebPage / Service -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "ECS Card Application Online",
-    "url": "https://applyecscard.co.uk/ecscardbooking.html",
-    "description": "Online ECS card application form for new, renewal and replacement ECS cards in the UK.",
-    "provider": {
-      "@type": "Organization",
-      "name": "Apply ECS",
-      "url": "https://applyecscard.co.uk"
-    }
-  }
-  </script>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
 
   <style>
-    /* Simple submit-status indicator so users see it's actually sending */
+
+    .form-step {
+      display: none;
+    }
+
+    .form-step.active {
+      display: block;
+    }
+
+    .summary-box {
+      border: 1px solid #ccc;
+      background: #fafafa;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      line-height: 1.5;
+    }
+
     #submitStatus {
       display: none;
-      margin-top: 1rem;
-      padding: 0.8rem 1rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      margin-top: 15px;
+      padding: 12px 15px;
+      border-radius: 6px;
       text-align: center;
+      font-size: 15px;
     }
+
     #submitStatus.sending {
       display: block;
       background: #eaf1ff;
       color: #1a3a8f;
       border: 1px solid #c3d4f5;
     }
+
+    #submitStatus.success {
+      display: block;
+      background: #eaf8ee;
+      color: #176b35;
+      border: 1px solid #b9e2c6;
+    }
+
     #submitStatus.error {
       display: block;
       background: #fdecea;
       color: #b3261e;
       border: 1px solid #f5c2c0;
     }
+
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .required-note {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .small-print {
+      font-size: 13px;
+      color: #666;
+    }
+
   </style>
 </head>
+
+
 <body>
-  <!-- Common header (loaded from header.html via header.js) -->
+
+  <!-- HEADER -->
   <div id="header-container"></div>
+
   <script src="header.js"></script>
 
-  <!-- HERO / INTRO SECTION -->
-  <section class="ecs-card-section" style="text-align: center;">
+
+  <!-- INTRO -->
+  <section class="ecs-card-section" style="text-align:center;">
+
     <h1>Apply for Your ECS Card in the UK</h1>
 
     <p>
-      An <strong>ECS card</strong> is the recognised ID card for electricians, FESS, data, telecoms and
-      related trades working on electrotechnical sites across the UK. It links your
-      <strong>identity, qualifications and health &amp; safety status</strong> in one place.
+      An <strong>ECS card</strong> is the recognised ID card for electricians,
+      FESS, data, telecoms and related trades working on electrotechnical sites
+      across the UK.
     </p>
 
     <p>
-      You can start your <strong>ECS card application online</strong> using the secure form below. You will need
-      basic personal details, proof of ID, a suitable photograph and, in most cases, evidence of
-      <strong>ECS Health, Safety &amp; Environment (HS&amp;E) test</strong> or another accepted health &amp; safety qualification.
+      You can start your <strong>ECS card application online</strong>
+      using the secure form below.
     </p>
 
     <p class="note">
-      Different ECS card types exist for labourers, trainees, apprentices, qualified electricians,
-      FESS operatives, network installers, AV technicians, supervisors and managers. Choosing the
-      correct route helps avoid delays or rejections.
+      Different ECS card types exist for labourers, trainees, apprentices,
+      qualified electricians, FESS operatives, network installers,
+      AV technicians, supervisors and managers.
     </p>
+
   </section>
 
-  <!-- Button with icon -->
+
+  <!-- LEARN MORE -->
   <div class="button-container">
+
     <a href="ecs-cards.html">
+
       <button class="info-button" type="button">
+
         <span class="icon">🛠</span>
+
         Learn More About ECS Card Types
+
       </button>
+
     </a>
+
   </div>
 
-  <!-- PROGRESS BAR + FORM -->
+
+  <!-- PROGRESS -->
   <section>
+
     <div class="progress-container">
+
       <ul class="progressbar">
-        <li class="active">Personal Details, Card &amp; Uploads</li>
-        <li>Confirmation &amp; Payment</li>
+
+        <li class="active">
+          Personal Details, Card &amp; Uploads
+        </li>
+
+        <li>
+          Confirmation &amp; Payment
+        </li>
+
       </ul>
+
     </div>
 
-          
+
+    <!-- FORM -->
     <form id="ecsForm">
-      <!-- STEP 1: PERSONAL + CARD + UPLOADS -->
+
+      <!-- =====================================================
+           STEP 1
+      ====================================================== -->
+
       <div class="form-step active">
-        <h1 style="color:#3f498cf8;">ECS CARD APPLICATION</h1>
-        <h3>Step 1: Personal Details</h3>
 
+        <h1 style="color:#3f498c;">
+          ECS CARD APPLICATION
+        </h1>
+
+        <h3>
+          Step 1: Personal Details
+        </h3>
+
+        <p class="required-note">
+          Fields marked with * are required.
+        </p>
+
+
+        <!-- NAME -->
         <div class="form-group">
-          <label>Full Name*</label>
-          <input type="text" name="full_name" required>
+
+          <label>
+            Full Name*
+          </label>
+
+          <input
+            type="text"
+            name="full_name"
+            required
+          />
+
         </div>
 
+
+        <!-- DOB -->
         <div class="form-group">
-          <label>Date of Birth*</label>
-          <input type="date" name="dob" required>
+
+          <label>
+            Date of Birth*
+          </label>
+
+          <input
+            type="date"
+            name="dob"
+            required
+          />
+
         </div>
 
+
+        <!-- NI -->
         <div class="form-group">
-          <label>National Insurance (NI) Number*</label>
-          <input type="text" name="ni_number" placeholder="AB123456C" required>
+
+          <label>
+            National Insurance (NI) Number*
+          </label>
+
+          <input
+            type="text"
+            name="ni_number"
+            placeholder="AB123456C"
+            required
+          />
+
         </div>
 
+
+        <!-- GENDER -->
         <div class="form-group">
-          <label>Gender*</label>
-          <select name="gender" required>
-            <option value="">Select...</option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other / Prefer not to say</option>
+
+          <label>
+            Gender*
+          </label>
+
+          <select
+            name="gender"
+            required
+          >
+
+            <option value="">
+              Select...
+            </option>
+
+            <option value="Male">
+              Male
+            </option>
+
+            <option value="Female">
+              Female
+            </option>
+
+            <option value="Other / Prefer not to say">
+              Other / Prefer not to say
+            </option>
+
           </select>
+
         </div>
 
-        <h3>Contact Info</h3>
+
+        <!-- CONTACT -->
+        <h3>
+          Contact Info
+        </h3>
+
+
+        <!-- ADDRESS -->
         <div class="form-group">
-          <label>Street Address*</label>
-          <input type="text" name="street_address" required>
-        </div>
-        <div class="form-group">
-          <label>Town / City*</label>
-          <input type="text" name="city" required>
-        </div>
-        <div class="form-group">
-          <label>Postcode*</label>
-          <input type="text" name="postcode" placeholder="SW1A 1AA" required>
-        </div>
-        <div class="form-group">
-          <label>Mobile*</label>
-          <input type="tel" name="mobile" required>
-        </div>
-        <div class="form-group">
-          <label>Email*</label>
-          <input type="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label>Confirm Email*</label>
-          <input type="email" name="confirm_email" required>
+
+          <label>
+            Street Address*
+          </label>
+
+          <input
+            type="text"
+            name="street_address"
+            required
+          />
+
         </div>
 
-        <h3>Card &amp; Employment Details</h3>
 
+        <!-- CITY -->
         <div class="form-group">
-          <p>Application Type*</p>
-          <label><input type="radio" name="ecs_card_type" value="new" required> New ECS Card</label><br>
-          <label><input type="radio" name="ecs_card_type" value="renewal"> Renewal</label><br>
-          <label><input type="radio" name="ecs_card_type" value="replacement"> Replacement / Upgrade</label>
+
+          <label>
+            Town / City*
+          </label>
+
+          <input
+            type="text"
+            name="city"
+            required
+          />
+
         </div>
 
+
+        <!-- POSTCODE -->
         <div class="form-group">
-          <label>Current / Previous ECS Card Number (if renewal)</label>
-          <input type="text" name="ecs_card_number" placeholder="ECS123456">
+
+          <label>
+            Postcode*
+          </label>
+
+          <input
+            type="text"
+            name="postcode"
+            placeholder="SW1A 1AA"
+            required
+          />
+
         </div>
 
+
+        <!-- MOBILE -->
         <div class="form-group">
-          <label>Expiry Date (if renewal)</label>
-          <input type="date" name="expiry_date">
+
+          <label>
+            Mobile*
+          </label>
+
+          <input
+            type="tel"
+            name="mobile"
+            required
+          />
+
         </div>
 
+
+        <!-- EMAIL -->
         <div class="form-group">
-          <label>Occupation / Job Title*</label>
+
+          <label>
+            Email*
+          </label>
+
+          <input
+            type="email"
+            name="email"
+            required
+          />
+
+        </div>
+
+
+        <!-- CONFIRM EMAIL -->
+        <div class="form-group">
+
+          <label>
+            Confirm Email*
+          </label>
+
+          <input
+            type="email"
+            name="confirm_email"
+            required
+          />
+
+        </div>
+
+
+        <!-- CARD DETAILS -->
+        <h3>
+          Card &amp; Employment Details
+        </h3>
+
+
+        <!-- APPLICATION TYPE -->
+        <div class="form-group">
+
+          <p>
+            <strong>
+              Application Type*
+            </strong>
+          </p>
+
+          <label>
+
+            <input
+              type="radio"
+              name="ecs_card_type"
+              value="new"
+              required
+            />
+
+            New ECS Card
+
+          </label>
+
+          <br />
+
+          <label>
+
+            <input
+              type="radio"
+              name="ecs_card_type"
+              value="renewal"
+            />
+
+            Renewal
+
+          </label>
+
+          <br />
+
+          <label>
+
+            <input
+              type="radio"
+              name="ecs_card_type"
+              value="replacement"
+            />
+
+            Replacement / Upgrade
+
+          </label>
+
+        </div>
+
+
+        <!-- CARD NUMBER -->
+        <div class="form-group">
+
+          <label>
+            Current / Previous ECS Card Number
+          </label>
+
+          <input
+            type="text"
+            name="ecs_card_number"
+            placeholder="ECS123456"
+          />
+
+        </div>
+
+
+        <!-- EXPIRY -->
+        <div class="form-group">
+
+          <label>
+            Expiry Date
+          </label>
+
+          <input
+            type="date"
+            name="expiry_date"
+          />
+
+        </div>
+
+
+        <!-- OCCUPATION -->
+        <div class="form-group">
+
+          <label>
+            Occupation / Job Title*
+          </label>
+
           <input
             type="text"
             name="occupation"
-            placeholder="Electrician, Installation Electrician, Maintenance Electrician, Technician, Site Supervisor, Site Manager, FESS Systems Technician, Network Installer, AV Technician"
-            required>
+            placeholder="Electrician, Technician, Site Supervisor..."
+            required
+          />
+
         </div>
 
+
+        <!-- EMPLOYER -->
         <div class="form-group">
-          <label>Employer Name</label>
-          <input type="text" name="employer">
-        </div>
 
-        <div class="form-group">
-          <label>Main Qualification / NVQ Level (if known)</label>
-          <input type="text" name="qualification" placeholder="e.g. NVQ Level 3 in Electrical Installation">
-        </div>
-
-        <div class="form-group">
-          <label>Have you passed an ECS H&amp;S / CITB HS&amp;E test in the last 2 years?*</label>
-          <select name="hs_test" required>
-            <option value="">Select...</option>
-            <option value="yes">Yes (upload proof below)</option>
-            <option value="no">No / not sure</option>
-          </select>
-        </div>
-
-        <h3>Uploads</h3>
-
-        <div class="form-group">
-          <label>Upload H&amp;S Test Proof (if Yes)</label>
-          <input type="file" name="hs_test_proof" accept=".jpg,.png,.pdf">
-        </div>
-
-        <div class="form-group">
-          <label>Upload Passport Size Photo (optional)</label>
-          <input type="file" name="photo" accept=".jpg,.png">
-        </div>
-
-        <div class="form-group">
-          <label>Upload Identity Proof (Passport / Driving Licence) (optional)</label>
-          <input type="file" name="id_proof" accept=".jpg,.png,.pdf">
-        </div>
-
-        <button type="button" class="next-btn">Next</button>
-      </div>
-
-      <!-- STEP 2: CONFIRMATION & PAYMENT -->
-      <div class="form-step">
-        <h3>Step 2: Confirm &amp; Payment</h3>
-
-        <div class="form-group checkbox-group">
-          <input type="checkbox" name="agree_terms" required>
           <label>
-            I confirm this application is for an ECS card (new, renewal or replacement) and that the
-            information I have provided is accurate to the best of my knowledge.
+            Employer Name
           </label>
+
+          <input
+            type="text"
+            name="employer"
+          />
+
         </div>
 
-        <h3>Review Your Application</h3>
-        <p>
-          Please check your details carefully. Your ECS card route and fee are based on the information you submit.
-          Once payment is complete, your application will be processed and updates will be sent by email and, where
-          possible, SMS.
-        </p>
 
-        <div class="summary-box" id="summaryBox"></div>
+        <!-- QUALIFICATION -->
+        <div class="form-group">
 
-        <h3>Payment</h3>
-        <p><strong>Total Fee: <span id="totalFee">£99.00</span></strong></p>
-        <p class="small-print">
-          Indicative fees: New ECS card from £99, renewal or replacement from £99.
-          Final cost may depend on your route and any additional services.
-        </p>
+          <label>
+            Main Qualification / NVQ Level
+          </label>
 
-        <div id="submitStatus"></div>
+          <input
+            type="text"
+            name="qualification"
+            placeholder="e.g. NVQ Level 3 in Electrical Installation"
+          />
 
-        <button type="button" class="prev-btn">Previous</button>
-        <!-- Final submit button (no .next-btn class so JS doesn't treat it as wizard button) -->
-        <button type="submit" class="submit-btn" id="submitBtn">Submit &amp; Proceed to Payment</button>
+        </div>
+
+
+        <!-- HS TEST -->
+        <div class="form-group">
+
+          <label>
+            Have you passed an ECS H&amp;S / CITB HS&amp;E test in the last 2 years?*
+          </label>
+
+          <select
+            name="hs_test"
+            required
+          >
+
+            <option value="">
+              Select...
+            </option>
+
+            <option value="yes">
+              Yes (upload proof below)
+            </option>
+
+            <option value="no">
+              No / not sure
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- UPLOADS -->
+        <h3>
+          Uploads
+        </h3>
+
+
+        <!-- HS TEST PROOF -->
+        <div class="form-group">
+
+          <label>
+            Upload H&amp;S Test Proof
+          </label>
+
+          <input
+            type="file"
+            name="hs_test_proof"
+            accept=".jpg,.jpeg,.png,.pdf"
+          />
+
+        </div>
+
+
+        <!-- PHOTO -->
+        <div class="form-group">
+
+          <label>
+            Upload Passport Size Photo
+          </label>
+
+          <input
+            type="file"
+            name="photo"
+            accept=".jpg,.jpeg,.png"
+          />
+
+        </div>
+
+
+        <!-- ID -->
+        <div class="form-group">
+
+          <label>
+            Upload Identity Proof
+            (Passport / Driving Licence)
+          </label>
+
+          <input
+            type="file"
+            name="id_proof"
+            accept=".jpg,.jpeg,.png,.pdf"
+          />
+
+        </div>
+
+
+        <!-- NEXT -->
+        <button
+          type="button"
+          class="next-btn"
+        >
+          Next
+        </button>
+
       </div>
+
+
+      <!-- =====================================================
+           STEP 2
+      ====================================================== -->
+
+      <div class="form-step">
+
+        <h3>
+          Step 2: Confirm &amp; Payment
+        </h3>
+
+
+        <!-- TERMS -->
+        <div class="form-group checkbox-group">
+
+          <input
+            type="checkbox"
+            name="agree_terms"
+            id="agreeTerms"
+            required
+          />
+
+          <label for="agreeTerms">
+
+            I confirm this application is for an ECS card
+            (new, renewal or replacement) and that the information
+            I have provided is accurate to the best of my knowledge.
+
+          </label>
+
+        </div>
+
+
+        <!-- REVIEW -->
+        <h3>
+          Review Your Application
+        </h3>
+
+        <p>
+
+          Please check your details carefully.
+          Your ECS card route and fee are based on the information
+          you submit.
+
+        </p>
+
+
+        <!-- SUMMARY -->
+        <div
+          class="summary-box"
+          id="summaryBox"
+        ></div>
+
+
+        <!-- PAYMENT -->
+        <h3>
+          Payment
+        </h3>
+
+        <p>
+
+          <strong>
+
+            Total Fee:
+
+            <span id="totalFee">
+              £99.00
+            </span>
+
+          </strong>
+
+        </p>
+
+
+        <p class="small-print">
+
+          Indicative fees: New ECS card from £99,
+          renewal or replacement from £99.
+          Final cost may depend on your route and any additional services.
+
+        </p>
+
+
+        <!-- STATUS -->
+        <div
+          id="submitStatus"
+        ></div>
+
+
+        <!-- PREVIOUS -->
+        <button
+          type="button"
+          class="prev-btn"
+        >
+          Previous
+        </button>
+
+
+        <!-- SUBMIT -->
+        <button
+          type="submit"
+          class="submit-btn"
+          id="submitBtn"
+        >
+          Submit &amp; Proceed to Payment
+        </button>
+
+      </div>
+
     </form>
+
   </section>
-<script>
-document.getElementById("ecsForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
 
-  const submitBtn = document.getElementById("submitBtn");
-  const statusBox = document.getElementById("submitStatus");
-  const form = this;
 
-  const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB per file
 
-  // Simple, direct file → base64 conversion (no canvas/blob work — that can
-  // silently hang on some hosting setups). Uploads are optional: if no file
-  // was chosen, this resolves to null and we just skip that field.
-  function readFileAsDataURL(file) {
-    return new Promise((resolve, reject) => {
-      if (!file) return resolve(null);
-      if (file.size > MAX_FILE_SIZE) {
-        return reject(new Error(file.name + " is larger than 15MB. Please upload a smaller file."));
-      }
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error("Could not read " + file.name));
-      reader.readAsDataURL(file);
-    });
-  }
+  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================== -->
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Submitting...";
-  statusBox.className = "sending";
-  statusBox.textContent = "Sending your application, please wait...";
-
-  try {
-    const photoFile = form.querySelector('input[name="photo"]').files[0];
-    const idProofFile = form.querySelector('input[name="id_proof"]').files[0];
-    const hsTestFile = form.querySelector('input[name="hs_test_proof"]').files[0];
-
-    // Uploads are optional — readFileAsDataURL() resolves to null when no
-    // file is selected, so we just proceed either way.
-    const [photoDataUrl, idProofDataUrl, hsTestDataUrl] = await Promise.all([
-      readFileAsDataURL(photoFile),
-      readFileAsDataURL(idProofFile),
-      readFileAsDataURL(hsTestFile)
-    ]);
-
-    // Build the JSON payload: plain fields + base64 file data (when present)
-    const formData = new FormData(form);
-    const payload = {};
-    for (const [key, value] of formData.entries()) {
-      if (key === "photo" || key === "id_proof" || key === "hs_test_proof") continue;
-      payload[key] = value;
-    }
-    payload.agree_terms = form.querySelector('input[name="agree_terms"]').checked ? "Yes" : "No";
-    if (photoDataUrl) payload.photo = photoDataUrl;
-    if (idProofDataUrl) payload.id_proof = idProofDataUrl;
-    if (hsTestDataUrl) payload.hs_test_proof = hsTestDataUrl;
-
-    const response = await fetch("/api/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    let result = null;
-    try {
-      result = await response.json();
-    } catch (parseErr) {
-      // response wasn't JSON
-    }
-
-    if (!response.ok || !result || result.success !== true) {
-      const message = (result && result.error) ? result.error : ("Server responded with status " + response.status);
-      throw new Error(message);
-    }
-
-    // Only redirect to payment once the documents have actually been sent
-    window.location.href = "https://buy.stripe.com/14A6oB0tcdk16ac17X5Vu01";
-  } catch (err) {
-    console.error(err);
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Submit & Proceed to Payment";
-    statusBox.className = "error";
-    statusBox.textContent =
-      "Sorry, we couldn't submit your documents: " + (err.message || "Unknown error") + " Please check your details and try again.";
-  }
-});
-</script>
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // ===== HAMBURGER MENU (if present in header) =====
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('navMenu');
 
-    if (hamburger && navMenu) {
-      hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-      });
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
 
-      window.addEventListener('resize', () => {
-        if (window.innerWidth > 992) {
-          navMenu.classList.remove('active');
-          hamburger.classList.remove('active');
+        const form =
+          document.getElementById("ecsForm");
+
+        const steps =
+          document.querySelectorAll(".form-step");
+
+        const nextBtns =
+          document.querySelectorAll(".next-btn");
+
+        const prevBtns =
+          document.querySelectorAll(".prev-btn");
+
+        const progressSteps =
+          document.querySelectorAll(".progressbar li");
+
+        const summaryBox =
+          document.getElementById("summaryBox");
+
+        const totalFeeSpan =
+          document.getElementById("totalFee");
+
+        const submitBtn =
+          document.getElementById("submitBtn");
+
+        const statusBox =
+          document.getElementById("submitStatus");
+
+
+        /*
+        ========================================================
+        STRIPE PAYMENT LINK
+        ========================================================
+        */
+
+        const STRIPE_PAYMENT_LINK =
+          "https://buy.stripe.com/14A6oB0tcdk16ac17X5Vu01";
+
+
+        /*
+        ========================================================
+        PRICE MAP
+        ========================================================
+        */
+
+        const priceMap = {
+
+          new: "£99.00",
+
+          renewal: "£99.00",
+
+          replacement: "£99.00"
+
+        };
+
+
+        /*
+        ========================================================
+        CURRENT STEP
+        ========================================================
+        */
+
+        let currentStep = 0;
+
+
+        /*
+        ========================================================
+        SHOW STEP
+        ========================================================
+        */
+
+        function showStep(step) {
+
+          steps.forEach(
+            function (stepElement, index) {
+
+              stepElement.style.display =
+                index === step
+                  ? "block"
+                  : "none";
+
+            }
+          );
+
+
+          progressSteps.forEach(
+            function (item, index) {
+
+              item.classList.remove(
+                "active",
+                "completed"
+              );
+
+
+              if (index < step) {
+
+                item.classList.add(
+                  "completed"
+                );
+
+              }
+
+
+              if (index === step) {
+
+                item.classList.add(
+                  "active"
+                );
+
+              }
+
+            }
+          );
+
         }
-      });
-    }
 
-    // ===== ACCORDION (if present in header/footer) =====
-    document.querySelectorAll(".accordion-header").forEach(button => {
-      button.addEventListener("click", () => {
-        button.classList.toggle("active");
-        const content = button.nextElementSibling;
-        const isMobile = window.innerWidth <= 992;
 
-        if (content.style.display === "flex" || content.style.display === "block") {
-          content.style.display = "none";
-        } else {
-          content.style.display = isMobile ? "block" : "flex";
+        /*
+        ========================================================
+        VALIDATE STEP
+        ========================================================
+        */
+
+        function validateStep(step) {
+
+          const requiredInputs =
+            steps[step].querySelectorAll(
+              "input[required], select[required], textarea[required]"
+            );
+
+
+          for (
+            let input of requiredInputs
+          ) {
+
+            /*
+            RADIO CHECK
+            */
+
+            if (
+              input.type === "radio"
+            ) {
+
+              const radioGroup =
+                steps[step].querySelectorAll(
+                  'input[name="' +
+                  input.name +
+                  '"]'
+                );
+
+
+              const checked =
+                Array.from(
+                  radioGroup
+                ).some(
+                  radio => radio.checked
+                );
+
+
+              if (!checked) {
+
+                alert(
+                  "Please select your application type."
+                );
+
+                input.focus();
+
+                return false;
+
+              }
+
+              continue;
+
+            }
+
+
+            /*
+            CHECKBOX
+            */
+
+            if (
+              input.type === "checkbox"
+            ) {
+
+              if (!input.checked) {
+
+                alert(
+                  "Please confirm the information before continuing."
+                );
+
+                input.focus();
+
+                return false;
+
+              }
+
+              continue;
+
+            }
+
+
+            /*
+            NORMAL INPUT
+            */
+
+            if (
+              !input.value.trim()
+            ) {
+
+              alert(
+                "Please fill in all required fields before continuing."
+              );
+
+              input.focus();
+
+              return false;
+
+            }
+
+
+            /*
+            EMAIL MATCH
+            */
+
+            if (
+              input.name ===
+              "confirm_email"
+            ) {
+
+              const email =
+                form.querySelector(
+                  'input[name="email"]'
+                ).value.trim();
+
+
+              const confirmEmail =
+                input.value.trim();
+
+
+              if (
+                email.toLowerCase() !==
+                confirmEmail.toLowerCase()
+              ) {
+
+                alert(
+                  "Email addresses do not match. Please check again."
+                );
+
+                input.focus();
+
+                return false;
+
+              }
+
+            }
+
+          }
+
+
+          return true;
+
         }
-      });
-    });
 
-    window.addEventListener('resize', () => {
-      document.querySelectorAll(".accordion-content").forEach(content => {
-        content.style.display = "none";
-      });
-      document.querySelectorAll(".accordion-header").forEach(button => {
-        button.classList.remove("active");
-      });
-    });
 
-    // ===== MULTI-STEP FORM (2 STEPS) =====
-    let currentStep = 0;
-    const steps = document.querySelectorAll(".form-step");
-    const nextBtns = document.querySelectorAll(".next-btn");   // only step 1
-    const prevBtns = document.querySelectorAll(".prev-btn");
-    const summaryBox = document.getElementById("summaryBox");
-    const form = document.getElementById("ecsForm");
-    const progressSteps = document.querySelectorAll(".progressbar li");
-    const totalFeeSpan = document.getElementById("totalFee");
+        /*
+        ========================================================
+        UPDATE SUMMARY
+        ========================================================
+        */
 
-    const priceMap = {
-      new: "£99.00",
-      renewal: "£99.00",
-      replacement: "£99.00"
-    };
+        function updateSummary() {
 
-    function showStep(step) {
-      steps.forEach((s, i) => {
-        s.style.display = i === step ? "block" : "none";
-      });
+          const formData =
+            new FormData(form);
 
-      if (progressSteps.length) {
-        progressSteps.forEach((p, i) => {
-          p.classList.remove("active", "completed");
-          if (i < step) p.classList.add("completed");
-          if (i === step) p.classList.add("active");
-        });
-      }
-    }
 
-    function validateStep(step) {
-      const inputs = steps[step].querySelectorAll("input[required], select[required], textarea[required]");
-      for (let input of inputs) {
-        if (!input.value.trim()) {
-          alert("Please fill in all required fields before continuing.");
-          input.focus();
-          return false;
+          const cardType =
+            formData.get(
+              "ecs_card_type"
+            );
+
+
+          const price =
+            priceMap[cardType] ||
+            "£99.00";
+
+
+          summaryBox.innerHTML = `
+
+            <p>
+              <strong>Name:</strong>
+              ${escapeHtml(formData.get("full_name") || "")}
+            </p>
+
+            <p>
+              <strong>Date of Birth:</strong>
+              ${escapeHtml(formData.get("dob") || "")}
+            </p>
+
+            <p>
+              <strong>NI Number:</strong>
+              ${escapeHtml(formData.get("ni_number") || "")}
+            </p>
+
+            <p>
+              <strong>Gender:</strong>
+              ${escapeHtml(formData.get("gender") || "")}
+            </p>
+
+            <p>
+              <strong>Occupation:</strong>
+              ${escapeHtml(formData.get("occupation") || "")}
+            </p>
+
+            <p>
+              <strong>Employer:</strong>
+              ${escapeHtml(formData.get("employer") || "")}
+            </p>
+
+            <p>
+              <strong>Main Qualification:</strong>
+              ${escapeHtml(formData.get("qualification") || "")}
+            </p>
+
+            <p>
+              <strong>H&amp;S / HS&amp;E Test:</strong>
+              ${escapeHtml(formData.get("hs_test") || "")}
+            </p>
+
+            <p>
+              <strong>Address:</strong>
+              ${escapeHtml(formData.get("street_address") || "")},
+              ${escapeHtml(formData.get("city") || "")},
+              ${escapeHtml(formData.get("postcode") || "")}
+            </p>
+
+            <p>
+              <strong>Mobile:</strong>
+              ${escapeHtml(formData.get("mobile") || "")}
+            </p>
+
+            <p>
+              <strong>Email:</strong>
+              ${escapeHtml(formData.get("email") || "")}
+            </p>
+
+            <p>
+              <strong>Application Type:</strong>
+              ${escapeHtml(cardType || "")}
+            </p>
+
+            <p>
+              <strong>Estimated Total Fee:</strong>
+              ${price}
+            </p>
+
+          `;
+
+
+          totalFeeSpan.textContent =
+            price;
+
         }
 
-        // Email confirmation check (only where confirm_email exists — step 0)
-        if (
-          input.name === "confirm_email" &&
-          input.value.trim() !== form.querySelector('input[name="email"]').value.trim()
-        ) {
-          alert("Email addresses do not match. Please check and try again.");
-          input.focus();
-          return false;
+
+        /*
+        ========================================================
+        HTML ESCAPE
+        ========================================================
+        */
+
+        function escapeHtml(value) {
+
+          return String(value)
+            .replace(
+              /&/g,
+              "&amp;"
+            )
+            .replace(
+              /</g,
+              "&lt;"
+            )
+            .replace(
+              />/g,
+              "&gt;"
+            )
+            .replace(
+              /"/g,
+              "&quot;"
+            )
+            .replace(
+              /'/g,
+              "&#039;"
+            );
+
         }
-      }
-      return true;
-    }
 
-    function updateSummary() {
-      if (!form || !summaryBox) return;
-      const formData = new FormData(form);
-      const cardType = formData.get("ecs_card_type");
-      const price = priceMap[cardType] || "£99.00";
 
-      summaryBox.innerHTML = `
-        <p><strong>Name:</strong> ${formData.get("full_name") || ""}</p>
-        <p><strong>Date of Birth:</strong> ${formData.get("dob") || ""}</p>
-        <p><strong>NI Number:</strong> ${formData.get("ni_number") || ""}</p>
-        <p><strong>Gender:</strong> ${formData.get("gender") || ""}</p>
-        <p><strong>Occupation:</strong> ${formData.get("occupation") || ""}</p>
-        <p><strong>Employer:</strong> ${formData.get("employer") || ""}</p>
-        <p><strong>Main Qualification:</strong> ${formData.get("qualification") || ""}</p>
-        <p><strong>H&amp;S / HS&amp;E Test Passed (last 2 years):</strong> ${formData.get("hs_test") || ""}</p>
-        <p><strong>Address:</strong> ${formData.get("street_address") || ""}, ${formData.get("city") || ""}, ${formData.get("postcode") || ""}</p>
-        <p><strong>Mobile:</strong> ${formData.get("mobile") || ""}</p>
-        <p><strong>Email:</strong> ${formData.get("email") || ""}</p>
-        <p><strong>Application Type:</strong> ${cardType || ""}</p>
-        <p><strong>Estimated Total Fee:</strong> ${price}</p>
-      `;
+        /*
+        ========================================================
+        NEXT BUTTON
+        ========================================================
+        */
 
-      if (totalFeeSpan) {
-        totalFeeSpan.textContent = price;
-      }
-    }
+        nextBtns.forEach(
+          function (button) {
 
-    // Only one "Next" button (step 1 → step 2)
-    nextBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        if (!validateStep(currentStep)) return;
-        updateSummary();              // create summary before moving
-        currentStep = 1;              // go to confirmation step
-        showStep(currentStep);
-      });
-    });
+            button.addEventListener(
+              "click",
+              function () {
 
-    prevBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        currentStep = Math.max(currentStep - 1, 0);
-        showStep(currentStep);
-      });
-    });
+                if (
+                  !validateStep(
+                    currentStep
+                  )
+                ) {
 
-    // ===== ECS CARD TYPE TOGGLE (renewal fields + price) =====
-    const ecsTypeRadios = document.querySelectorAll('input[name="ecs_card_type"]');
-    const ecsNumberField = document.querySelector('input[name="ecs_card_number"]')?.parentElement;
-    const expiryDateField = document.querySelector('input[name="expiry_date"]')?.parentElement;
+                  return;
 
-    function toggleEcsFields() {
-      const selectedType = document.querySelector('input[name="ecs_card_type"]:checked')?.value;
-      if (ecsNumberField && expiryDateField) {
-        if (selectedType === "new") {
-          ecsNumberField.style.display = "none";
-          expiryDateField.style.display = "none";
-        } else {
-          ecsNumberField.style.display = "block";
-          expiryDateField.style.display = "block";
+                }
+
+
+                updateSummary();
+
+
+                currentStep = 1;
+
+
+                showStep(
+                  currentStep
+                );
+
+              }
+            );
+
+          }
+        );
+
+
+        /*
+        ========================================================
+        PREVIOUS BUTTON
+        ========================================================
+        */
+
+        prevBtns.forEach(
+          function (button) {
+
+            button.addEventListener(
+              "click",
+              function () {
+
+                currentStep =
+                  Math.max(
+                    currentStep - 1,
+                    0
+                  );
+
+
+                showStep(
+                  currentStep
+                );
+
+              }
+            );
+
+          }
+        );
+
+
+        /*
+        ========================================================
+        ECS CARD TYPE
+        ========================================================
+        */
+
+        const ecsTypeRadios =
+          document.querySelectorAll(
+            'input[name="ecs_card_type"]'
+          );
+
+
+        const ecsNumberField =
+          document.querySelector(
+            'input[name="ecs_card_number"]'
+          )?.parentElement;
+
+
+        const expiryDateField =
+          document.querySelector(
+            'input[name="expiry_date"]'
+          )?.parentElement;
+
+
+        function toggleEcsFields() {
+
+          const selectedType =
+            document.querySelector(
+              'input[name="ecs_card_type"]:checked'
+            )?.value;
+
+
+          if (
+            ecsNumberField &&
+            expiryDateField
+          ) {
+
+            if (
+              selectedType === "new"
+            ) {
+
+              ecsNumberField.style.display =
+                "none";
+
+              expiryDateField.style.display =
+                "none";
+
+            } else {
+
+              ecsNumberField.style.display =
+                "block";
+
+              expiryDateField.style.display =
+                "block";
+
+            }
+
+          }
+
+
+          if (
+            selectedType &&
+            totalFeeSpan
+          ) {
+
+            totalFeeSpan.textContent =
+              priceMap[selectedType] ||
+              "£99.00";
+
+          }
+
         }
-      }
-      if (totalFeeSpan && selectedType) {
-        totalFeeSpan.textContent = priceMap[selectedType] || "£99.00";
-      }
-    }
 
-    ecsTypeRadios.forEach(radio => {
-      radio.addEventListener("change", () => {
+
+        ecsTypeRadios.forEach(
+          function (radio) {
+
+            radio.addEventListener(
+              "change",
+              function () {
+
+                toggleEcsFields();
+
+                updateSummary();
+
+              }
+            );
+
+          }
+        );
+
+
+        /*
+        ========================================================
+        FILE → BASE64
+        ========================================================
+        */
+
+        const MAX_FILE_SIZE =
+          15 * 1024 * 1024;
+
+
+        function readFileAsDataURL(file) {
+
+          return new Promise(
+            function (resolve, reject) {
+
+              if (!file) {
+
+                resolve(null);
+
+                return;
+
+              }
+
+
+              if (
+                file.size >
+                MAX_FILE_SIZE
+              ) {
+
+                reject(
+                  new Error(
+                    file.name +
+                    " is larger than 15MB."
+                  )
+                );
+
+                return;
+
+              }
+
+
+              const reader =
+                new FileReader();
+
+
+              reader.onload =
+                function () {
+
+                  resolve(
+                    reader.result
+                  );
+
+                };
+
+
+              reader.onerror =
+                function () {
+
+                  reject(
+                    new Error(
+                      "Could not read " +
+                      file.name
+                    )
+                  );
+
+                };
+
+
+              reader.readAsDataURL(
+                file
+              );
+
+            }
+          );
+
+        }
+
+
+        /*
+        ========================================================
+        SUBMIT FORM
+        ========================================================
+        */
+
+        form.addEventListener(
+          "submit",
+          async function (event) {
+
+            event.preventDefault();
+
+
+            /*
+            Validate Step 2
+            */
+
+            if (
+              !validateStep(
+                currentStep
+              )
+            ) {
+
+              return;
+
+            }
+
+
+            /*
+            Disable button
+            */
+
+            submitBtn.disabled =
+              true;
+
+
+            submitBtn.textContent =
+              "Processing...";
+
+
+            statusBox.className =
+              "sending";
+
+
+            statusBox.style.display =
+              "block";
+
+
+            statusBox.textContent =
+              "Submitting your application. Please wait...";
+
+
+            /*
+            ====================================================
+            GET FILES
+            ====================================================
+            */
+
+            const photoFile =
+              form.querySelector(
+                'input[name="photo"]'
+              )?.files[0];
+
+
+            const idProofFile =
+              form.querySelector(
+                'input[name="id_proof"]'
+              )?.files[0];
+
+
+            const hsTestFile =
+              form.querySelector(
+                'input[name="hs_test_proof"]'
+              )?.files[0];
+
+
+            try {
+
+              /*
+              ==================================================
+              READ FILES
+              ==================================================
+              */
+
+              const [
+                photoData,
+                idProofData,
+                hsTestData
+              ] =
+                await Promise.all([
+
+                  readFileAsDataURL(
+                    photoFile
+                  ),
+
+                  readFileAsDataURL(
+                    idProofFile
+                  ),
+
+                  readFileAsDataURL(
+                    hsTestFile
+                  )
+
+                ]);
+
+
+              /*
+              ==================================================
+              BUILD PAYLOAD
+              ==================================================
+              */
+
+              const formData =
+                new FormData(form);
+
+
+              const payload = {};
+
+
+              for (
+                const [key, value]
+                of formData.entries()
+              ) {
+
+                /*
+                Files separately add honge
+                */
+
+                if (
+                  key === "photo" ||
+                  key === "id_proof" ||
+                  key === "hs_test_proof"
+                ) {
+
+                  continue;
+
+                }
+
+
+                payload[key] =
+                  value;
+
+              }
+
+
+              payload.agree_terms =
+                document.getElementById(
+                  "agreeTerms"
+                ).checked
+                  ? "Yes"
+                  : "No";
+
+
+              if (photoData) {
+
+                payload.photo =
+                  photoData;
+
+              }
+
+
+              if (idProofData) {
+
+                payload.id_proof =
+                  idProofData;
+
+              }
+
+
+              if (hsTestData) {
+
+                payload.hs_test_proof =
+                  hsTestData;
+
+              }
+
+
+              /*
+              ==================================================
+              SEND APPLICATION
+              ==================================================
+
+              IMPORTANT:
+              We do NOT block Stripe redirect if API fails.
+              */
+
+              let apiSuccess = false;
+
+
+              try {
+
+                const response =
+                  await fetch(
+                    "/api/send",
+                    {
+                      method: "POST",
+
+                      headers: {
+                        "Content-Type":
+                          "application/json"
+                      },
+
+                      body:
+                        JSON.stringify(
+                          payload
+                        )
+                    }
+                  );
+
+
+                let result =
+                  null;
+
+
+                try {
+
+                  result =
+                    await response.json();
+
+                } catch (jsonError) {
+
+                  console.log(
+                    "API response was not JSON."
+                  );
+
+                }
+
+
+                if (
+                  response.ok &&
+                  result &&
+                  result.success === true
+                ) {
+
+                  apiSuccess = true;
+
+                }
+
+
+              } catch (apiError) {
+
+                /*
+                API failed.
+                We still continue to payment.
+                */
+
+                console.error(
+                  "Application API error:",
+                  apiError
+                );
+
+              }
+
+
+              /*
+              ==================================================
+              PAYMENT REDIRECT
+              ==================================================
+              */
+
+              statusBox.className =
+                "success";
+
+
+              statusBox.textContent =
+                "Application submitted. Redirecting you to secure payment...";
+
+
+              /*
+              Small delay so user can see message
+              */
+
+              setTimeout(
+                function () {
+
+                  window.location.assign(
+                    STRIPE_PAYMENT_LINK
+                  );
+
+                },
+                500
+              );
+
+
+            } catch (error) {
+
+              console.error(
+                "ECS form error:",
+                error
+              );
+
+
+              /*
+              Restore button
+              */
+
+              submitBtn.disabled =
+                false;
+
+
+              submitBtn.textContent =
+                "Submit & Proceed to Payment";
+
+
+              statusBox.className =
+                "error";
+
+
+              statusBox.style.display =
+                "block";
+
+
+              statusBox.textContent =
+                error.message ||
+                "Something went wrong. Please try again.";
+
+            }
+
+          }
+        );
+
+
+        /*
+        ========================================================
+        INITIALISE
+        ========================================================
+        */
+
         toggleEcsFields();
-        updateSummary();
-      });
-    });
 
-    // ===== INIT =====
-    toggleEcsFields();
-    showStep(currentStep);
-  });
+        showStep(
+          currentStep
+        );
+
+      }
+    );
+
   </script>
+
+
+
+  <!-- =========================================================
+       HEADER / MENU SCRIPT
+  ========================================================== -->
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+
+        /*
+        ===========================
+        HAMBURGER MENU
+        ===========================
+        */
+
+        const hamburger =
+          document.getElementById(
+            "hamburger"
+          );
+
+
+        const navMenu =
+          document.getElementById(
+            "navMenu"
+          );
+
+
+        if (
+          hamburger &&
+          navMenu
+        ) {
+
+          hamburger.addEventListener(
+            "click",
+            function () {
+
+              hamburger.classList.toggle(
+                "active"
+              );
+
+
+              navMenu.classList.toggle(
+                "active"
+              );
+
+            }
+          );
+
+
+          window.addEventListener(
+            "resize",
+            function () {
+
+              if (
+                window.innerWidth >
+                992
+              ) {
+
+                navMenu.classList.remove(
+                  "active"
+                );
+
+
+                hamburger.classList.remove(
+                  "active"
+                );
+
+              }
+
+            }
+          );
+
+        }
+
+
+        /*
+        ===========================
+        ACCORDION
+        ===========================
+        */
+
+        document
+          .querySelectorAll(
+            ".accordion-header"
+          )
+          .forEach(
+            function (button) {
+
+              button.addEventListener(
+                "click",
+                function () {
+
+                  button.classList.toggle(
+                    "active"
+                  );
+
+
+                  const content =
+                    button.nextElementSibling;
+
+
+                  const isMobile =
+                    window.innerWidth <= 992;
+
+
+                  if (
+                    content.style.display ===
+                      "flex" ||
+                    content.style.display ===
+                      "block"
+                  ) {
+
+                    content.style.display =
+                      "none";
+
+                  } else {
+
+                    content.style.display =
+                      isMobile
+                        ? "block"
+                        : "flex";
+
+                  }
+
+                }
+              );
+
+            }
+          );
+
+
+        window.addEventListener(
+          "resize",
+          function () {
+
+            document
+              .querySelectorAll(
+                ".accordion-content"
+              )
+              .forEach(
+                function (content) {
+
+                  content.style.display =
+                    "none";
+
+                }
+              );
+
+
+            document
+              .querySelectorAll(
+                ".accordion-header"
+              )
+              .forEach(
+                function (button) {
+
+                  button.classList.remove(
+                    "active"
+                  );
+
+                }
+              );
+
+          }
+        );
+
+      }
+    );
+
+  </script>
+
 </body>
+
 </html>
