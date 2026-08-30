@@ -30,6 +30,15 @@ export default async function handler(req, res) {
     console.log("FULL DATA:", data);
 
     // =========================
+    // FORM TYPE
+    // =========================
+    // "test_booking" = CITB / ECS test booking form (no uploads)
+    // anything else (undefined/default) = ECS Card Application form (uploads required)
+    // This keeps the card application flow 100% unchanged.
+
+    const isTestBooking = data.form_type === "test_booking";
+
+    // =========================
     // VALIDATION
     // =========================
 
@@ -46,31 +55,35 @@ export default async function handler(req, res) {
 
     }
 
-    if (
-      !data.id_proof ||
-      typeof data.id_proof !== "string" ||
-      !data.id_proof.startsWith("data:")
-    ) {
+    if (!isTestBooking) {
 
-      return res.status(400).json({
-        success: false,
-        error:
-          "ID document upload is required"
-      });
+      if (
+        !data.id_proof ||
+        typeof data.id_proof !== "string" ||
+        !data.id_proof.startsWith("data:")
+      ) {
 
-    }
+        return res.status(400).json({
+          success: false,
+          error:
+            "ID document upload is required"
+        });
 
-    if (
-      !data.photo ||
-      typeof data.photo !== "string" ||
-      !data.photo.startsWith("data:")
-    ) {
+      }
 
-      return res.status(400).json({
-        success: false,
-        error:
-          "Photo upload is required"
-      });
+      if (
+        !data.photo ||
+        typeof data.photo !== "string" ||
+        !data.photo.startsWith("data:")
+      ) {
+
+        return res.status(400).json({
+          success: false,
+          error:
+            "Photo upload is required"
+        });
+
+      }
 
     }
 
@@ -92,62 +105,66 @@ export default async function handler(req, res) {
       return fallback;
     }
 
-    // PHOTO
-    if (
-      typeof data.photo === "string" &&
-      data.photo.startsWith("data:")
-    ) {
+    if (!isTestBooking) {
 
-      attachments.push({
+      // PHOTO
+      if (
+        typeof data.photo === "string" &&
+        data.photo.startsWith("data:")
+      ) {
 
-        filename:
-          "passport-photo." + extFromDataUrl(data.photo, "png"),
+        attachments.push({
 
-        content:
-          data.photo.split(",")[1]
+          filename:
+            "passport-photo." + extFromDataUrl(data.photo, "png"),
 
-      });
+          content:
+            data.photo.split(",")[1]
 
-    }
+        });
 
-    // ID PROOF
-    if (
-      typeof data.id_proof === "string" &&
-      data.id_proof.startsWith("data:")
-    ) {
+      }
 
-      attachments.push({
+      // ID PROOF
+      if (
+        typeof data.id_proof === "string" &&
+        data.id_proof.startsWith("data:")
+      ) {
 
-        filename:
-          "identity-proof." + extFromDataUrl(data.id_proof, "png"),
+        attachments.push({
 
-        content:
-          data.id_proof.split(",")[1]
+          filename:
+            "identity-proof." + extFromDataUrl(data.id_proof, "png"),
 
-      });
+          content:
+            data.id_proof.split(",")[1]
 
-    }
+        });
 
-    // HS TEST
-    if (
-      typeof data.hs_test_proof === "string" &&
-      data.hs_test_proof.startsWith("data:")
-    ) {
+      }
 
-      attachments.push({
+      // HS TEST
+      if (
+        typeof data.hs_test_proof === "string" &&
+        data.hs_test_proof.startsWith("data:")
+      ) {
 
-        filename:
-          "hs-test-proof.png",
+        attachments.push({
 
-        content:
-          data.hs_test_proof.split(",")[1]
+          filename:
+            "hs-test-proof.png",
 
-      });
+          content:
+            data.hs_test_proof.split(",")[1]
+
+        });
+
+      }
 
     }
 
     // =========================
-    // REMOVE FILES FROM TABLE
+    // REMOVE FILES / META FROM TABLE
     // =========================
 
     const normalFields = { ...data };
@@ -155,6 +172,7 @@ export default async function handler(req, res) {
     delete normalFields.photo;
     delete normalFields.id_proof;
     delete normalFields.hs_test_proof;
+    delete normalFields.form_type;
 
     // =========================
     // PROFESSIONAL TABLE
@@ -198,8 +216,59 @@ export default async function handler(req, res) {
       }).join("");
 
     // =========================
-    // ADMIN EMAIL
+    // ADMIN EMAIL — content varies by form type
     // =========================
+
+    const adminHeading = isTestBooking
+      ? "CITB TEST BOOKING"
+      : "ECS CARD APPLICATION";
+
+    const adminSubheading = isTestBooking
+      ? "New test booking request received"
+      : "New user booking received";
+
+    const adminSubject = isTestBooking
+      ? `📝 New CITB Test Booking - ${data.full_name}`
+      : `🔥 New ECS Card Application - ${data.full_name}`;
+
+    const attachmentsSectionHtml = isTestBooking
+      ? "" // no uploads on the test booking form, so no attachments block
+      : `
+          <div style="
+            margin-top:35px;
+            padding:20px;
+            background:#f8fafc;
+            border-radius:12px;
+          ">
+
+            <h3 style="
+              margin-top:0;
+              color:#111827;
+            ">
+              Uploaded Documents
+            </h3>
+
+            <ul style="
+              line-height:2;
+              padding-left:20px;
+            ">
+
+              <li>
+                Passport Size Photo Attached
+              </li>
+
+              <li>
+                Identity Proof Attached
+              </li>
+
+              <li>
+                HS Test Proof Attached
+              </li>
+
+            </ul>
+
+          </div>
+        `;
 
     await resend.emails.send({
 
@@ -213,7 +282,7 @@ export default async function handler(req, res) {
         data.email,
 
       subject:
-        `🔥 New ECS Card Application - ${data.full_name}`,
+        adminSubject,
 
       attachments,
 
@@ -246,14 +315,14 @@ export default async function handler(req, res) {
                 margin:0;
                 font-size:28px;
               ">
-                ECS CARD APPLICATION
+                ${adminHeading}
               </h1>
 
               <p style="
                 margin-top:10px;
                 opacity:0.8;
               ">
-                New user booking received
+                ${adminSubheading}
               </p>
 
             </div>
@@ -268,7 +337,7 @@ export default async function handler(req, res) {
                 margin-top:0;
                 color:#111827;
               ">
-                Applicant Details
+                ${isTestBooking ? "Booking Details" : "Applicant Details"}
               </h2>
 
               <table style="
@@ -282,42 +351,7 @@ export default async function handler(req, res) {
 
               </table>
 
-              <!-- ATTACHMENTS -->
-
-              <div style="
-                margin-top:35px;
-                padding:20px;
-                background:#f8fafc;
-                border-radius:12px;
-              ">
-
-                <h3 style="
-                  margin-top:0;
-                  color:#111827;
-                ">
-                  Uploaded Documents
-                </h3>
-
-                <ul style="
-                  line-height:2;
-                  padding-left:20px;
-                ">
-
-                  <li>
-                    Passport Size Photo Attached
-                  </li>
-
-                  <li>
-                    Identity Proof Attached
-                  </li>
-
-                  <li>
-                    HS Test Proof Attached
-                  </li>
-
-                </ul>
-
-              </div>
+              ${attachmentsSectionHtml}
 
             </div>
 
@@ -345,8 +379,16 @@ export default async function handler(req, res) {
     });
 
     // =========================
-    // USER EMAIL
+    // USER EMAIL — content varies by form type
     // =========================
+
+    const userSubject = isTestBooking
+      ? "✅ CITB Test Booking Confirmation"
+      : "✅ ECS Application Confirmation";
+
+    const userIntroText = isTestBooking
+      ? "Your CITB Health, Safety & Environment test booking request has been received successfully."
+      : "Your ECS Card application has been received successfully.";
 
     await resend.emails.send({
 
@@ -357,7 +399,7 @@ export default async function handler(req, res) {
         data.email,
 
       subject:
-        "✅ ECS Application Confirmation",
+        userSubject,
 
       html: `
 
@@ -384,7 +426,7 @@ export default async function handler(req, res) {
               <h1 style="
                 margin:0;
               ">
-                ✅ Application Confirmed
+                ✅ ${isTestBooking ? "Booking Confirmed" : "Application Confirmed"}
               </h1>
 
             </div>
@@ -401,13 +443,12 @@ export default async function handler(req, res) {
               </p>
 
               <p>
-                Your ECS Card application
-                has been received successfully.
+                ${userIntroText}
               </p>
 
               <p>
                 Our team will review your
-                application and contact
+                ${isTestBooking ? "booking request" : "application"} and contact
                 you shortly.
               </p>
 
