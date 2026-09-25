@@ -912,7 +912,7 @@ document.getElementById("ecsForm").addEventListener("submit", async function(e) 
     }
     payload.agree_terms = this.querySelector('#agree_terms').checked ? "Yes" : "No";
 
-    const response = await fetch("/api/send", {
+const response = await fetch("/.netlify/functions/send", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
