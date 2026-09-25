@@ -1,17 +1,21 @@
-
-export async function onRequestPost(context) {
-  const { request, env } = context;
+exports.handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ success: false, error: "Method Not Allowed" })
+    };
+  }
 
   try {
-    const data = await request.json();
+    const data = JSON.parse(event.body || "{}");
 
     const isTestBooking = data.form_type === "test_booking";
 
     if (!data.email || !data.full_name) {
-      return new Response(
-        JSON.stringify({ success: false, error: "Full Name and Email required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ success: false, error: "Full Name and Email required" })
+      };
     }
 
     const attachments = [];
@@ -91,7 +95,7 @@ export async function onRequestPost(context) {
     const adminEmailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+        "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -136,7 +140,7 @@ export async function onRequestPost(context) {
     const userEmailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+        "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -172,16 +176,16 @@ export async function onRequestPost(context) {
       throw new Error("User email failed: " + errText);
     }
 
-    return new Response(
-      JSON.stringify({ success: true, message: "Professional emails sent" }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ success: true, message: "Professional emails sent" })
+    };
 
   } catch (error) {
     console.error(error);
-    return new Response(
-      JSON.stringify({ success: false, error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: error.message })
+    };
   }
-}
+};
