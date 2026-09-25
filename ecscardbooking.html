@@ -1560,9 +1560,12 @@
 
               try {
 
+                // ✅ FIXED: was "/api/send" (does not exist on Netlify -> 404).
+                // This form has its own dedicated function because its data
+                // (photo/ID uploads) is different from the CITB booking form.
                 const response =
                   await fetch(
-                    "/api/send",
+                    "/.netlify/functions/send-application",
                     {
                       method: "POST",
 
@@ -1604,6 +1607,13 @@
                 ) {
 
                   apiSuccess = true;
+
+                } else {
+
+                  console.error(
+                    "Application API returned an error:",
+                    result
+                  );
 
                 }
 
