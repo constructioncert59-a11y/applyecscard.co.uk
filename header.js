@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ✅ Initialize all header-related scripts AFTER header injected
     initHeaderBehaviour();
     initScrollEffect();
+    initCartBadge();
 
     // --- Load Footer ---
     const footerContainer = document.createElement("div");
@@ -168,4 +169,12 @@ function initFAQAccordion() {
       item.classList.toggle("active");
     });
   });
+}
+
+// ===================== CART BADGE =====================
+function initCartBadge() {
+  try {
+    const n = (JSON.parse(localStorage.getItem("ecsCart")) || []).reduce((s, i) => s + i.qty, 0);
+    document.querySelectorAll(".cart-badge").forEach(b => { b.textContent = n; b.style.display = n ? "inline-block" : "none"; });
+  } catch (e) {}
 }
