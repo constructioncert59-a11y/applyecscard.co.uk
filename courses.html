@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All ECS Courses A–Z | Add to Cart & Book Online</title>
+<meta name="description" content="Complete A–Z list of ECS cards and ECS tests. Add courses to your cart, pay securely online and book.">
+<link rel="canonical" href="https://applyecscard.co.uk/courses">
+<style>
+body{background:#f6f7f9;font-family:'Inter','Segoe UI',Roboto,sans-serif;color:#1f2937}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 80px}
+h1{color:#0a2f5c;font-size:2rem;margin-bottom:6px}.sub{color:#6b7280;margin-bottom:18px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.tools input,.tools select{padding:11px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:15px}.tools input{flex:1;min-width:220px}
+.az{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.az a{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #e5e7eb;border-radius:8px;color:#0a2f5c;font-weight:700;text-decoration:none}
+.az a:hover{background:#0a2f5c;color:#fff}.az a.off{opacity:.3;pointer-events:none}
+.letter{font-size:1.4rem;font-weight:800;color:#d42029;margin:26px 0 8px;scroll-margin-top:100px;border-bottom:2px solid #e5e7eb}
+.row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.info{flex:1;min-width:0}.nm{font-weight:600;color:#0a2f5c}.nm a{color:inherit;text-decoration:none}.nm a:hover{text-decoration:underline}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:4px;background:#e8eef7;color:#0a2f5c}.tag.t{background:#fdf6e8;color:#8a6a1c}
+.pr{font-weight:700;white-space:nowrap}.pr small{display:block;font-weight:400;color:#6b7280;font-size:11px;text-align:right}
+.btn{background:#d42029;color:#fff;border:0;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn:hover{background:#a81a22}.btn.added{background:#0a2f5c}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#0a2f5c;color:#fff;padding:12px 20px;display:none;justify-content:space-between;align-items:center;z-index:900}
+.bar a{background:#d4a843;color:#111;padding:10px 20px;border-radius:10px;font-weight:700;text-decoration:none}
+.none{text-align:center;color:#6b7280;padding:30px}
+@media(max-width:600px){.row{flex-wrap:wrap}.btn{width:100%}}
+</style></head><body>
+<div class="wrap">
+<h1>All ECS Courses (A–Z)</h1>
+<p class="sub">Choose your ECS card or test, add to cart and pay securely online. <span id="count"></span></p>
+<div class="tools"><input id="q" type="search" placeholder="Search course…"><select id="type"><option value="">All (Cards + Tests)</option><option>ECS Card</option><option>ECS Test</option></select></div>
+<div class="az" id="az"></div><div id="list"></div></div>
+
+<div class="bar" id="bar"><span id="barTxt"></span><a href="cart.html">View Cart &amp; Checkout →</a></div>
+<script src="courses-data.js"></script><script src="cart.js"></script><script src="header.js"></script>
+<script>
+const $=id=>document.getElementById(id), C=window.ECS_COURSES;
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function render(){
+  const q=$('q').value.toLowerCase(), ty=$('type').value;
+  const f=C.filter(c=>(!ty||c.type===ty)&&c.name.toLowerCase().includes(q));
+  $('count').textContent='('+f.length+' courses)';
+  const by={}; f.forEach(c=>{const L=/[A-Z]/i.test(c.name[0])?c.name[0].toUpperCase():'#';(by[L]=by[L]||[]).push(c)});
+  $('az').innerHTML='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(L=>by[L]?`<a href="#L${L}">${L}</a>`:`<a class="off">${L}</a>`).join('');
+  $('list').innerHTML=f.length?Object.keys(by).sort().map(L=>`<div class="letter" id="L${L}">${L}</div>`+by[L].map(c=>
+   `<div class="row"><div class="info"><div class="nm"><a href="${c.url}">${esc(c.name)}</a></div><span class="tag ${c.type==='ECS Test'?'t':''}">${c.type}</span></div>
+    <div class="pr">£${c.price}<small>+ VAT</small></div>
+    <button class="btn ${inCart(c.id)?'added':''}" data-id="${c.id}">${inCart(c.id)?'✓ In Cart':'Add to Cart'}</button></div>`).join('')).join(''):'<div class="none">No course found.</div>';
+  bar();
+}
+function bar(){const n=getCart().length;$('bar').style.display=n?'flex':'none';$('barTxt').textContent=n+' course'+(n>1?'s':'')+' in cart';}
+$('list').addEventListener('click',e=>{const b=e.target.closest('.btn');if(!b)return;const id=b.dataset.id;
+  if(inCart(id)){location.href='cart.html';return;} addToCart(id);b.textContent='✓ In Cart';b.classList.add('added');bar();});
+$('q').oninput=render;$('type').onchange=render;render();
+</script></body></html>
